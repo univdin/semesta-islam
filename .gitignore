@@ -32,6 +32,10 @@ supabase/.git/
 # Vercel
 .vercel/
 
+# Skills installer runtime artifacts (lockfile tracked; agent/.claude dirs are transient)
+agent/
+.claude/
+
 # Session transcripts & private logs (must never be published)
 session-ses_*.md
 *session*.md
@@ -71,3 +75,4 @@ tmp/
 temp/
 *.tmp
 *.bak
+.vercel
