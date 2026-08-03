@@ -30,7 +30,7 @@ jobs:
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
 
       - name: Create GitHub Release with backup
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: db-backup-${{ github.run_id }}
           name: Database Backup ${{ github.run_number }}
