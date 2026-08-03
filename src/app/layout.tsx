@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Outfit } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import '@/styles/globals.css';
 import { HeaderServer } from '@/components/ui/HeaderServer';
 import { BottomNav } from '@/components/ui/BottomNav';
@@ -38,6 +40,9 @@ export const metadata: Metadata = {
     'Pendidikan Rabbani',
   ],
   manifest: '/site.webmanifest',
+  verification: {
+    google: 'yj2dv9eWQ6xhTsBLFyjaEggSi-JkTVIRwRK08kP-_TI',
+  },
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
@@ -113,6 +118,8 @@ export default async function RootLayout({
             {demoMode && <DemoRoleSwitcher />}
           </div>
         </ToastProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
