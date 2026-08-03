@@ -16,9 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install pg_dump 17 (match Supabase server version)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client-17
+
       - name: Dump Supabase database (session pooler)
         run: |
-          pg_dump \
+          /usr/lib/postgresql/17/bin/pg_dump \
             --host=aws-0-ap-northeast-1.pooler.supabase.com \
             --port=5432 \
             --username=postgres.dlpzffnqjjuumnljedor \
