@@ -4,15 +4,15 @@ import Link from 'next/link';
 import { Scale, CheckCircle2, AlertTriangle, ShieldCheck } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Syarat & Ketentuan Layanan (Terms of Service) — SEMESTA ISLAM',
+  title: 'Syarat & Ketentuan Layanan (Terms of Service) — ILMIFY',
   description:
     'Syarat dan ketentuan penggunaan platform SEMESTA ISLAM untuk pembelajar, keluarga, pendidik, dan lembaga.',
   alternates: { canonical: '/terms-of-service' },
   openGraph: {
-    title: 'Syarat & Ketentuan Layanan — SEMESTA ISLAM',
+    title: 'Syarat & Ketentuan Layanan — ILMIFY',
     description:
       'Ketentuan penggunaan platform dan norma etika belajar di SEMESTA ISLAM.',
-    images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'Syarat & Ketentuan — SEMESTA ISLAM' }],
+    images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'Syarat & Ketentuan — ILMIFY' }],
   },
 };
 

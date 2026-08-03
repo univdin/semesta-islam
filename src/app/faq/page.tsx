@@ -4,15 +4,15 @@ import Link from 'next/link';
 import { HelpCircle, ShieldCheck, Calendar, BookOpen, UserCheck, AlertCircle } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Pertanyaan Umum (FAQ) — SEMESTA ISLAM',
+  title: 'Pertanyaan Umum (FAQ) — ILMIFY',
   description:
     'Jawaban atas pertanyaan umum seputar pencarian pendidik, standar verifikasi sanad Lajnah, serta alur pengajuan sesi belajar di SEMESTA ISLAM.',
   alternates: { canonical: '/faq' },
   openGraph: {
-    title: 'Pertanyaan Umum (FAQ) — SEMESTA ISLAM',
+    title: 'Pertanyaan Umum (FAQ) — ILMIFY',
     description:
       'Pusat bantuan dan jawaban atas pertanyaan umum platform SEMESTA ISLAM.',
-    images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'FAQ — SEMESTA ISLAM' }],
+    images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'FAQ — ILMIFY' }],
   },
 };
 

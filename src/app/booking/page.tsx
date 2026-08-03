@@ -9,12 +9,12 @@ import { BookingClient } from './BookingClient';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Ajukan Sesi Belajar — SEMESTA ISLAM',
+  title: 'Ajukan Sesi Belajar — ILMIFY',
   description:
     'Ajukan jadwal sesi belajar dengan pendidik Islam terverifikasi. Pilih metode online, privat, atau majelis sesuai kebutuhan keluarga.',
   alternates: { canonical: '/booking' },
   openGraph: {
-    title: 'Ajukan Sesi Belajar — SEMESTA ISLAM',
+    title: 'Ajukan Sesi Belajar — ILMIFY',
     description:
       'Ajukan jadwal sesi belajar dengan pendidik Islam terverifikasi.',
     images: [
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
         url: '/og-image.svg',
         width: 1200,
         height: 630,
-        alt: 'Ajukan Sesi Belajar — SEMESTA ISLAM',
+        alt: 'Ajukan Sesi Belajar — ILMIFY',
       },
     ],
   },

@@ -4,15 +4,15 @@ import Link from 'next/link';
 import { ShieldCheck, Lock, Eye, FileText, CheckCircle2 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Kebijakan Privasi (Privacy Policy) — SEMESTA ISLAM',
+  title: 'Kebijakan Privasi (Privacy Policy) — ILMIFY',
   description:
     'Kebijakan privasi resmi SEMESTA ISLAM menjelaskan pengumpulan, penggunaan, serta perlindungan data pribadi pengguna dan pendidik.',
   alternates: { canonical: '/privacy-policy' },
   openGraph: {
-    title: 'Kebijakan Privasi — SEMESTA ISLAM',
+    title: 'Kebijakan Privasi — ILMIFY',
     description:
       'Komitmen perlindungan data pribadi dan privasi pengguna di platform SEMESTA ISLAM.',
-    images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'Kebijakan Privasi — SEMESTA ISLAM' }],
+    images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'Kebijakan Privasi — ILMIFY' }],
   },
 };
 

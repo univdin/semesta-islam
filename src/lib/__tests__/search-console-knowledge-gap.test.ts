@@ -5,7 +5,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { projectEntityPerformance, requireSearchConsoleClient } from '@/lib/search-console/service';
+import crypto from 'node:crypto';
+import { projectEntityPerformance, requireSearchConsoleClient, buildServiceAccountJwt } from '@/lib/search-console/service';
 import { identifyKnowledgeGaps } from '@/lib/knowledge-gap/service';
 
 describe('projectEntityPerformance', () => {
@@ -52,10 +53,35 @@ describe('requireSearchConsoleClient — fail closed', () => {
     expect(() => requireSearchConsoleClient(null)).toThrow('SEARCH_CONSOLE_NOT_CONFIGURED');
   });
 
-  it('throws when the live client is not implemented', () => {
-    expect(() =>
-      requireSearchConsoleClient({ clientId: 'x', clientSecret: 'y', siteUrl: 'z' })
-    ).toThrow('SEARCH_CONSOLE_CLIENT_NOT_IMPLEMENTED');
+  it('throws when a site is configured but no server-side service-account credentials exist', () => {
+    delete process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+    delete process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+    delete process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
+    expect(() => requireSearchConsoleClient({ siteUrl: 'sc-domain:ilmify.id' })).toThrow(
+      'SEARCH_CONSOLE_NOT_CONFIGURED'
+    );
+  });
+});
+
+describe('buildServiceAccountJwt — signed assertion', () => {
+  it('produces a verify-able RS256 JWT with the expected claims', () => {
+    const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
+      modulusLength: 2048,
+    });
+    const jwt = buildServiceAccountJwt({
+      email: 'ilmify@univdin.iam.gserviceaccount.com',
+      privateKey: privateKey.export({ type: 'pkcs8', format: 'pem' }) as string,
+    });
+    const [header, claims, signature] = jwt.split('.');
+    const decodedHeader = JSON.parse(Buffer.from(header, 'base64url').toString());
+    const decodedClaims = JSON.parse(Buffer.from(claims, 'base64url').toString());
+    expect(decodedHeader).toEqual({ alg: 'RS256', typ: 'JWT' });
+    expect(decodedClaims.iss).toBe('ilmify@univdin.iam.gserviceaccount.com');
+    expect(decodedClaims.scope).toContain('webmasters.readonly');
+    expect(decodedClaims.aud).toBe('https://oauth2.googleapis.com/token');
+    expect(decodedClaims.exp - decodedClaims.iat).toBe(3600);
+    const ok = crypto.verify('sha256', Buffer.from(`${header}.${claims}`), publicKey, Buffer.from(signature, 'base64url'));
+    expect(ok).toBe(true);
   });
 });
 

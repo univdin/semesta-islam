@@ -90,7 +90,7 @@ export function Header({ identity, demoMode }: HeaderProps) {
             <Sparkles className="w-5 h-5 text-[#D4AF37]" />
           </div>
           <span className="brand-title">
-            SEMESTA<span className="brand-accent">ISLAM</span>
+            ILMIFY
           </span>
         </Link>
 

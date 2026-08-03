@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const metadata = {
-  title: 'Program Syi\'ar & Apresiasi Kemitraan — SEMESTA ISLAM',
+  title: 'Program Syi\'ar & Apresiasi Kemitraan — ILMIFY',
   description: 'Panel pengawasan dukungan apresiasi kemitraan terverifikasi dan siklus transparansi alokasi.',
 };
 

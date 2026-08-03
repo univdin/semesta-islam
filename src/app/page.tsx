@@ -7,14 +7,14 @@ export const revalidate = 300;
 export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
-  title: 'SEMESTA ISLAM — Platform Edukasi & Pendidik Islam Terverifikasi',
+  title: 'ILMIFY — Platform Edukasi & Pendidik Islam Terverifikasi',
   description:
     'Temukan pendidik Islam terverifikasi: ustaz, ustazah, dan lembaga dengan kredensial, sanad, dan keilmuan yang diverifikasi Lajnah. Ajukan sesi belajar online, privat, atau majelis.',
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'SEMESTA ISLAM — Platform Edukasi & Pendidik Islam Terverifikasi',
+    title: 'ILMIFY — Platform Edukasi & Pendidik Islam Terverifikasi',
     description:
       'Temukan pendidik Islam terverifikasi dengan sanad keilmuan yang diverifikasi Lajnah.',
     type: 'website',
@@ -29,7 +29,7 @@ const jsonLd = {
     {
       '@type': 'Organization',
       '@id': `${siteUrl}/#organization`,
-      name: 'SEMESTA ISLAM',
+      name: 'ILMIFY',
       url: siteUrl,
       logo: `${siteUrl}/apple-touch-icon.png`,
       description:
@@ -40,7 +40,7 @@ const jsonLd = {
       '@type': 'WebSite',
       '@id': `${siteUrl}/#website`,
       url: siteUrl,
-      name: 'SEMESTA ISLAM',
+      name: 'ILMIFY',
       inLanguage: 'id-ID',
       publisher: { '@id': `${siteUrl}/#organization` },
     },
@@ -49,15 +49,15 @@ const jsonLd = {
       mainEntity: [
         {
           '@type': 'Question',
-          name: 'Apa itu SEMESTA ISLAM?',
+          name: 'Apa itu ILMIFY?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'SEMESTA ISLAM adalah platform yang menghubungkan keluarga dan pembelajar dengan pendidik Islam terverifikasi — ustaz, ustazah, dan lembaga — yang kredensial, sanad, dan keilmuannya diverifikasi oleh Lajnah.',
+            text: 'ILMIFY adalah platform yang menghubungkan keluarga dan pembelajar dengan pendidik Islam terverifikasi — ustaz, ustazah, dan lembaga — yang kredensial, sanad, dan keilmuannya diverifikasi oleh Lajnah.',
           },
         },
         {
           '@type': 'Question',
-          name: 'Bagaimana pendidik diverifikasi di SEMESTA ISLAM?',
+          name: 'Bagaimana pendidik diverifikasi di ILMIFY?',
           acceptedAnswer: {
             '@type': 'Answer',
             text: 'Setiap pendidik melewati verifikasi kredensial 4-lapis: validasi identitas resmi, verifikasi sanad & ijazah, rekomendasi tokoh atau lembaga, dan evaluasi etika serta integritas.',
@@ -73,10 +73,10 @@ const jsonLd = {
         },
         {
           '@type': 'Question',
-          name: 'Apakah layanan SEMESTA ISLAM tersedia di seluruh Indonesia?',
+          name: 'Apakah layanan ILMIFY tersedia di seluruh Indonesia?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Ya, SEMESTA ISLAM menghubungkan pendidik dari berbagai kota di Indonesia dengan keluarga pembelajar, baik secara online maupun tatap muka.',
+            text: 'Ya, ILMIFY menghubungkan pendidik dari berbagai kota di Indonesia dengan keluarga pembelajar, baik secara online maupun tatap muka.',
           },
         },
       ],
@@ -251,7 +251,7 @@ export default async function HomePage() {
               <div className="badge-icon-large">
                 <ShieldCheck className="w-10 h-10 text-[#D4AF37]" />
               </div>
-              <h2 className="verification-title">Standar Verifikasi Kredensial 4-Lapis SEMESTA ISLAM</h2>
+              <h2 className="verification-title">Standar Verifikasi Kredensial 4-Lapis ILMIFY</h2>
               <p className="verification-desc">
                 Setiap pendidik melewati validasi kredensial ketat yang meliputi: Identitas Resmi,
                 Sanad/Ijazah Keilmuan, Rekomendasi Lembaga/Lajnah, serta Audit Track Record Etika.
@@ -327,7 +327,7 @@ export default async function HomePage() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2026 SEMESTA ISLAM. Hak Cipta Dilindungi Undang-Undang.</p>
+          <p>&copy; 2026 ILMIFY. Hak Cipta Dilindungi Undang-Undang.</p>
         </div>
       </footer>
     </main>

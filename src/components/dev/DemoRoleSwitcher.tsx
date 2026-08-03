@@ -40,7 +40,7 @@ const DEMO_USERS: Record<string, DemoUser> = {
   },
   DEV_FOUNDER: {
     id: '10000000-0000-0000-0000-000000000601',
-    name: 'Founder Admin SEMESTA ISLAM',
+    name: 'Founder Admin ILMIFY',
     email: 'founder.demo@localhost.test',
     role: 'FOUNDER_ADMIN',
     avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&q=80',

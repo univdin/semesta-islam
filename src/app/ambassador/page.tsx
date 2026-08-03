@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const metadata = {
-  title: 'Ambassador Syi\'ar Komunitas — SEMESTA ISLAM',
+  title: 'Ambassador Syi\'ar Komunitas — ILMIFY',
   description: 'Pusat Syi\'ar Komunitas SEMESTA ISLAM: Menyebarkan manfaat dan menghubungkan penuntut ilmu.',
 };
 

@@ -30,7 +30,7 @@ export function EducatorCard({ educator }: EducatorCardProps) {
             loading="lazy"
           />
           {educator.verified && (
-            <div className="verified-badge-icon" title="Terverifikasi SEMESTA ISLAM">
+            <div className="verified-badge-icon" title="Terverifikasi ILMIFY">
               <ShieldCheck className="w-3.5 h-3.5 text-white" />
             </div>
           )}

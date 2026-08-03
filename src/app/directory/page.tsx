@@ -6,14 +6,14 @@ import type { Metadata } from 'next';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Direktori Pendidik Islam Terverifikasi — SEMESTA ISLAM',
+  title: 'Direktori Pendidik Islam Terverifikasi — ILMIFY',
   description:
     'Cari dan telusuri direktori ustaz, ustazah, dan pendidik Islam terverifikasi Lajnah berdasarkan mata pelajaran, lokasi, dan metode belajar.',
   alternates: {
     canonical: '/directory',
   },
   openGraph: {
-    title: 'Direktori Pendidik Islam Terverifikasi — SEMESTA ISLAM',
+    title: 'Direktori Pendidik Islam Terverifikasi — ILMIFY',
     description:
       'Cari dan telusuri direktori ustaz, ustazah, dan pendidik Islam terverifikasi Lajnah.',
     images: [
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
         url: '/og-image.svg',
         width: 1200,
         height: 630,
-        alt: 'Direktori Pendidik Islam Terverifikasi — SEMESTA ISLAM',
+        alt: 'Direktori Pendidik Islam Terverifikasi — ILMIFY',
       },
     ],
   },

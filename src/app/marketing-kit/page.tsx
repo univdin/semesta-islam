@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Megaphone, Download, Image as ImageIcon, FileText, Share2, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Kit Pemasaran & Aset Brand — ilmify.id (SEMESTA ISLAM)',
+  title: 'Kit Pemasaran & Aset Brand — ilmify.id',
   description:
     'Unduh aset resmi logo, panduan warna, banner media sosial, serta materi pemasaran bermartabat ilmify.id.',
   alternates: { canonical: '/marketing-kit' },

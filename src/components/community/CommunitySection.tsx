@@ -81,7 +81,7 @@ function AuthorName({ author }: { author: CommentAuthor }) {
   if (author.fullName) {
     return <span className="font-semibold text-gray-800 dark:text-gray-200">{author.fullName}</span>;
   }
-  return <span className="font-semibold text-gray-800 dark:text-gray-200">Anggota SEMESTA ISLAM</span>;
+  return <span className="font-semibold text-gray-800 dark:text-gray-200">Anggota ILMIFY</span>;
 }
 
 interface CommunitySectionProps {
@@ -127,7 +127,7 @@ export function CommunitySection({ targetType, targetId, context }: CommunitySec
 
       <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
         Ulasan dan tanda terima di sini adalah sinyal komunitas — bukan pengganti verifikasi Lajnah.
-        Konten moderasi dikelola SEMESTA ISLAM sesuai kebijakan tata kelola.
+        Konten moderasi dikelola ILMIFY sesuai kebijakan tata kelola.
       </p>
 
       {tab === 'comments' ? (

@@ -24,8 +24,8 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ilmify.id'),
   title: {
-    default: 'SEMESTA ISLAM — Platform Edukasi & Pendidik Islam Terverifikasi',
-    template: '%s | SEMESTA ISLAM',
+    default: 'ILMIFY — Platform Edukasi & Pendidik Islam Terverifikasi',
+    template: '%s | ILMIFY',
   },
   description:
     'Ekosistem digital terpercaya yang menghubungkan keluarga & pembelajar dengan ustaz, ustazah, dan lembaga Islam terverifikasi sanad keilmuannya.',
@@ -53,10 +53,10 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: 'SEMESTA ISLAM — Platform Edukasi & Pendidik Islam Terverifikasi',
+    title: 'ILMIFY — Platform Edukasi & Pendidik Islam Terverifikasi',
     description:
       'Hubungkan keluarga Anda dengan ustaz, ustazah, dan lembaga Islam terverifikasi sanad & kredensial keilmuannya oleh Lajnah.',
-    siteName: 'SEMESTA ISLAM',
+    siteName: 'ILMIFY',
     locale: 'id_ID',
     type: 'website',
     url: 'https://ilmify.id',
@@ -65,13 +65,13 @@ export const metadata: Metadata = {
         url: '/og-image.svg',
         width: 1200,
         height: 630,
-        alt: 'SEMESTA ISLAM — Platform Edukasi & Pendidik Islam Terverifikasi',
+        alt: 'ILMIFY — Platform Edukasi & Pendidik Islam Terverifikasi',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SEMESTA ISLAM — Platform Edukasi & Pendidik Islam Terverifikasi',
+    title: 'ILMIFY — Platform Edukasi & Pendidik Islam Terverifikasi',
     description:
       'Hubungkan keluarga Anda dengan ustaz, ustazah, dan lembaga Islam terverifikasi sanad & kredensial keilmuannya.',
     images: ['/og-image.svg'],

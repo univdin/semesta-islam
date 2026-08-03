@@ -7,12 +7,12 @@ import { listPublishedChangelog } from '@/lib/changelog/service';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Catatan Perubahan & Pembaruan — SEMESTA ISLAM',
+  title: 'Catatan Perubahan & Pembaruan — ILMIFY',
   description:
     'Lihat pembaruan terbaru platform SEMESTA ISLAM: fitur baru, perbaikan, dan peningkatan keamanan.',
   alternates: { canonical: '/changelog' },
   openGraph: {
-    title: 'Catatan Perubahan & Pembaruan — SEMESTA ISLAM',
+    title: 'Catatan Perubahan & Pembaruan — ILMIFY',
     description:
       'Lihat pembaruan terbaru platform SEMESTA ISLAM.',
     images: [
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         url: '/og-image.svg',
         width: 1200,
         height: 630,
-        alt: 'Catatan Perubahan & Pembaruan — SEMESTA ISLAM',
+        alt: 'Catatan Perubahan & Pembaruan — ILMIFY',
       },
     ],
   },

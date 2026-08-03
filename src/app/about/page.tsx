@@ -4,15 +4,15 @@ import Link from 'next/link';
 import { Building2, ShieldCheck, Mail, MapPin, Award, CheckCircle2, HeartHandshake } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Tentang Kami (About Us) — SEMESTA ISLAM',
+  title: 'Tentang Kami (About Us) — ILMIFY',
   description:
     'Mengenal SEMESTA ISLAM: visi, misi, nilai Rabbani, dan komitmen menghubungkan keluarga dengan pendidik Islam terverifikasi Lajnah.',
   alternates: { canonical: '/about' },
   openGraph: {
-    title: 'Tentang Kami — SEMESTA ISLAM',
+    title: 'Tentang Kami — ILMIFY',
     description:
       'Visi dan misi platform digital terpercaya penghubung pendidikan Islam Rabbani.',
-    images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'Tentang Kami — SEMESTA ISLAM' }],
+    images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'Tentang Kami — ILMIFY' }],
   },
 };
 

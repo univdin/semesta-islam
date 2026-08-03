@@ -7,17 +7,17 @@ import { DemoLoginPanel } from './DemoLoginPanel';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
-  title: 'Masuk | SEMESTA ISLAM',
+  title: 'Masuk | ILMIFY',
   description: 'Masuk ke portal Semesta Islam untuk mengelola pembelajaran dan sesi Anda.',
   openGraph: {
-    title: 'Masuk Portal — SEMESTA ISLAM',
+    title: 'Masuk Portal — ILMIFY',
     description: 'Masuk ke akun Anda di platform SEMESTA ISLAM.',
     images: [
       {
         url: '/og-image.svg',
         width: 1200,
         height: 630,
-        alt: 'SEMESTA ISLAM — Portal Masuk',
+        alt: 'ILMIFY — Portal Masuk',
       },
     ],
   },

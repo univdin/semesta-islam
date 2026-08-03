@@ -49,11 +49,11 @@ export async function generateMetadata({
   }
   const canonicalSlug = resolution.matchedBy === 'uuid' ? educator.slug : slug;
   return {
-    title: `${educator.name} — Pendidik ${educator.verified ? 'Terverifikasi' : ''} SEMESTA ISLAM`,
+    title: `${educator.name} — Pendidik ${educator.verified ? 'Terverifikasi' : ''} ILMIFY`,
     description: `${educator.name}${educator.title ? `, ${educator.title}` : ''}${educator.location ? ` (${educator.location})` : ''}. Pelajari kredensial, sanad, dan profil pendidik di SEMESTA ISLAM.`,
     alternates: { canonical: `/educator/${canonicalSlug}` },
     openGraph: {
-      title: `${educator.name} — SEMESTA ISLAM`,
+      title: `${educator.name} — ILMIFY`,
       description:
         educator.expertise.length > 0
           ? `Keahlian: ${educator.expertise.join(', ')}. Profil pendidik Islam di SEMESTA ISLAM.`
@@ -64,7 +64,7 @@ export async function generateMetadata({
           url: educator.avatar || '/og-image.svg',
           width: 600,
           height: 600,
-          alt: `${educator.name} — SEMESTA ISLAM`,
+          alt: `${educator.name} — ILMIFY`,
         },
       ],
     },

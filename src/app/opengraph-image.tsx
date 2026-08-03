@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-export const alt = 'SEMESTA ISLAM — Platform Edukasi & Pendidik Islam Terverifikasi';
+export const alt = 'ILMIFY — Platform Edukasi & Pendidik Islam Terverifikasi';
 export const size = {
   width: 1200,
   height: 630,
@@ -74,8 +74,7 @@ export default async function Image() {
             marginBottom: 16,
           }}
         >
-          <span>SEMESTA</span>
-          <span style={{ color: '#D4AF37' }}>ISLAM</span>
+          <span>ILMIFY</span>
         </div>
 
         {/* Tagline */}

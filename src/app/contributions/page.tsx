@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const metadata = {
-  title: 'Apresiasi Kontributor Syi\'ar & XP Ledger — SEMESTA ISLAM',
+  title: 'Apresiasi Kontributor Syi\'ar & XP Ledger — ILMIFY',
   description: 'Pusat apresiasi kontribusi komunitas dan transparansi audit XP Ledger.',
 };
 

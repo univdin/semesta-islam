@@ -18,11 +18,11 @@ import { SchemaBlock } from '@/components/developer/SchemaBlock';
 import { USER_ROLES, VERIFICATION_STATUSES, LEARNING_METHODS, BOOKING_STATUSES, LEDGER_ENTRY_TYPES } from '@/lib/developer/registry';
 
 export const metadata: Metadata = {
-  title: 'Developer API Reference — SEMESTA ISLAM',
+  title: 'Developer API Reference — ILMIFY',
   description:
     'Referensi API read-only SEMESTA ISLAM yang mencerminkan kondisi implementasi aktual, bukan kontrak aspirasional.',
   openGraph: {
-    title: 'Developer API Reference — SEMESTA ISLAM',
+    title: 'Developer API Reference — ILMIFY',
     description:
       'Dokumentasi API, skema, dan status implementasi teknis SEMESTA ISLAM.',
     images: [
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
         url: '/og-image.svg',
         width: 1200,
         height: 630,
-        alt: 'Developer API Reference — SEMESTA ISLAM',
+        alt: 'Developer API Reference — ILMIFY',
       },
     ],
   },

@@ -4,15 +4,15 @@ import Link from 'next/link';
 import { Mail, MapPin, MessageSquare, ShieldCheck, Clock, CheckCircle2 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Hubungi Kami (Contact Us) — SEMESTA ISLAM',
+  title: 'Hubungi Kami (Contact Us) — ILMIFY',
   description:
     'Layanan dukungan pengguna, pertanyaan verifikasi Lajnah, serta saluran komunikasi resmi SEMESTA ISLAM.',
   alternates: { canonical: '/contact' },
   openGraph: {
-    title: 'Hubungi Kami — SEMESTA ISLAM',
+    title: 'Hubungi Kami — ILMIFY',
     description:
       'Saluran komunikasi resmi dan bantuan pengguna platform SEMESTA ISLAM.',
-    images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'Hubungi Kami — SEMESTA ISLAM' }],
+    images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'Hubungi Kami — ILMIFY' }],
   },
 };
 
