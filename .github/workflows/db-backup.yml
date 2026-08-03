@@ -14,7 +14,7 @@ jobs:
     env:
       PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install pg_dump 17 (match Supabase server version)
         run: |
