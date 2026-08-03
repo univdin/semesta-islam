@@ -11,6 +11,11 @@
 
 Seluruh tabel relasional di Supabase PostgreSQL wajib mengaktifkan **Row Level Security (RLS)** untuk mencegah kebocoran data antar-pengguna.
 
+> **APPLIED 2026-08-03:** RLS diaktifkan pada **35/35** tabel (`supabase/rls-hardening.sql`).
+> Akses `anon` + `authenticated` (PostgREST) dicabut total — aplikasi membaca/menulis
+> hanya via Prisma server-side. Verifikasi: publishable key kini mendapat `42501
+> permission denied` pada `/rest/v1/*`; auth (GoTrue) dan Prisma tetap berfungsi.
+
 ### 1.1 Protected Tables & Policy Rules
 
 #### A. Table `user_profiles`
