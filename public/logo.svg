@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 160" width="600" height="160">
+  <defs>
+    <linearGradient id="brandEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F3D2E"/>
+      <stop offset="100%" stop-color="#061A13"/>
+    </linearGradient>
+    <linearGradient id="brandGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF3C4"/>
+      <stop offset="35%" stop-color="#F3E5AB"/>
+      <stop offset="70%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#9A7B1C"/>
+    </linearGradient>
+    <filter id="logoGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Logo Mark Icon (Left Side) -->
+  <g transform="translate(10, 10)">
+    <rect width="140" height="140" rx="32" fill="url(#brandEmerald)"/>
+    <rect width="134" height="134" x="3" y="3" rx="29" fill="none" stroke="#D4AF37" stroke-width="1.5" stroke-opacity="0.3"/>
+    
+    <!-- Rub el Hizb 8-Pointed Star Motif -->
+    <g transform="translate(70, 70) scale(0.38)">
+      <rect x="-150" y="-150" width="300" height="300" rx="20" fill="none" stroke="url(#brandGold)" stroke-width="7" opacity="0.4" />
+      <rect x="-150" y="-150" width="300" height="300" rx="20" fill="none" stroke="url(#brandGold)" stroke-width="7" transform="rotate(45)" opacity="0.4" />
+      <path d="M-80 55 Q-35 25 0 55 Q35 25 80 55 Q45 80 0 68 Q-45 80 -80 55 Z" fill="url(#brandGold)" opacity="0.95" />
+      <path d="M0 -105 L15 -35 L75 -65 L32 -15 L85 12 L18 22 L32 80 L-10 32 L-52 68 L-32 10 L-85 -10 L-22 -20 L-45 -65 L0 -35 Z" fill="url(#brandGold)" filter="url(#logoGlow)"/>
+      <circle cx="0" cy="-12" r="8" fill="#FFF3C4" />
+    </g>
+  </g>
+
+  <!-- Brand Typography (Right Side) -->
+  <g transform="translate(175, 0)">
+    <!-- Wordmark -->
+    <text x="0" y="86" font-family="'Outfit', system-ui, -apple-system, sans-serif" font-size="52" font-weight="800" fill="#0F3D2E" letter-spacing="-1">
+      SEMESTA<tspan fill="url(#brandGold)" dx="4">ISLAM</tspan>
+    </text>
+    
+    <!-- Tagline -->
+    <text x="2" y="122" font-family="'Inter', system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" fill="#64748B" letter-spacing="1.5">
+      PLATFORM EDUKASI &amp; PENDIDIK TERVERIFIKASI
+    </text>
+  </g>
+</svg>

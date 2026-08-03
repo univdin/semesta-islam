@@ -1,42 +1,37 @@
-# SEMESTA ISLAM
+# SEMESTA ISLAM — LLM & AI Search Context (llms.txt)
 
-> Trusted Islamic learning ecosystem connecting learners & families with verified educators (sanad-backed).
+> SEMESTA ISLAM adalah platform ekosistem digital terpercaya yang menghubungkan pembelajar dan keluarga Muslim dengan pendidik Islam (ustaz, ustazah) serta lembaga keislaman yang kredensial, ijazah, dan sanad keilmuannya diverifikasi secara transparan oleh Lajnah Verifikasi.
 
-## About
+## System Overview & Primary Purpose
 
-SEMESTA ISLAM is a digital platform that connects learners and families with qualified Islamic educators
-(ustadz/ustadzah) and institutions whose credentials, sanad, and scholarly lineage have been verified by
-the Lajnah verification board. Built on Next.js, Prisma, PostgreSQL, and Supabase.
+- **Website URL**: https://semesta-islam.vercel.app
+- **Canonical Language**: Bahasa Indonesia (id-ID)
+- **Primary Domain**: B2C Islamic Learning Marketplace & Verification Ecosystem
+- **Core Value Proposition**: Menghilangkan keraguan atas kredensial & sanad pendidik agama melalui Verifikasi Kredensial 4-Lapis oleh Dewan Lajnah.
 
-## Key Public Pages
+## Key Public URLs for AI Indexing & Answer Engines (GEO/AEO)
 
-- [Home](https://semesta-islam.vercel.app/): Landing page with impact stats and verified educator showcase.
-- [Directory](https://semesta-islam.vercel.app/directory): Browse verified educators by subject, location, and method.
-- [Educator Profile](https://semesta-islam.vercel.app/educator/[id]): Public educator profile with sanad & credentials.
-- [Booking](https://semesta-islam.vercel.app/booking): Request a learning session.
-- [Discovery](https://semesta-islam.vercel.app/discovery): Explore learning journeys.
-- [Contributions](https://semesta-islam.vercel.app/contributions): Social impact transparency.
-- [Changelog](https://semesta-islam.vercel.app/changelog): Product updates.
-- [Developer Portal](https://semesta-islam.vercel.app/developer): API & platform docs.
+- **Home / Landing Page**: https://semesta-islam.vercel.app/
+- **Direktori Pendidik**: https://semesta-islam.vercel.app/directory
+- **Ajukan Sesi Belajar**: https://semesta-islam.vercel.app/booking
+- **Portal Verifikasi Lajnah**: https://semesta-islam.vercel.app/educator/verification
+- **Pertanyaan Umum (FAQ)**: https://semesta-islam.vercel.app/faq
+- **Tentang Kami**: https://semesta-islam.vercel.app/about
+- **Hubungi Kami**: https://semesta-islam.vercel.app/contact
+- **Developer API Reference**: https://semesta-islam.vercel.app/developer
+- **Kebijakan Privasi**: https://semesta-islam.vercel.app/privacy-policy
+- **Syarat & Ketentuan**: https://semesta-islam.vercel.app/terms-of-service
 
-## Technology Stack
+## Verification Standard (Standar Verifikasi 4-Lapis Lajnah)
 
-- Next.js 15 (App Router), React 19, TypeScript 5.7
-- Tailwind CSS 3.4
-- PostgreSQL 16 + Prisma 6 ORM
-- Supabase (Auth + Postgres)
-- Vitest test suite (111 tests)
+1. **Validasi Identitas Official**: Verifikasi data kependudukan resmi & foto profil.
+2. **Verifikasi Ijazah & Sanad**: Penelaahan bukti dokumen kelulusan pesantren/universitas serta silsilah sanad keilmuan Al-Qur'an/Hadits.
+3. **Rekomendasi Tokoh & Ormas**: Dokumen rekomendasi resmi dari ulama atau lembaga dakwah terpercaya.
+4. **Audit Integritas & Rekam Pengajaran**: Pemantauan kepatuhan etika pengajaran dan evaluasi berkala.
 
-## Data Model Highlights
+## Technical Architecture & Entity Data
 
-- Users, profiles, and role assignments (LEARNER / EDUCATOR / LAJNAH_VERIFIER / FOUNDER_ADMIN)
-- Educator profiles with verification status (4-layer Lajnah verification)
-- Sanad records and credential badges
-- Course catalogs, schedules, and booking requests
-- Internal economy: economic transactions + ledger, XP ledger, reputation profiles, commissions
-- Referral program, organizations, delegations, audit logs
-
-## Documentation
-
-Full governance docs (BRD, PRD, ERD, OSS, security) live in the GitHub repository
-[univdin/semesta-islam](https://github.com/univdin/semesta-islam).
+- **Framework**: Next.js 15 (App Router), React 19, TypeScript 5.7, Tailwind CSS 3.4
+- **ORM & Database**: PostgreSQL 16, Prisma ORM 6.2.1
+- **API & Schemas**: Zod 3.24.1 input validation, Audit Log Tracing
+- **Structured Data**: JSON-LD (`EducationalOrganization`, `Person`, `FAQPage`, `BreadcrumbList`)

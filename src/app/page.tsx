@@ -300,7 +300,7 @@ export default async function HomePage() {
               </span>
             </Link>
             <p>
-              Platform digital terpercaya penghubung pembelajaran & pendidikan Islam berlandaskan
+              Platform digital terpercaya penghubung pembelajaran &amp; pendidikan Islam berlandaskan
               nilai Rabbani.
             </p>
           </div>
@@ -310,10 +310,20 @@ export default async function HomePage() {
             <Link href="/directory">Direktori Pendidik</Link>
             <Link href="/booking">Ajukan Sesi Belajar</Link>
             <Link href="/#verification">Sistem Verifikasi</Link>
+            <Link href="/faq">Pertanyaan Umum (FAQ)</Link>
           </div>
           <div className="footer-links">
-            <h4>Pendidik</h4>
+            <h4>Pendidik &amp; Dev</h4>
             <Link href="/educator/verification">Portal Verifikasi Pendidik</Link>
+            <Link href="/developer">Developer API</Link>
+            <Link href="/changelog">Catatan Perubahan</Link>
+          </div>
+          <div className="footer-links">
+            <h4>Kebijakan &amp; Legal</h4>
+            <Link href="/about">Tentang Kami</Link>
+            <Link href="/contact">Hubungi Kami</Link>
+            <Link href="/privacy-policy">Kebijakan Privasi</Link>
+            <Link href="/terms-of-service">Syarat &amp; Ketentuan</Link>
           </div>
         </div>
         <div className="footer-bottom">

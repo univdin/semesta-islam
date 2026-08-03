@@ -1,17 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#0F3D2E"/>
-      <stop offset="100%" stop-color="#09271D"/>
+      <stop offset="100%" stop-color="#061A13"/>
     </linearGradient>
     <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F3E5AB"/>
-      <stop offset="50%" stop-color="#D4AF37"/>
-      <stop offset="100%" stop-color="#B89428"/>
+      <stop offset="0%" stop-color="#FFF3C4"/>
+      <stop offset="35%" stop-color="#F3E5AB"/>
+      <stop offset="70%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#9A7B1C"/>
     </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
   </defs>
-  <rect width="64" height="64" rx="16" fill="url(#bgGrad)"/>
-  <path d="M32 12 L35.5 24.5 L48 28 L35.5 31.5 L32 44 L28.5 31.5 L16 28 L28.5 24.5 Z" fill="url(#goldGrad)"/>
-  <circle cx="46" cy="18" r="3" fill="#D4AF37"/>
-  <circle cx="18" cy="46" r="2.5" fill="#D4AF37" opacity="0.7"/>
+
+  <!-- Outer Rounded Square Container -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  <rect width="500" height="500" x="6" y="6" rx="106" fill="none" stroke="#D4AF37" stroke-width="2" stroke-opacity="0.3"/>
+
+  <!-- Rub el Hizb Geometric Base (Dual Overlaid Rotated Squares) -->
+  <g transform="translate(256, 256)">
+    <rect x="-150" y="-150" width="300" height="300" rx="20" fill="none" stroke="url(#goldGrad)" stroke-width="6" opacity="0.35" />
+    <rect x="-150" y="-150" width="300" height="300" rx="20" fill="none" stroke="url(#goldGrad)" stroke-width="6" transform="rotate(45)" opacity="0.35" />
+    
+    <!-- Open Rehal / Book Base Symbolizing Qur'an & Heritage -->
+    <path d="M-80 55 Q-35 25 0 55 Q35 25 80 55 Q45 80 0 68 Q-45 80 -80 55 Z" fill="url(#goldGrad)" opacity="0.95" />
+    
+    <!-- 8-Pointed Star of Sanad & Guidance -->
+    <path d="M0 -105 L15 -35 L75 -65 L32 -15 L85 12 L18 22 L32 80 L-10 32 L-52 68 L-32 10 L-85 -10 L-22 -20 L-45 -65 L0 -35 Z" fill="url(#goldGrad)" filter="url(#glow)"/>
+
+    <!-- Central Point Light -->
+    <circle cx="0" cy="-12" r="9" fill="#FFF3C4" />
+  </g>
 </svg>

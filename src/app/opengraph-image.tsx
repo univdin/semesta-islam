@@ -53,13 +53,13 @@ export default async function Image() {
             marginBottom: 24,
           }}
         >
-          <svg width="48" height="48" viewBox="0 0 64 64" fill="none">
-            <path
-              d="M32 12 L35.5 24.5 L48 28 L35.5 31.5 L32 44 L28.5 31.5 L16 28 L28.5 24.5 Z"
-              fill="#D4AF37"
-            />
-            <circle cx="46" cy="18" r="3" fill="#D4AF37" />
-            <circle cx="18" cy="46" r="2.5" fill="#D4AF37" opacity="0.7" />
+          <svg width="48" height="48" viewBox="0 0 512 512" fill="none">
+            <g transform="translate(256, 256) scale(1.3)">
+              <rect x="-150" y="-150" width="300" height="300" rx="20" fill="none" stroke="#D4AF37" strokeWidth="10" opacity="0.5" />
+              <rect x="-150" y="-150" width="300" height="300" rx="20" fill="none" stroke="#D4AF37" strokeWidth="10" transform="rotate(45)" opacity="0.5" />
+              <path d="M-80 55 Q-35 25 0 55 Q35 25 80 55 Q45 80 0 68 Q-45 80 -80 55 Z" fill="#D4AF37"/>
+              <path d="M0 -105 L15 -35 L75 -65 L32 -15 L85 12 L18 22 L32 80 L-10 32 L-52 68 L-32 10 L-85 -10 L-22 -20 L-45 -65 L0 -35 Z" fill="#FFF3C4"/>
+            </g>
           </svg>
         </div>
 

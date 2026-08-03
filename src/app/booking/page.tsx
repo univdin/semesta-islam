@@ -13,6 +13,19 @@ export const metadata: Metadata = {
   description:
     'Ajukan jadwal sesi belajar dengan pendidik Islam terverifikasi. Pilih metode online, privat, atau majelis sesuai kebutuhan keluarga.',
   alternates: { canonical: '/booking' },
+  openGraph: {
+    title: 'Ajukan Sesi Belajar — SEMESTA ISLAM',
+    description:
+      'Ajukan jadwal sesi belajar dengan pendidik Islam terverifikasi.',
+    images: [
+      {
+        url: '/og-image.svg',
+        width: 1200,
+        height: 630,
+        alt: 'Ajukan Sesi Belajar — SEMESTA ISLAM',
+      },
+    ],
+  },
 };
 
 interface PageProps {

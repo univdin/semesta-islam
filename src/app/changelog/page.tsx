@@ -11,6 +11,19 @@ export const metadata: Metadata = {
   description:
     'Lihat pembaruan terbaru platform SEMESTA ISLAM: fitur baru, perbaikan, dan peningkatan keamanan.',
   alternates: { canonical: '/changelog' },
+  openGraph: {
+    title: 'Catatan Perubahan & Pembaruan — SEMESTA ISLAM',
+    description:
+      'Lihat pembaruan terbaru platform SEMESTA ISLAM.',
+    images: [
+      {
+        url: '/og-image.svg',
+        width: 1200,
+        height: 630,
+        alt: 'Catatan Perubahan & Pembaruan — SEMESTA ISLAM',
+      },
+    ],
+  },
 };
 
 export default async function ChangelogPublicPage() {
