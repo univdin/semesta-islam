@@ -146,3 +146,4 @@ Repositori ini dikelola secara ketat berbasis dokumentasi terstruktur (*Document
 ## 📄 Lisensi & Hak Cipta
 
 Proyek ini dilindungi di bawah **[MIT License](LICENSE)**. Bebas dikembangkan, dipelajari, dan dikontribusikan oleh komunitas terbuka.
+
