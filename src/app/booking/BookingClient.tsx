@@ -6,6 +6,7 @@ import { Calendar, User, Phone, Award, Info, CheckCircle, AlertCircle, History, 
 import { BookingInquirySchema } from '@/lib/validations';
 import type { EducatorDetail } from '@/lib/educators/service';
 import type { VerificationStatus } from '@/types';
+import { useToast } from '@/components/ui/useToast';
 
 interface BookingClientProps {
   educator: EducatorDetail;
@@ -22,6 +23,7 @@ const VERIFICATION_STATUS: Record<VerificationStatus, { label: string; cls: stri
 };
 
 export function BookingClient({ educator, courseId }: BookingClientProps) {
+  const toast = useToast();
   const [learningMethod, setLearningMethod] = useState<'ONLINE_ZOOM' | 'PRIVATE_HOME' | 'GROUP_MAJELIS'>(
     (educator.method === 'Online (Zoom / Google Meet)') ? 'ONLINE_ZOOM' : 
     (educator.method === 'Privat Tatap Muka di Rumah') ? 'PRIVATE_HOME' : 'GROUP_MAJELIS'
@@ -59,8 +61,10 @@ export function BookingClient({ educator, courseId }: BookingClientProps) {
 
     const validationResult = BookingInquirySchema.safeParse(payload);
     if (!validationResult.success) {
+      const msg = validationResult.error.errors[0]?.message || 'Input tidak valid';
       setStatus('error');
-      setErrorMessage(validationResult.error.errors[0]?.message || 'Input tidak valid');
+      setErrorMessage(msg);
+      toast.error('Pengajuan belum lengkap', msg);
       return;
     }
 
@@ -74,12 +78,18 @@ export function BookingClient({ educator, courseId }: BookingClientProps) {
       const body = await res.json();
 
       if (!res.ok || !body.success) {
+        const msg = body.message || 'Pengajuan gagal dikirim. Silakan coba lagi.';
         setStatus('error');
-        setErrorMessage(body.message || 'Pengajuan gagal dikirim. Silakan coba lagi.');
+        setErrorMessage(msg);
+        toast.error('Gagal Mengirim Pengajuan', msg);
         return;
       }
 
       setStatus('success');
+      toast.success(
+        'Bismillah, Pengajuan Sesi Berhasil Terkirim!',
+        `Permintaan Anda telah disampaikan kepada ${educator.name}. Anda mendapatkan +50 Poin Internal.`
+      );
       setResult({
         bookingId: body.data?.bookingId ?? '',
         ledgerPointsEarned: body.data?.ledgerPointsEarned ?? 50,
@@ -87,8 +97,10 @@ export function BookingClient({ educator, courseId }: BookingClientProps) {
         paymentMode: body.data?.paymentMode ?? 'mock',
       });
     } catch {
+      const msg = 'Tidak dapat terhubung ke server. Pastikan layanan backend berjalan.';
       setStatus('error');
-      setErrorMessage('Tidak dapat terhubung ke server. Pastikan layanan backend berjalan.');
+      setErrorMessage(msg);
+      toast.error('Gangguan Koneksi', msg);
     }
   };
 

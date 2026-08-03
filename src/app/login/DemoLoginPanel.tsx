@@ -19,6 +19,15 @@ export function DemoLoginPanel({ demoMode }: { demoMode: boolean }) {
   const toast = useToast();
   const router = useRouter();
 
+  const getTargetRouteForRole = (email: string): string => {
+    if (email.includes('learner')) return '/learner/activity';
+    if (email.includes('educator')) return '/educator/workspace';
+    if (email.includes('lajnah')) return '/management/lajnah';
+    if (email.includes('founder')) return '/management/governance';
+    if (email.includes('org')) return '/organization';
+    return '/member';
+  };
+
   const handleQuickLogin = async (email: string) => {
     setLoading(true);
     try {
@@ -31,8 +40,9 @@ export function DemoLoginPanel({ demoMode }: { demoMode: boolean }) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.message ?? 'Gagal masuk.');
       }
-      toast.success(`Masuk sebagai ${email.split('@')[0]}.`);
-      router.push('/member');
+      const target = getTargetRouteForRole(email);
+      toast.success('Bismillah, Anda telah masuk ke mode demo.', `Status aktif: ${email}`);
+      router.push(target);
       router.refresh();
     } catch (err) {
       toast.error('Gagal masuk.', err instanceof Error ? err.message : undefined);

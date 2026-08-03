@@ -15,7 +15,7 @@ export default function robots(): MetadataRoute.Robots {
       // Explicit rules for AI Search & Answer Engine crawlers (GEO/AEO Optimization)
       {
         userAgent: ['GPTBot', 'ChatGPT-User', 'ClaudeBot', 'PerplexityBot', 'GoogleOther', 'Bingbot'],
-        allow: ['/', '/directory', '/educator/*', '/about', '/faq', '/changelog', '/developer', '/llms.txt'],
+        allow: ['/', '/directory', '/topics', '/educator/*', '/about', '/faq', '/changelog', '/developer', '/llms.txt'],
         disallow: ['/api/', '/management/', '/member/', '/educator/workspace'],
       },
     ],

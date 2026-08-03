@@ -117,7 +117,7 @@ export default async function LearnerBookingDetailPage({ params }: PageProps) {
               <ShieldCheck className="w-5 h-5 text-[#D4AF37]" /> Pendidik
             </h2>
             <Link
-              href={`/educator/${booking.educator.id}`}
+              href={`/educator/${booking.educator.slug || booking.educator.id}`}
               className="flex items-center gap-4 hover:opacity-90"
             >
               {booking.educator.avatar && (

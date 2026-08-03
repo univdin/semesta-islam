@@ -224,6 +224,7 @@ export interface BookingDetail {
   learner: { userId: string; name: string };
   educator: {
     id: string;
+    slug: string;
     userId: string;
     name: string;
     title: string;
@@ -250,6 +251,7 @@ export async function getBookingDetail(bookingId: string): Promise<BookingDetail
       educator: {
         select: {
           id: true,
+          slug: true,
           userId: true,
           titleSuffix: true,
           institutionName: true,
@@ -301,6 +303,7 @@ export async function getBookingDetail(bookingId: string): Promise<BookingDetail
     },
     educator: {
       id: booking.educator.id,
+      slug: booking.educator.slug ?? '',
       userId: booking.educator.userId,
       name: educatorProfile?.fullName ?? booking.educator.user.email,
       title: booking.educator.titleSuffix ?? '',

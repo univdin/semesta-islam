@@ -179,3 +179,49 @@ Catatan:
 - `VerificationRequest` kini menyimpan `verified_by_id` + `verified_at` (set saat review menuju `VERIFIED`, di-clear saat REJECTED/REVOKED). Diekspos sebagai `verifiedByName`/`verifiedAt` pada `GET /api/v1/verification/status`.
 - Authorisasi identitas & role **server-derived** (DECISION-07) — tidak pernah dari payload.
 - Rate limiting per-endpoint (rute publik/auth) dijadwalkan di Slice F.
+
+---
+
+## 7. SLICE E2 — COMMUNITY KNOWLEDGE & ENGAGEMENT API — IMPLEMENTED + RUNTIME VERIFIED
+
+Diperbarui `2026-08-04` (Community Knowledge Directive; lihat `docs/audit/DOCUMENTATION_DRIFT_MATRIX.md`).
+Seluruh handler terletak di `src/app/api/v1/community/**` (18 method / 11 file) dan
+`src/app/api/v1/management/community/**` (3 method / 2 file). **21 method / 13 file.**
+
+### 7.1 Member routes (`/api/v1/community`)
+
+| Method | Endpoint | Deskripsi | Access |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/v1/community/me` | Resolusi identitas server (`{ userId, email, roles }`); anonim → `401 Not signed in.` | Authenticated |
+| `GET` | `/api/v1/community/comments?targetType=&targetId=&includeModerated=` | Daftar komentar (default hanya `VISIBLE`; `includeModerated=true` + staff → + HIDDEN/REPORTED/REMOVED). 400 jika `targetType`/`targetId` invalid | Public (identity-aware) |
+| `POST` | `/api/v1/community/comments` | Buat komentar/reply. Body: `targetType`, `targetId`, `parentId?`, `body` (1–5000), `isCorrection?`, `correctionNote?` (≤2000) | Authenticated Member |
+| `PATCH` | `/api/v1/community/comments/[id]` | Edit body (owner/staff) | Owner / Moderator |
+| `DELETE` | `/api/v1/community/comments/[id]` | Soft-delete komentar (owner/staff) | Owner / Moderator |
+| `GET` | `/api/v1/community/questions?topicId=&educatorId=&authorId=` | Daftar pertanyaan (filter opsional kontekstual; hanya `VISIBLE`) | Public (identity-aware) |
+| `POST` | `/api/v1/community/questions` | Buat pertanyaan. Body: `topicId?`, `educatorId?`, `title` (1–500), `body` (1–10000) | Authenticated Member |
+| `GET` | `/api/v1/community/questions/[id]` | Detail pertanyaan + jawaban (identity-aware; hanya `VISIBLE` bagi non-staff) | Public (identity-aware) |
+| `PATCH` | `/api/v1/community/questions/[id]` | Edit title/body (owner/staff) | Owner / Moderator |
+| `DELETE` | `/api/v1/community/questions/[id]` | Soft-delete pertanyaan (owner/staff) | Owner / Moderator |
+| `POST` | `/api/v1/community/questions/[id]/answers` | Balas pertanyaan. Body: `body` (1–10000). `LOCKED` → ditolak (409) | Authenticated Member |
+| `PATCH` | `/api/v1/community/answers/[id]` | Edit jawaban (owner/staff) | Owner / Moderator |
+| `DELETE` | `/api/v1/community/answers/[id]` | Soft-delete jawaban (owner/staff) | Owner / Moderator |
+| `PUT` | `/api/v1/community/answers/[id]/accept` | Terima jawaban (author pertanyaan / founder). Idempotent, mengganti jawaban terakseptasi lama, catat XP `COMMUNITY_KHIDMAH` sekali | Question Author / Founder |
+| `DELETE` | `/api/v1/community/answers/[id]/accept` | Batalkan penerimaan (author pertanyaan / founder) | Question Author / Founder |
+| `POST` | `/api/v1/community/votes` | Cast/flip vote. Body: `targetType`, `targetId`, `voteType` (`HELPFUL|AGREE|ENDORSE`), `fromType?` (flip). Dup → dedupe; self-vote → 403 | Authenticated Member |
+| `DELETE` | `/api/v1/community/votes` | Hapus vote sendiri. Body: `targetType`, `targetId`, `voteType` | Authenticated Member |
+| `POST` | `/api/v1/community/reports` | Laporkan konten. Body: `targetType`, `targetId`, `reason` (3–500). Dup per reporter → 409 | Authenticated Member |
+
+### 7.2 Management routes (`/api/v1/management/community`)
+
+| Method | Endpoint | Deskripsi | Access |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/v1/management/community/moderation` | Antrean moderasi (HIDDEN/REPORTED/UNDER_REVIEW/REMOVED) | Staff (CONTENT_MANAGE) |
+| `PATCH` | `/api/v1/management/community/moderation` | Transisi status moderasi. Body: `targetType` (`QUESTION|ANSWER|COMMENT`), `targetId`, `status` (`VISIBLE|HIDDEN|REPORTED|UNDER_REVIEW|REMOVED|LOCKED`), `note?` | Staff (CONTENT_MANAGE) |
+| `PATCH` | `/api/v1/management/community/reports` | Tutup laporan. Body: `reportId`, `status` (`RESOLVED|REJECTED`), `resolution` (3–1000) | Staff (CONTENT_MANAGE) |
+
+### 7.3 Enforcement & envelope
+
+- **Anonymous:** semua rute tulis (member) → `401 COMMUNITY_ANONYMOUS_PARTICIPATION_DISABLED` (ditegakkan di service layer `authorize`); rute management → `401 Authentication required.` di handler.
+- **Feature flag founder:** komentar/Q&A/vote/report dinonaktifkan lewat `PlatformSetting` komunitas → `403 FEATURE_DISABLED` (fail-closed; lihat `docs/audit/COMMUNITY_FOUNDER_CONTROL_AUDIT.md`).
+- **Envelope:** konsisten dengan §1 — `{ success, statusCode, message?, data? }`; kesalahan validasi Zod → `400` dengan `message`; kesalahan bisnis memakai `ServiceError.statusCode`.
+- **Trust boundary:** tidak ada path dari sinyal komunitas ke `VERIFIED` (lihat `docs/03_ERD.md` §54.7). Penerimaan jawaban tidak menyentuh `KnowledgeClaim`/`DigitalProfile`/verifikasi.

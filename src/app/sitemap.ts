@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next';
 
 import { listEducatorSummaries } from '@/lib/educators/service';
+import { listPublishedTopics } from '@/lib/topics/service';
+import { isPlatformSettingEnabled, PLATFORM_SETTING_KEYS } from '@/lib/settings/service';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,18 +37,40 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Dynamic Educator Profiles for SERP & AI Indexing
+  // Only canonical slug URLs are emitted; educators without a slug are not
+  // indexable entities yet and must never appear in the sitemap.
   let dynamicEducatorEntries: MetadataRoute.Sitemap = [];
   try {
     const educators = await listEducatorSummaries({ take: 100 });
-    dynamicEducatorEntries = educators.map((edu) => ({
-      url: `${baseUrl}/educator/${edu.id}`,
-      lastModified: now,
-      changeFrequency: 'weekly' as const,
-      priority: edu.verified ? 0.85 : 0.7,
-    }));
+    dynamicEducatorEntries = educators
+      .filter((edu) => edu.slug)
+      .map((edu) => ({
+        url: `${baseUrl}/educator/${edu.slug}`,
+        lastModified: now,
+        changeFrequency: 'weekly' as const,
+        priority: edu.verified ? 0.85 : 0.7,
+      }));
   } catch {
     // Graceful fallback if database is unseeded during static generation
   }
 
-  return [...staticEntries, ...dynamicEducatorEntries];
+  // Dynamic Topic taxonomy pages (EXP-03). Only indexable topics are emitted;
+  // thin topics are excluded by the quality gate.
+  let topicEntries: MetadataRoute.Sitemap = [];
+  try {
+    const topicsEnabled = await isPlatformSettingEnabled(PLATFORM_SETTING_KEYS.PUBLIC_TOPICS_ENABLED);
+    if (topicsEnabled) {
+      const topics = await listPublishedTopics();
+      topicEntries = topics.map((topic) => ({
+        url: `${baseUrl}/topics/${topic.slug}`,
+        lastModified: now,
+        changeFrequency: 'weekly' as const,
+        priority: 0.6,
+      }));
+    }
+  } catch {
+    // Graceful fallback if database is unseeded during static generation
+  }
+
+  return [...staticEntries, ...dynamicEducatorEntries, ...topicEntries];
 }

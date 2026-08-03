@@ -4,6 +4,7 @@
  */
 
 import { prisma } from '@/lib/db';
+import { env } from '@/lib/env';
 import { LedgerEntryType } from '@/types';
 
 export interface LedgerEntryInput {
@@ -22,14 +23,13 @@ export interface LedgerAccountBalance {
 }
 
 /**
- * Calculates current commission percentage based on environment configuration.
- * DECISION-01: Default fallback is 0% (MVP Simulation) until Founder approval.
+ * Calculates current commission percentage based on validated environment
+ * configuration. DECISION-01: Default fallback is 0% (MVP Simulation) until
+ * Founder approval. Reads through the central validated `env` object so the
+ * value is coerced and bounded once, not re-parsed per call.
  */
 export function getPlatformCommissionPercentage(): number {
-  const envVal = process.env.PLATFORM_COMMISSION_PERCENTAGE;
-  if (!envVal) return 0;
-  const parsed = parseFloat(envVal);
-  return isNaN(parsed) ? 0 : parsed;
+  return env.PLATFORM_COMMISSION_PERCENTAGE;
 }
 
 /**

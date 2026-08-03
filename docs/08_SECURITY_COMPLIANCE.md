@@ -11,7 +11,14 @@
 
 Seluruh tabel relasional di Supabase PostgreSQL wajib mengaktifkan **Row Level Security (RLS)** untuk mencegah kebocoran data antar-pengguna.
 
-> **APPLIED 2026-08-03:** RLS diaktifkan pada **35/35** tabel (`supabase/rls-hardening.sql`).
+> **APPLIED 2026-08-03:** RLS diaktifkan pada **35/35** tabel yang ada saat itu (`supabase/rls-hardening.sql`).
+> **2026-08-04 (community domain):** skema kini **46 tabel**; 5 tabel komunitas
+> (`community_comments`, `community_votes`, `community_reports`, `community_questions`,
+> `community_answers`) dibuat **setelah** script hardening dijalankan → **RLS belum aktif**
+> di tabel tersebut dan perlu re-run `supabase/rls-hardening.sql` (atau `ENABLE ROW LEVEL
+> SECURITY` eksplisit). Mitigasi aktif: `ALTER DEFAULT PRIVILEGES` (revoke anon/authenticated)
+> + akses data hanya via Prisma server-side — anon/authenticated tidak memiliki privilege
+> apapun atas tabel baru; re-run hanya bersifat defense-in-depth.
 > Akses `anon` + `authenticated` (PostgREST) dicabut total — aplikasi membaca/menulis
 > hanya via Prisma server-side. Verifikasi: publishable key kini mendapat `42501
 > permission denied` pada `/rest/v1/*`; auth (GoTrue) dan Prisma tetap berfungsi.

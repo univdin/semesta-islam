@@ -23,33 +23,56 @@ export async function middleware(request: NextRequest) {
     'camera=(), microphone=(), geolocation=(), interest-cohort=()'
   );
 
-  if (!isSupabaseConfigured()) {
-    return response;
-  }
+  const pathname = request.nextUrl.pathname;
+  const isProtectedRoute =
+    pathname.startsWith('/educator/workspace') ||
+    pathname.startsWith('/management') ||
+    pathname.startsWith('/learner/activity') ||
+    pathname.startsWith('/member') ||
+    pathname.startsWith('/organization');
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-          response = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          );
-        },
-      },
+  if (isProtectedRoute) {
+    let isAuthenticated = false;
+
+    if (isSupabaseConfigured()) {
+      const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+          cookies: {
+            getAll() {
+              return request.cookies.getAll();
+            },
+            setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
+              cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+              response = NextResponse.next({ request });
+              cookiesToSet.forEach(({ name, value, options }) =>
+                response.cookies.set(name, value, options)
+              );
+            },
+          },
+        }
+      );
+      try {
+        const { data } = await supabase.auth.getUser();
+        if (data.user) isAuthenticated = true;
+      } catch {
+        // Fall through
+      }
     }
-  );
 
-  try {
-    await supabase.auth.getUser();
-  } catch {
-    // Ignore auth errors; the request continues and routes enforce authorization.
+    if (!isAuthenticated) {
+      const demoCookie = request.cookies.get('semesta_demo_identity')?.value;
+      if (demoCookie && demoCookie.endsWith('@localhost.test')) {
+        isAuthenticated = true;
+      }
+    }
+
+    if (!isAuthenticated) {
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('redirect', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
   return response;

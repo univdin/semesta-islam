@@ -62,7 +62,7 @@ export function EducatorCard({ educator }: EducatorCardProps) {
 
       <div className="card-footer">
         <Link
-          href={`/educator/${educator.id}`}
+          href={`/educator/${educator.slug || educator.id}`}
           className="btn btn-secondary text-xs py-1.5 px-3"
         >
           Lihat Profil & Sanad

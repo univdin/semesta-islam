@@ -557,7 +557,7 @@ export const ENDPOINTS: EndpointDetail[] = [
     response: undefined,
     errors: [],
     notes: [
-      'Belum ada route API. Fungsi setara disajikan sebagai halaman server-rendered `/educator/[id]` (DB-backed); ID tidak valid -> 404 via notFound().',
+      'Belum ada route API. Fungsi setara disajikan sebagai halaman server-rendered `/educator/[slug]` (DB-backed); slug/UUID tidak dikenal -> 404 via notFound(), UUID legacy -> 308 ke slug kanonik.',
     ],
     evidence: ['docs/07_API_ENDPOINTS.md §2.3', 'docs/implementation/POST_EXECUTION_VERIFICATION.md §1 (V6)'],
   },

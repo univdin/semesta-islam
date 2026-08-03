@@ -777,6 +777,7 @@ The model supports this without forcing the identities together.
 ```text
 Educator
 - id
+- slug (canonical, nullable, unique)   # EXP-11: canonical entity URL
 - user_id
 - profile_id
 - headline
@@ -1504,3 +1505,215 @@ Messaging · Notification · Search · Analytics
 **Canonical principle:**
 
 > `SEMESTA ISLAM` is the organizational/governance layer; management and HR operate beneath it; platform IAM controls technical access; and the marketplace/service/learning domain operates beneath the organization. These layers are related but must not be conflated.
+
+---
+
+# 53. CANONICAL ENTITY & KNOWLEDGE TAXONOMY (EXP-03 / Phase D–H)
+
+Implemented additive models (see `prisma/schema.prisma`). These extend the
+relational knowledge projection without a graph database.
+
+## 53.1 Topic
+
+```text
+Topic
+- id
+- name
+- slug (unique, canonical)
+- description
+- parent_id (self-reference, optional)
+- status (DRAFT / PUBLISHED / ARCHIVED)
+- sort_order
+- created_at / updated_at
+```
+
+- `TopicAlias` provides a canonical alias seam (`alias` unique) — editorial
+  synonyms, not separate entities.
+- Educator ↔ Topic edges are expressed via `KnowledgeClaim.topic_id` where
+  `predicate = SPECIALIZES_IN` and `status = VERIFIED`. Only VERIFIED claims
+  become authoritative public relationships.
+- Public pages: `/topics` (index) and `/topics/[slug]`. Thin-page quality
+  gate: a topic is indexable only when it has a meaningful description OR at
+  least one verified educator.
+
+## 53.2 DigitalProfile
+
+```text
+DigitalProfile
+- id
+- educator_id
+- platform (WEBSITE / YOUTUBE / INSTAGRAM / TIKTOK / X / FACEBOOK / OTHER)
+- url
+- handle
+- status (SELF_DECLARED / SUBMITTED / UNDER_REVIEW / VERIFIED / REJECTED)
+- verified_by_id / verified_at
+- created_at / updated_at
+```
+
+Identity lifecycle: SELF_DECLARED → SUBMITTED → UNDER_REVIEW → VERIFIED | REJECTED.
+Only VERIFIED profiles become authoritative `sameAs` in public Person JSON-LD.
+Identity is never inferred from name/avatar similarity.
+
+## 53.3 PlatformSetting
+
+```text
+PlatformSetting
+- key (unique)
+- value
+- updated_by_id / updated_at
+```
+
+Typed runtime product configuration (feature flags, publishing/indexing
+policy, integration status). Never holds secrets — secrets stay in env.
+Mutations require `platform.configuration` capability (founder/management).
+
+## 53.4 Public entity URL contract
+
+```text
+/educator/{slug}      (EXP-11, canonical; UUID → 308)
+/topics/{slug}        (EXP-03)
+/organization/{id}    (existing; slug upgrade deferred)
+```
+
+Internal transactional references remain UUIDs.
+
+---
+
+# 54. COMMUNITY KNOWLEDGE & ENGAGEMENT DOMAIN (Community Knowledge Directive)
+
+Implemented additive models (see `prisma/schema.prisma`, migration
+`20260803155525_community_knowledge_domain`). Community content is **soft-delete
+only** — rows are never physically destroyed, preserving audit trails and
+provenance. Only `VISIBLE` content is publicly readable.
+
+## 54.1 Enums
+
+```text
+ModerationStatus   VISIBLE | HIDDEN | REPORTED | UNDER_REVIEW | REMOVED | LOCKED
+CommunityTargetType EDUCATOR_PROFILE | TOPIC | QUESTION | ANSWER | COMMENT
+VoteType           HELPFUL | AGREE | ENDORSE
+ReportStatus       OPEN | UNDER_REVIEW | RESOLVED | REJECTED
+```
+
+Lifecycle: `VISIBLE → HIDDEN → REPORTED → UNDER_REVIEW → REMOVED → LOCKED`.
+Transitions are applied by management via `applyTargetModerationState`
+(`src/lib/community/state.ts`); arbitrary invalid transitions are rejected.
+
+## 54.2 CommunityComment
+
+```text
+CommunityComment
+- id
+- author_id (User)
+- target_type (CommunityTargetType) + target_id (polymorphic)
+- parent_id (self-reference → threaded replies)
+- body
+- status (ModerationStatus, default VISIBLE)
+- is_correction + correction_note  (corrections pathway, see §54.7)
+- moderated_by_id / moderated_at / edited_at
+- created_at / updated_at
+```
+
+Indexes: `(target_type, target_id, status)`, `author_id`, `(status, created_at)`.
+`parent_id` uses `onDelete: SetNull`; `author_id` cascades. A comment marked
+`is_correction = true` may seed a `DRAFT` `KnowledgeClaim` via
+`source_comment_id` — it can never directly reach `VERIFIED` (see §54.7).
+
+## 54.3 CommunityVote
+
+```text
+CommunityVote
+- id
+- voter_id (User)
+- target_type (CommunityTargetType) + target_id (polymorphic)
+- vote_type (VoteType: HELPFUL / AGREE / ENDORSE)
+- created_at
+```
+
+Unique constraint: `(voter_id, target_type, target_id, vote_type)` — one member
+holds at most one vote per (target, type); duplicates are idempotently deduped.
+Self-voting is rejected server-side. Votes are a **community signal only** and
+never upgrade trust or become `VERIFIED` knowledge.
+
+## 54.4 CommunityReport
+
+```text
+CommunityReport
+- id
+- reporter_id (User)
+- target_type + target_id (polymorphic)
+- reason
+- status (ReportStatus, default OPEN)
+- resolution / resolved_by_id / resolved_at
+- created_at / updated_at
+```
+
+Unique constraint: `(reporter_id, target_type, target_id)` — per-reporter
+deduplication prevents spam-flagging the same content. Reaching the founder-set
+report threshold auto-flags the target as `REPORTED`. Closing a report
+(`RESOLVED`/`REJECTED`) is moderation-only.
+
+## 54.5 CommunityQuestion / CommunityAnswer
+
+```text
+CommunityQuestion
+- id
+- author_id (User)
+- topic_id? (Topic) / educator_id? (EducatorProfile)   ← contextual anchoring
+- title / body
+- status (ModerationStatus, default VISIBLE)
+- moderated_by_id / moderated_at / edited_at
+- created_at / updated_at
+  answers: CommunityAnswer[]
+
+CommunityAnswer
+- id
+- question_id (CommunityQuestion, onDelete: Cascade)
+- author_id (User)
+- body
+- status (ModerationStatus, default VISIBLE)
+- accepted_at / accepted_by_id     ← COMMUNITY_SIGNAL only
+- moderated_by_id / moderated_at / edited_at
+- created_at / updated_at
+```
+
+- A `LOCKED` question rejects further answers.
+- Only the question author (or founder) may accept an answer; acceptance is
+  idempotent, atomically replaces a prior accepted answer, and records
+  `COMMUNITY_KHIDMAH` XP (= 50) once.
+- An accepted answer is **COMMUNITY_SIGNAL**. It NEVER modifies
+  `KnowledgeClaim.status`, verification state, `DigitalProfile` trust, educator
+  verification, or `Topic` truth.
+
+## 54.6 Notification additions
+
+New `NotificationType` values: `COMMENT_ADDED`, `COMMENT_REPLY`,
+`QUESTION_ANSWERED`, `ANSWER_ACCEPTED`, `CONTENT_REPORTED`, `CONTENT_MODERATED`
+(existing `Notification` model reused; no duplicate infrastructure).
+
+## 54.7 Corrections → knowledge candidate pathway (trust boundary)
+
+```text
+Community comment (is_correction = true)
+        │  reviewed
+        ▼
+DRAFT KnowledgeClaim  (KnowledgeClaim.source_comment_id → CommunityComment.id)
+        │  existing verification workflow
+        ▼
+VERIFIED  (ONLY via the existing knowledge verification machinery)
+```
+
+`KnowledgeClaim.sourceCommentId` (`source_comment_id`) references the originating
+community comment (`onDelete: SetNull`). There is **no** path from any community
+signal (comment, answer, vote, accepted answer) directly to `VERIFIED`.
+
+## 54.8 Community ↔ knowledge separation (product contract)
+
+| Layer | Becomes | Never becomes |
+| --- | --- | --- |
+| Community signal (comment / answer / vote / accepted answer) | contextual engagement | VERIFIED knowledge, evidence, authority |
+| Knowledge candidate (correction → DRAFT claim) | existing verification pipeline | VERIFIED automatically |
+| Verified knowledge (KnowledgeClaim VERIFIED) | authoritative KG projection | — |
+
+The knowledge-graph public projection consumes **only** eligible VERIFIED
+knowledge. Community interactions never silently become canonical graph facts.

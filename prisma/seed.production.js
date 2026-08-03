@@ -66,6 +66,23 @@ async function main() {
     await prisma.roleAssignment.create({ data: { userId: user.id, role: 'FOUNDER_ADMIN' } });
   }
 
+  // Safe runtime configuration defaults (non-destructive, idempotent).
+  // Product settings only — never secrets (secrets stay in env).
+  const defaults = {
+    public_directory_enabled: 'true',
+    public_topics_enabled: 'true',
+    maintenance_mode: 'false',
+    search_console_enabled: 'false',
+    entity_publishing_policy: 'verified-only',
+  };
+  for (const [key, value] of Object.entries(defaults)) {
+    await prisma.platformSetting.upsert({
+      where: { key },
+      update: {},
+      create: { key, value, updatedById: user.id },
+    });
+  }
+
   console.log(
     `[seed:production] Bootstrap complete: founder ${founder.email} (FOUNDER_ADMIN) is ensured.`
   );

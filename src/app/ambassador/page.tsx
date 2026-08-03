@@ -5,6 +5,8 @@ export const metadata = {
   description: 'Pusat Syi\'ar Komunitas SEMESTA ISLAM: Menyebarkan manfaat dan menghubungkan penuntut ilmu.',
 };
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ilmify.id';
+
 export default function AmbassadorPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 py-10 px-4 sm:px-6 lg:px-8">
@@ -37,7 +39,7 @@ export default function AmbassadorPage() {
               </select>
             </div>
             <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono break-all text-emerald-900">
-              https://semestaislam.id/discovery?ref=AMBASSADOR_USER_KEY
+              {`${siteUrl}/discovery?ref=AMBASSADOR_USER_KEY`}
             </div>
             <button
               type="button"

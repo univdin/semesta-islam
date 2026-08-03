@@ -82,8 +82,24 @@ const ID = {
   EV_EDU4_1: 'f2000000-0000-0000-0000-000000000001',
   CL_EDU4_1: 'f3000000-0000-0000-0000-000000000401',
   CL_EDU4_2: 'f3000000-0000-0000-0000-000000000402',
+  CL_EDU4_3: 'f3000000-0000-0000-0000-000000000403',
+  CL_EDU4_4: 'f3000000-0000-0000-0000-000000000404',
   CL_EDU1_1: 'f3000000-0000-0000-0000-000000000101',
   CL_EDU2_1: 'f3000000-0000-0000-0000-000000000201',
+  // Topics (EXP-03 taxonomy) — derived from course categories + verified claims
+  T_TAHSIN: 'e3000000-0000-0000-0000-000000000001',
+  T_FIQH: 'e3000000-0000-0000-0000-000000000002',
+  T_HADITS: 'e3000000-0000-0000-0000-000000000003',
+  T_AQIDAH: 'e3000000-0000-0000-0000-000000000004',
+  T_BAHASA_ARAB: 'e3000000-0000-0000-0000-000000000005',
+  T_KITAB_KUNING: 'e3000000-0000-0000-0000-000000000006',
+  T_SIROH: 'e3000000-0000-0000-0000-000000000007',
+  // Topic aliases
+  TA_TAHSIN_TAJWID: 'e4000000-0000-0000-0000-000000000001',
+  TA_FIQH_MUAMALAH: 'e4000000-0000-0000-0000-000000000002',
+  // DigitalProfiles (Phase H)
+  DP_EDU4_YT: 'e5000000-0000-0000-0000-000000000001',
+  DP_EDU4_WEB: 'e5000000-0000-0000-0000-000000000002',
   // Organizations (WAVE 0)
   ORG_1: 'b0000000-0000-0000-0000-000000000001',
   ORG_2: 'b0000000-0000-0000-0000-000000000002',
@@ -96,6 +112,21 @@ const ID = {
   U_ORGSTAFF: '10000000-0000-0000-0000-000000000801',
   P_ORGADMIN: '20000000-0000-0000-0000-000000000701',
   P_ORGSTAFF: '20000000-0000-0000-0000-000000000801',
+  // Community Knowledge Domain (Slice E2) — deterministic demo fixtures.
+  // Community signal only: never VERIFIED knowledge. See docs/03_ERD.md §54.
+  Q_TAHSIN: 'd3000000-0000-0000-0000-000000000001',
+  Q_FIQH: 'd3000000-0000-0000-0000-000000000002',
+  A_TAHSIN_1: 'd4000000-0000-0000-0000-000000000001',
+  A_TAHSIN_2: 'd4000000-0000-0000-0000-000000000002',
+  A_FIQH_1: 'd4000000-0000-0000-0000-000000000003',
+  CMT_EDU4_1: 'd0000000-0000-0000-0000-000000000001',
+  CMT_EDU4_1_REPLY: 'd0000000-0000-0000-0000-000000000002',
+  CMT_TOPIC_1: 'd0000000-0000-0000-0000-000000000003',
+  CMT_HIDDEN: 'd0000000-0000-0000-0000-000000000004',
+  V_AGREE: 'd1000000-0000-0000-0000-000000000001',
+  V_HELPFUL: 'd1000000-0000-0000-0000-000000000002',
+  REP_1: 'd2000000-0000-0000-0000-000000000001',
+  XP_ANS1: 'd5000000-0000-0000-0000-000000000001',
 };
 
 const SHA_HASH = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
@@ -128,6 +159,15 @@ async function main() {
   await prisma.organizationMembership.deleteMany();
   await prisma.organization.deleteMany();
   await prisma.reviewRating.deleteMany();
+  await prisma.digitalProfile.deleteMany();
+  await prisma.platformSetting.deleteMany();
+  await prisma.topicAlias.deleteMany();
+  await prisma.topic.deleteMany();
+  await prisma.communityReport.deleteMany();
+  await prisma.communityVote.deleteMany();
+  await prisma.communityAnswer.deleteMany();
+  await prisma.communityQuestion.deleteMany();
+  await prisma.communityComment.deleteMany();
   await prisma.knowledgeClaim.deleteMany();
   await prisma.evidence.deleteMany();
   await prisma.source.deleteMany();
@@ -203,10 +243,10 @@ async function main() {
   // ---- EducatorProfiles ----
   await prisma.educatorProfile.createMany({
     data: [
-      { id: ID.E_EDU1, userId: ID.U_EDU1, titlePrefix: 'Ustadz', titleSuffix: 'Pakar Fiqh Muamalah & Tahsin Sanad', institutionName: 'Al-Azhar Cairo Alumni / IIQ Jakarta', teachingMethod: 'ONLINE_ZOOM', ratingAverage: 4.9, reviewsCount: 128, verifiedStatus: 'SUBMITTED' },
-      { id: ID.E_EDU2, userId: ID.U_EDU2, titlePrefix: 'Ustadzah', titleSuffix: "Pembimbing Al-Qur'an Anak & Keluarga", institutionName: "Pesantren Tahfidz Al-Qur'an Bandung", teachingMethod: 'PRIVATE_HOME', ratingAverage: 5.0, reviewsCount: 94, verifiedStatus: 'UNDER_REVIEW_LAJNAH' },
-      { id: ID.E_EDU3, userId: ID.U_EDU3, titlePrefix: 'Ustadz', titleSuffix: 'Pengajar Bahasa Arab & Nahwu Sharaf', institutionName: 'LIPIA Jakarta / Universitas Islam Madinah', teachingMethod: 'ONLINE_ZOOM', ratingAverage: 4.8, reviewsCount: 76, verifiedStatus: 'REJECTED' },
-      { id: ID.E_EDU4, userId: ID.U_EDU4, titlePrefix: 'Ustadz', titleSuffix: 'Pengajar Tajwid & Hafalan Juz Amma', institutionName: 'UIN Sumatera Utara', teachingMethod: 'GROUP_MAJELIS', ratingAverage: 4.9, reviewsCount: 52, verifiedStatus: 'VERIFIED' },
+      { id: ID.E_EDU1, userId: ID.U_EDU1, titlePrefix: 'Ustadz', titleSuffix: 'Pakar Fiqh Muamalah & Tahsin Sanad', institutionName: 'Al-Azhar Cairo Alumni / IIQ Jakarta', teachingMethod: 'ONLINE_ZOOM', ratingAverage: 4.9, reviewsCount: 128, verifiedStatus: 'SUBMITTED', slug: 'ahmad-al-hafiz' },
+      { id: ID.E_EDU2, userId: ID.U_EDU2, titlePrefix: 'Ustadzah', titleSuffix: "Pembimbing Al-Qur'an Anak & Keluarga", institutionName: "Pesantren Tahfidz Al-Qur'an Bandung", teachingMethod: 'PRIVATE_HOME', ratingAverage: 5.0, reviewsCount: 94, verifiedStatus: 'UNDER_REVIEW_LAJNAH', slug: 'fatimah-azzahra' },
+      { id: ID.E_EDU3, userId: ID.U_EDU3, titlePrefix: 'Ustadz', titleSuffix: 'Pengajar Bahasa Arab & Nahwu Sharaf', institutionName: 'LIPIA Jakarta / Universitas Islam Madinah', teachingMethod: 'ONLINE_ZOOM', ratingAverage: 4.8, reviewsCount: 76, verifiedStatus: 'REJECTED', slug: 'muhammad-syarif' },
+      { id: ID.E_EDU4, userId: ID.U_EDU4, titlePrefix: 'Ustadz', titleSuffix: 'Pengajar Tajwid & Hafalan Juz Amma', institutionName: 'UIN Sumatera Utara', teachingMethod: 'GROUP_MAJELIS', ratingAverage: 4.9, reviewsCount: 52, verifiedStatus: 'VERIFIED', slug: 'abdullah-hasibuan' },
     ],
   });
 
@@ -423,7 +463,7 @@ async function main() {
       {
         id: ID.SRC_EDU4_1,
         title: 'Profil publik pendidik SEMESTA ISLAM (Demo)',
-        url: `https://ilmify.id/educator/${ID.E_EDU4}`,
+        url: `https://ilmify.id/educator/abdullah-hasibuan`,
         publisher: 'SEMESTA ISLAM Demo',
       },
     ],
@@ -434,9 +474,28 @@ async function main() {
       {
         id: ID.EV_EDU4_1,
         sourceId: ID.SRC_EDU4_1,
-        url: `https://ilmify.id/educator/${ID.E_EDU4}`,
+        url: `https://ilmify.id/educator/abdullah-hasibuan`,
         description: 'Data profil yang ditampilkan pada direktori publik (demo)',
       },
+    ],
+  });
+
+  await prisma.topic.createMany({
+    data: [
+      { id: ID.T_TAHSIN, name: "Tahsin & Qira'ah", slug: 'tahsin-qiraah', description: "Perbaikan bacaan Al-Qur'an (tahsin), ilmu tajwid, dan sanad qira'ah bagi pendidik dan pembelajar.", parentId: null, status: 'PUBLISHED', sortOrder: 1 },
+      { id: ID.T_FIQH, name: 'Fiqh & Muamalah', slug: 'fiqh-muamalah', description: 'Kajian fiqh ibadah dan muamalah kontemporer, dari fikih klasik hingga isu ekonomi modern.', parentId: null, status: 'PUBLISHED', sortOrder: 2 },
+      { id: ID.T_HADITS, name: 'Hadits & Sanad', slug: 'hadits-sanad', description: 'Studi hadits, ilmu musthalah, dan sanad keilmuan Islam.', parentId: null, status: 'PUBLISHED', sortOrder: 3 },
+      { id: ID.T_AQIDAH, name: 'Aqidah & Akhlaq', slug: 'aqidah-akhlaq', description: 'Penguatan aqidah dan akhlaq keluarga serta masyarakat.', parentId: null, status: 'PUBLISHED', sortOrder: 4 },
+      { id: ID.T_BAHASA_ARAB, name: 'Bahasa Arab', slug: 'bahasa-arab', description: 'Pembelajaran bahasa Arab dan ilmu nahwu sharaf untuk membaca kitab.', parentId: null, status: 'PUBLISHED', sortOrder: 5 },
+      { id: ID.T_KITAB_KUNING, name: 'Kajian Kitab Kuning', slug: 'kajian-kitab-kuning', description: 'Pembacaan dan pemahaman kitab kuning secara bersama.', parentId: null, status: 'PUBLISHED', sortOrder: 6 },
+      { id: ID.T_SIROH, name: 'Siroh Nabawiyah', slug: 'siroh-nabawiyah', description: 'Sejarah dan teladan kehidupan Rasulullah SAW.', parentId: null, status: 'PUBLISHED', sortOrder: 7 },
+    ],
+  });
+
+  await prisma.topicAlias.createMany({
+    data: [
+      { id: ID.TA_TAHSIN_TAJWID, topicId: ID.T_TAHSIN, alias: 'tajwid' },
+      { id: ID.TA_FIQH_MUAMALAH, topicId: ID.T_FIQH, alias: 'fiqh' },
     ],
   });
 
@@ -447,6 +506,7 @@ async function main() {
         educatorId: ID.E_EDU4,
         predicate: 'SPECIALIZES_IN',
         objectText: "Tajwid, Tahfidz Juz Amma, dan pembelajaran Al-Qur'an untuk pemula",
+        topicId: ID.T_TAHSIN,
         status: 'VERIFIED',
         verifiedById: ID.U_LAJNAH,
         verifiedAt: new Date(),
@@ -459,6 +519,28 @@ async function main() {
         predicate: 'GRADUATED_FROM',
         objectText: 'UIN Sumatera Utara',
         status: 'UNVERIFIED',
+      },
+      {
+        id: ID.CL_EDU4_3,
+        educatorId: ID.E_EDU4,
+        predicate: 'GRADUATED_FROM',
+        objectText: 'UIN Sumatera Utara',
+        status: 'VERIFIED',
+        verifiedById: ID.U_LAJNAH,
+        verifiedAt: new Date(),
+        sourceId: ID.SRC_EDU4_1,
+        evidenceId: ID.EV_EDU4_1,
+      },
+      {
+        id: ID.CL_EDU4_4,
+        educatorId: ID.E_EDU4,
+        predicate: 'AFFILIATED_WITH',
+        objectText: 'Majelis Ta\'lim Nurul Hidayah (Demo)',
+        status: 'VERIFIED',
+        verifiedById: ID.U_LAJNAH,
+        verifiedAt: new Date(),
+        sourceId: ID.SRC_EDU4_1,
+        evidenceId: ID.EV_EDU4_1,
       },
       {
         id: ID.CL_EDU1_1,
@@ -475,6 +557,131 @@ async function main() {
         status: 'DRAFT',
       },
     ],
+  });
+
+  await prisma.digitalProfile.createMany({
+    data: [
+      {
+        id: ID.DP_EDU4_YT,
+        educatorId: ID.E_EDU4,
+        platform: 'YOUTUBE',
+        url: 'https://www.youtube.com/@abdullahhasibuan',
+        handle: '@abdullahhasibuan',
+        status: 'VERIFIED',
+        verifiedById: ID.U_LAJNAH,
+        verifiedAt: new Date(),
+      },
+      {
+        id: ID.DP_EDU4_WEB,
+        educatorId: ID.E_EDU4,
+        platform: 'WEBSITE',
+        url: 'https://ustadzabdullah.example.com',
+        handle: null,
+        status: 'SELF_DECLARED',
+      },
+    ],
+  });
+
+  await prisma.platformSetting.createMany({
+    data: [
+      { key: 'public_directory_enabled', value: 'true' },
+      { key: 'public_topics_enabled', value: 'true' },
+      { key: 'maintenance_mode', value: 'false' },
+      { key: 'search_console_enabled', value: 'false' },
+      { key: 'entity_publishing_policy', value: 'verified-only' },
+    ],
+  });
+
+  // ---- Community Knowledge Domain (Slice E2 — demo fixtures) ----
+  // Community signal only: questions, answers, votes, reports, comments.
+  // These rows are NEVER VERIFIED knowledge; the accepted answer below records
+  // the matching idempotent COMMUNITY_KHIDMAH XP entry exactly as the service
+  // would (eventId + idempotencyKey reproduced from src/lib/community/qa.ts).
+  // Community PlatformSettings are intentionally NOT seeded: absent keys fall
+  // back to defaults (features ON, QA indexing OFF, anonymous OFF).
+
+  await prisma.communityQuestion.createMany({
+    data: [
+      {
+        id: ID.Q_TAHSIN, authorId: ID.U_LEARNER, topicId: ID.T_TAHSIN, educatorId: ID.E_EDU4,
+        title: 'Metode talaqqi untuk pemula dewasa?',
+        body: 'Assalamualaikum, saya baru mulai belajar tajwid di usia dewasa. Metode talaqqi seperti apa yang paling disarankan untuk pemula, dan berapa lama idealnya satu sesi?',
+      },
+      {
+        id: ID.Q_FIQH, authorId: ID.U_LEARNER, topicId: ID.T_FIQH, educatorId: null,
+        title: 'Jual beli kredit dalam fiqh muamalah',
+        body: 'Bagaimana hukum jual beli secara kredit (cicilan) dalam fiqh muamalah kontemporer? Apakah ada perbedaan pendapat yang perlu diketahui pembelajar?',
+      },
+    ],
+  });
+
+  await prisma.communityAnswer.createMany({
+    data: [
+      {
+        id: ID.A_TAHSIN_1, questionId: ID.Q_TAHSIN, authorId: ID.U_EDU4,
+        body: 'Waalaikumsalam. Untuk pemula dewasa saya sarankan talaqqi 2-3 kali pekan, 30-45 menit per sesi, fokus pada makhraj dan satu hukum tajwid per pertemuan agar tidak memberatkan.',
+        acceptedAt: new Date(), acceptedById: ID.U_LEARNER,
+      },
+      {
+        id: ID.A_TAHSIN_2, questionId: ID.Q_TAHSIN, authorId: ID.U_EDU1,
+        body: 'Saya setuju dengan pendekatan bertahap. Tambahan: rekam bacaan Anda dan bandingkan dengan murottal sanad yang sama untuk melatih pendengaran.',
+      },
+      {
+        id: ID.A_FIQH_1, questionId: ID.Q_FIQH, authorId: ID.U_EDU1,
+        body: 'Mayoritas ulama membolehkan jual beli kredit (bai\' al-taqsith) dengan syarat harga tetap di awal dan tidak ada denda riba atas keterlambatan. Ada perbedaan rinci, pelajari dulu kaidahnya secara bertahap.',
+      },
+    ],
+  });
+
+  await prisma.communityComment.createMany({
+    data: [
+      {
+        id: ID.CMT_EDU4_1, authorId: ID.U_LEARNER, targetType: 'EDUCATOR_PROFILE', targetId: ID.E_EDU4,
+        body: 'Jazakallahu khair, penjelasan tentang makhraj hurufnya sangat mudah diikuti untuk pemula.',
+      },
+      {
+        id: ID.CMT_EDU4_1_REPLY, authorId: ID.U_EDU4, targetType: 'COMMENT', targetId: ID.CMT_EDU4_1, parentId: ID.CMT_EDU4_1,
+        body: 'Wa iyyakum. Silakan tanyakan bagian yang masih kurang jelas di kelas.',
+      },
+      {
+        id: ID.CMT_TOPIC_1, authorId: ID.U_LEARNER, targetType: 'TOPIC', targetId: ID.T_TAHSIN,
+        body: 'Apakah ada sesi latihan pendengaran (tamyiz) yang dibuka untuk umum?',
+      },
+      {
+        id: ID.CMT_HIDDEN, authorId: ID.U_EDU2, targetType: 'EDUCATOR_PROFILE', targetId: ID.E_EDU1,
+        status: 'HIDDEN', moderatedById: ID.U_FOUNDER, moderatedAt: new Date(),
+        body: 'Contoh komentar yang ditandai moderasi (soft-hidden, dipertahankan untuk audit).',
+      },
+    ],
+  });
+
+  await prisma.communityVote.createMany({
+    data: [
+      { id: ID.V_AGREE, voterId: ID.U_LEARNER, targetType: 'ANSWER', targetId: ID.A_TAHSIN_1, voteType: 'AGREE' },
+      { id: ID.V_HELPFUL, voterId: ID.U_EDU1, targetType: 'ANSWER', targetId: ID.A_TAHSIN_1, voteType: 'HELPFUL' },
+    ],
+  });
+
+  await prisma.communityReport.create({
+    data: {
+      id: ID.REP_1, reporterId: ID.U_EDU1, targetType: 'COMMENT', targetId: ID.CMT_TOPIC_1,
+      reason: 'Pertanyaan ini lebih cocok disampaikan melalui forum tanya jawab.',
+    },
+  });
+
+  // Accepted answer XP entry — reproduced verbatim from awardAcceptedAnswerXp
+  // (src/lib/community/qa.ts) so re-accept/unaccept in the demo stays idempotent.
+  await prisma.xpLedger.create({
+    data: {
+      id: ID.XP_ANS1,
+      userId: ID.U_EDU4,
+      eventId: `answer-accepted-${ID.A_TAHSIN_1}`,
+      idempotencyKey: `xp-${ID.U_EDU4}-answer-accepted-${ID.A_TAHSIN_1}-COMMUNITY_KHIDMAH`,
+      amount: 50,
+      actionType: 'COMMUNITY_KHIDMAH',
+      source: 'COMMUNITY_QA',
+      reference: ID.Q_TAHSIN,
+    },
   });
 
   console.log('Seed complete. Deterministic SEMESTA ISLAM dataset loaded.');

@@ -39,8 +39,17 @@ export function getPaymentProvider(): PaymentGatewayAdapter {
     case 'xendit':
       throw new PaymentProviderError('PAYMENT_PROVIDER=xendit is not configured in this slice. Add the XenditPaymentGatewayAdapter boundary before enabling.');
     case 'mock':
-    default:
+      // Fail closed in production: the mock provider must never silently
+      // activate. It is permitted only when an operator has explicitly set a
+      // PAYMENT_MOCK_SECRET (mirrors the webhook-route production gate).
+      if (env.NODE_ENV === 'production' && !process.env.PAYMENT_MOCK_SECRET) {
+        throw new PaymentProviderError(
+          'Mock payment provider is disabled in production without an explicit PAYMENT_MOCK_SECRET. Configure a real provider or consciously enable mock.'
+        );
+      }
       return new MockPaymentGatewayAdapter();
+    default:
+      throw new PaymentProviderError(`Unknown PAYMENT_PROVIDER: ${env.PAYMENT_PROVIDER}`);
   }
 }
 

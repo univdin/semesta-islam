@@ -40,6 +40,7 @@ export type LedgerEntryType =
 
 export interface EducatorSummary {
   id: string;
+  slug: string;
   name: string;
   title: string;
   location: string;

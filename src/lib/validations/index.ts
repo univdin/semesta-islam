@@ -36,12 +36,13 @@ export const ReferralGenerateSchema = z.object({
 });
 
 export const DirectoryFilterSchema = z.object({
-  category: z.string().optional(),
-  method: z.enum(['all', 'ONLINE_ZOOM', 'PRIVATE_HOME', 'GROUP_MAJELIS']).optional(),
-  query: z.string().optional(),
-  sort: z.enum(['rating', 'reviews']).optional(),
-  page: z.number().int().positive().optional().default(1),
-  limit: z.number().int().positive().max(50).optional().default(10)
+  q: z.string().max(100, 'Query max 100 characters').optional(),
+  expertise: z.string().max(50, 'Expertise max 50 characters').optional(),
+  location: z.string().max(50, 'Location max 50 characters').optional(),
+  method: z.enum(['all', 'ONLINE_ZOOM', 'PRIVATE_HOME', 'GROUP_MAJELIS']).optional().default('all'),
+  sort: z.enum(['rating', 'reviews']).optional().default('rating'),
+  page: z.coerce.number().int().positive().optional().default(1),
+  limit: z.coerce.number().int().positive().max(50).optional().default(9)
 });
 
 // Knowledge Domain (Slice A)
@@ -77,4 +78,37 @@ export const KnowledgeSourceCreateSchema = z.object({
   url: z.string().url().optional().or(z.literal('')),
   publisher: z.string().max(200).optional().or(z.literal('')),
   publishedAt: z.string().datetime().optional().or(z.literal('')),
+});
+
+// Digital Identity Domain (Phase H)
+
+export const DigitalPlatformSchema = z.enum([
+  'WEBSITE',
+  'YOUTUBE',
+  'INSTAGRAM',
+  'TIKTOK',
+  'X',
+  'FACEBOOK',
+  'OTHER',
+]);
+
+export const DigitalProfileStatusSchema = z.enum([
+  'SELF_DECLARED',
+  'SUBMITTED',
+  'UNDER_REVIEW',
+  'VERIFIED',
+  'REJECTED',
+]);
+
+export const DigitalProfileCreateSchema = z.object({
+  educatorId: z.string().uuid({ message: 'Invalid Educator UUID' }),
+  platform: DigitalPlatformSchema,
+  url: z.string().url('Invalid profile URL').max(500),
+  handle: z.string().min(2).max(120).optional(),
+});
+
+export const DigitalProfileStatusUpdateSchema = z.object({
+  profileId: z.string().uuid({ message: 'Invalid profile UUID' }),
+  status: DigitalProfileStatusSchema,
+  note: z.string().max(500).optional(),
 });

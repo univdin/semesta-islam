@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ShieldCheck, AlertCircle, CheckCircle2, Clock, RotateCcw, Loader2, Info, UserX } from 'lucide-react';
+import { useToast } from '@/components/ui/useToast';
 
 interface VerificationStatusData {
   requestId: string;
@@ -28,6 +29,7 @@ export function EducatorVerificationClient({
   demoFallback,
   identityEmail,
 }: EducatorVerificationClientProps) {
+  const toast = useToast();
   const [data, setData] = useState<VerificationStatusData | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -98,15 +100,21 @@ export function EducatorVerificationClient({
       const body = await res.json();
 
       if (!res.ok || !body.success) {
-        setActionMessage({ kind: 'err', text: body.message || 'Gagal mengirim ulang berkas.' });
+        const errText = body.message || 'Gagal mengirim ulang berkas.';
+        setActionMessage({ kind: 'err', text: errText });
+        toast.error('Pengiriman Ulang Gagal', errText);
         return;
       }
 
-      setActionMessage({ kind: 'ok', text: 'Berkas berhasil dikirim ulang ke antrean Lajnah.' });
+      const okText = 'Berkas berhasil dikirim ulang ke antrean Sekretariat Lajnah.';
+      setActionMessage({ kind: 'ok', text: okText });
+      toast.success('Bismillah, Berkas Berhasil Dikirim Ulang!', okText);
       setShowResubmitForm(false);
       await fetchStatus();
     } catch {
-      setActionMessage({ kind: 'err', text: 'Tidak dapat terhubung ke server.' });
+      const errText = 'Tidak dapat terhubung ke server.';
+      setActionMessage({ kind: 'err', text: errText });
+      toast.error('Gangguan Koneksi', errText);
     } finally {
       setResubmitting(false);
     }

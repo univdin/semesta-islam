@@ -1,10 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import {
   ShieldCheck,
-  Star,
   MapPin,
   Award,
   BookOpen,
@@ -14,15 +13,24 @@ import {
   XCircle,
   Info,
   FileBadge,
+  GraduationCap,
+  Building2,
+  Users,
+  ChevronRight,
+  Globe,
 } from 'lucide-react';
-import { getEducatorDetail } from '@/lib/educators/service';
+import { getEducatorDetail, getEducatorBySlug, getRelatedEducators } from '@/lib/educators/service';
+import { resolveEducatorSegment } from '@/lib/educators/resolve';
 import { getKnowledgeOverview, listClaimsForEducator } from '@/lib/knowledge/service';
+import { resolveTopicBySlugOrAlias } from '@/lib/topics/service';
+import { listVerifiedProfileUrls } from '@/lib/identity/service';
 import { isDemoMode } from '@/lib/auth/session';
+import { CommunitySection } from '@/components/community/CommunitySection';
 import type { VerificationStatus } from '@/types';
 import type { ClaimPredicate } from '@prisma/client';
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 export const dynamic = 'force-dynamic';
@@ -30,15 +38,20 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { id } = await params;
-  const educator = await getEducatorDetail(id);
+  const { slug } = await params;
+  const resolution = await resolveEducatorSegment(slug, {
+    bySlug: getEducatorBySlug,
+    byId: getEducatorDetail,
+  });
+  const educator = resolution.educator;
   if (!educator) {
     return { title: 'Pendidik Tidak Ditemukan — SEMESTA ISLAM' };
   }
+  const canonicalSlug = resolution.matchedBy === 'uuid' ? educator.slug : slug;
   return {
     title: `${educator.name} — Pendidik ${educator.verified ? 'Terverifikasi' : ''} SEMESTA ISLAM`,
     description: `${educator.name}${educator.title ? `, ${educator.title}` : ''}${educator.location ? ` (${educator.location})` : ''}. Pelajari kredensial, sanad, dan profil pendidik di SEMESTA ISLAM.`,
-    alternates: { canonical: `/educator/${id}` },
+    alternates: { canonical: `/educator/${canonicalSlug}` },
     openGraph: {
       title: `${educator.name} — SEMESTA ISLAM`,
       description:
@@ -139,18 +152,50 @@ function VerificationBadge({ status }: { status: VerificationStatus }) {
 }
 
 export default async function EducatorProfilePage({ params }: PageProps) {
-  const resolvedParams = await params;
-  const educator = await getEducatorDetail(resolvedParams.id);
+  const { slug } = await params;
+  const resolution = await resolveEducatorSegment(slug, {
+    bySlug: getEducatorBySlug,
+    byId: getEducatorDetail,
+  });
+  const educator = resolution.educator;
   const demoMode = isDemoMode();
 
   if (!educator) {
     notFound();
   }
 
-  const [verifiedClaims, knowledgeOverview] = await Promise.all([
-    listClaimsForEducator(resolvedParams.id, { onlyVerified: true }),
-    getKnowledgeOverview(resolvedParams.id),
+  if (resolution.matchedBy === 'uuid') {
+    const canonicalSlug = educator.slug || slug;
+    permanentRedirect(`/educator/${canonicalSlug}`);
+  }
+
+  const [verifiedClaims, knowledgeOverview, relatedEducators] = await Promise.all([
+    listClaimsForEducator(educator.id, { onlyVerified: true }),
+    getKnowledgeOverview(educator.id),
+    getRelatedEducators(educator.id, 6),
   ]);
+  const sameAsUrls = await listVerifiedProfileUrls(educator.id);
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ilmify.id';
+  const profileUrl = `${siteUrl}/educator/${slug}`;
+  const topicNames = Array.from(
+    new Set([
+      ...educator.expertise,
+      ...verifiedClaims
+        .filter((c) => c.predicate === 'SPECIALIZES_IN')
+        .map((c) => c.objectText),
+    ])
+  );
+  const topicSlugs = await Promise.all(
+    topicNames.map(async (name) => {
+      const resolved = await resolveTopicBySlugOrAlias(name);
+      return resolved ? { name, slug: resolved.slug } : { name, slug: null };
+    })
+  );
+  const educationClaims = verifiedClaims.filter((c) => c.predicate === 'GRADUATED_FROM');
+  const affiliationClaims = verifiedClaims.filter((c) => c.predicate === 'AFFILIATED_WITH');
+  const hasInstitution =
+    educator.institution && !affiliationClaims.some((c) => c.objectText === educator.institution);
 
   return (
     <main className="main-content pt-20">
@@ -165,7 +210,9 @@ export default async function EducatorProfilePage({ params }: PageProps) {
             address: educator.location
               ? { '@type': 'PostalAddress', addressLocality: educator.location, addressCountry: 'ID' }
               : undefined,
-            url: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ilmify.id'}/educator/${resolvedParams.id}`,
+            url: profileUrl,
+            sameAs: sameAsUrls.length > 0 ? sameAsUrls : undefined,
+            knowsAbout: topicNames,
             aggregateRating: educator.reviewsCount > 0
               ? {
                   '@type': 'AggregateRating',
@@ -176,7 +223,51 @@ export default async function EducatorProfilePage({ params }: PageProps) {
           }),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Beranda', item: siteUrl },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Direktori Pendidik',
+                item: `${siteUrl}/directory`,
+              },
+              { '@type': 'ListItem', position: 3, name: educator.name, item: profileUrl },
+            ],
+          }),
+        }}
+      />
       <div className="container py-8 max-w-5xl">
+        {/* Breadcrumbs */}
+        <nav aria-label="Breadcrumb" className="mb-4">
+          <ol className="flex flex-wrap items-center gap-1 text-xs text-gray-500">
+            <li>
+              <Link href="/" className="hover:text-emerald-800">
+                Beranda
+              </Link>
+            </li>
+            <li className="flex items-center">
+              <ChevronRight className="w-3 h-3 text-gray-300" />
+            </li>
+            <li>
+              <Link href="/directory" className="hover:text-emerald-800">
+                Direktori Pendidik
+              </Link>
+            </li>
+            <li className="flex items-center">
+              <ChevronRight className="w-3 h-3 text-gray-300" />
+            </li>
+            <li className="text-gray-700 font-medium truncate max-w-[220px]" aria-current="page">
+              {educator.name}
+            </li>
+          </ol>
+        </nav>
+
         {demoMode && (
           <div className="mb-5 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-900 flex items-start gap-2">
             <Info className="w-4 h-4 shrink-0 mt-0.5 text-amber-700" />
@@ -223,6 +314,24 @@ export default async function EducatorProfilePage({ params }: PageProps) {
                 </span>
 
               </div>
+
+              {topicNames.length > 0 && (
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mt-4">
+                  {topicSlugs.map(({ name, slug: topicSlug }) => (
+                    <Link
+                      key={name}
+                      href={
+                        topicSlug
+                          ? `/topics/${topicSlug}`
+                          : `/directory?expertise=${encodeURIComponent(name)}`
+                      }
+                      className="inline-flex items-center gap-1 text-xs font-medium px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition-colors"
+                    >
+                      {name}
+                    </Link>
+                  ))}
+                </div>
+              )}
 
               <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
                 <Link
@@ -336,6 +445,88 @@ export default async function EducatorProfilePage({ params }: PageProps) {
                 </p>
               )}
             </section>
+
+            {/* Education (verified GRADUATED_FROM claims) */}
+            {educationClaims.length > 0 && (
+              <section className="glass-panel p-6 rounded-2xl">
+                <h2 className="text-lg font-bold text-[#0F3D2E] mb-1 flex items-center gap-2">
+                  <GraduationCap className="w-5 h-5 text-[#D4AF37]" /> Pendidikan
+                </h2>
+                <p className="text-xs text-gray-500 mb-4">
+                  Riwayat pendidikan yang tervalidasi dengan sumber. Hanya klaim terverifikasi yang
+                  ditampilkan.
+                </p>
+                <ul className="space-y-3">
+                  {educationClaims.map((claim) => (
+                    <li
+                      key={claim.id}
+                      className="flex items-start gap-3 bg-white/60 p-4 rounded-xl border border-emerald-900/10"
+                    >
+                      <div className="bg-[#E6F4ED] text-[#0F3D2E] p-1.5 rounded-lg shrink-0">
+                        <GraduationCap className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-gray-800">{claim.objectText}</p>
+                        <p className="mt-1 text-xs text-gray-500">
+                          <span className="inline-flex items-center gap-1 text-emerald-700">
+                            <CheckCircle2 className="w-3 h-3" /> Terverifikasi
+                          </span>
+                          {claim.verifiedByName && (
+                            <span> · oleh {claim.verifiedByName}</span>
+                          )}
+                          {claim.verifiedAt && <span> · {formatDate(claim.verifiedAt)}</span>}
+                          {claim.source?.title && <span> · {claim.source.title}</span>}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {/* Affiliations (verified AFFILIATED_WITH claims) */}
+            {(affiliationClaims.length > 0 || hasInstitution) && (
+              <section className="glass-panel p-6 rounded-2xl">
+                <h2 className="text-lg font-bold text-[#0F3D2E] mb-1 flex items-center gap-2">
+                  <Building2 className="w-5 h-5 text-[#D4AF37]" /> Afiliasi & Kelembagaan
+                </h2>
+                <p className="text-xs text-gray-500 mb-4">
+                  Lembaga atau organisasi terkait yang tervalidasi dengan sumber.
+                </p>
+                <ul className="space-y-3">
+                  {affiliationClaims.map((claim) => (
+                    <li
+                      key={claim.id}
+                      className="flex items-start gap-3 bg-white/60 p-4 rounded-xl border border-emerald-900/10"
+                    >
+                      <div className="bg-[#E6F4ED] text-[#0F3D2E] p-1.5 rounded-lg shrink-0">
+                        <Building2 className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-gray-800">{claim.objectText}</p>
+                        <p className="mt-1 text-xs text-gray-500">
+                          <span className="inline-flex items-center gap-1 text-emerald-700">
+                            <CheckCircle2 className="w-3 h-3" /> Terverifikasi
+                          </span>
+                          {claim.verifiedByName && (
+                            <span> · oleh {claim.verifiedByName}</span>
+                          )}
+                          {claim.source?.title && <span> · {claim.source.title}</span>}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                  {hasInstitution && (
+                    <li className="flex items-start gap-3 bg-white/60 p-4 rounded-xl border border-emerald-900/10">
+                      <div className="bg-[#E6F4ED] text-[#0F3D2E] p-1.5 rounded-lg shrink-0">
+                        <Building2 className="w-4 h-4" />
+                      </div>
+                      <p className="text-sm font-semibold text-gray-800">{educator.institution}</p>
+                    </li>
+                  )}
+                </ul>
+              </section>
+            )}
 
             {/* Credential */}
             <section className="glass-panel p-6 rounded-2xl">
@@ -464,6 +655,71 @@ export default async function EducatorProfilePage({ params }: PageProps) {
               )}
             </section>
 
+            {/* Related Educators (deterministic shared-signal projection) */}
+            {relatedEducators.length > 0 && (
+              <section className="glass-panel p-6 rounded-2xl">
+                <h2 className="text-base font-bold text-[#0F3D2E] mb-1 flex items-center gap-2">
+                  <Users className="w-4 h-4 text-[#D4AF37]" /> Pendidik Terkait
+                </h2>
+                <p className="text-xs text-gray-500 mb-4">
+                  Berdasarkan kesamaan bidang, topik, atau kelembagaan. Bukan pernyataan afiliasi
+                  langsung.
+                </p>
+                <ul className="space-y-3">
+                  {relatedEducators.map((rel) => (
+                    <li key={rel.id}>
+                      <Link
+                        href={`/educator/${rel.slug}`}
+                        className="flex items-center gap-3 p-2 -m-2 rounded-xl hover:bg-emerald-50 transition-colors"
+                      >
+                        {rel.avatar && (
+                          <img
+                            src={rel.avatar}
+                            alt={rel.name}
+                            className="w-10 h-10 rounded-full object-cover border border-gray-100"
+                          />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-800 truncate">
+                            {rel.name}
+                          </p>
+                          <p className="text-[11px] text-gray-500 leading-snug">{rel.reason}</p>
+                        </div>
+                        {rel.verified && (
+                          <span className="shrink-0 text-emerald-700">
+                            <ShieldCheck className="w-4 h-4" />
+                          </span>
+                        )}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {/* Verified digital profiles */}
+            {sameAsUrls.length > 0 && (
+              <section className="glass-panel p-6 rounded-2xl">
+                <h2 className="text-base font-bold text-[#0F3D2E] mb-3 flex items-center gap-2">
+                  <Globe className="w-5 h-5 text-[#D4AF37]" /> Profil Digital Terverifikasi
+                </h2>
+                <ul className="space-y-2">
+                  {sameAsUrls.map((url) => (
+                    <li key={url}>
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-emerald-800 hover:text-emerald-600 break-all"
+                      >
+                        {url}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
             {/* Booking CTA */}
             <section className="glass-panel p-6 rounded-2xl bg-[#0F3D2E] border-[#0F3D2E]">
               <h2 className="text-base font-bold text-white mb-2">Siap Mengajukan Sesi?</h2>
@@ -478,6 +734,14 @@ export default async function EducatorProfilePage({ params }: PageProps) {
               </Link>
             </section>
           </div>
+        </div>
+
+        <div className="mt-8">
+          <CommunitySection
+            targetType="EDUCATOR_PROFILE"
+            targetId={educator.id}
+            context={{ educatorId: educator.id }}
+          />
         </div>
       </div>
     </main>

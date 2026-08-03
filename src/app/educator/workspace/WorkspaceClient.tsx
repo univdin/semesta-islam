@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import type { BookingStatus, LearningMethod } from '@/types';
 import type { EducatorBookingItem } from '@/lib/bookings/service';
+import { useToast } from '@/components/ui/useToast';
 
 interface WorkspaceClientProps {
   identityEmail: string;
@@ -56,6 +57,7 @@ function formatDate(date: string | Date): string {
 }
 
 export function WorkspaceClient({ identityEmail, initialBookings }: WorkspaceClientProps) {
+  const toast = useToast();
   const [bookings, setBookings] = useState<EducatorBookingItem[]>(initialBookings);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -74,13 +76,15 @@ export function WorkspaceClient({ identityEmail, initialBookings }: WorkspaceCli
       const body = await res.json();
 
       if (!res.ok || !body.success) {
+        const errorText =
+          body.statusCode === 401
+            ? 'Anda harus masuk sebagai pendidik pemilik pengajuan ini. Pilih identitas demo Educator terlebih dahulu.'
+            : body.message || 'Konfirmasi gagal. Silakan coba lagi.';
         setActionMessage({
           type: 'error',
-          text:
-            body.statusCode === 401
-              ? 'Anda harus masuk sebagai pendidik pemilik pengajuan ini. Pilih identitas demo Educator terlebih dahulu.'
-              : body.message || 'Konfirmasi gagal. Silakan coba lagi.',
+          text: errorText,
         });
+        toast.error('Konfirmasi Gagal', errorText);
         return;
       }
 
@@ -88,8 +92,11 @@ export function WorkspaceClient({ identityEmail, initialBookings }: WorkspaceCli
         prev.map((b) => (b.id === bookingId ? { ...b, status: 'CONFIRMED' as BookingStatus } : b))
       );
       setActionMessage({ type: 'success', text: 'Sesi berhasil dikonfirmasi.' });
+      toast.success('Bismillah, Sesi Berhasil Dikonfirmasi!', 'Pembelajar telah diberitahukan mengenai konfirmasi jadwal ini.');
     } catch {
-      setActionMessage({ type: 'error', text: 'Tidak dapat terhubung ke server. Silakan coba lagi.' });
+      const errorText = 'Tidak dapat terhubung ke server. Silakan coba lagi.';
+      setActionMessage({ type: 'error', text: errorText });
+      toast.error('Gangguan Koneksi', errorText);
     } finally {
       setConfirmingId(null);
     }
