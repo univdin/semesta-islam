@@ -1,0 +1,16 @@
+name: Keep Alive (Supabase)
+
+on:
+  schedule:
+    # Every 3 days at 03:17 UTC — well under Supabase free-tier 7-day idle pause.
+    - cron: "17 3 */3 * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping production health endpoint
+        run: |
+          curl -sf -o /dev/null -w "health: HTTP %{http_code} in %{time_total}s\n" \
+            https://semesta-islam.vercel.app/api/health || exit 1

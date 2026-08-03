@@ -1,0 +1,39 @@
+name: Database Backup (Supabase)
+
+on:
+  schedule:
+    # Weekly on Sunday 03:30 UTC
+    - cron: "30 3 * * 0"
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Dump Supabase database (session pooler)
+        run: |
+          pg_dump \
+            --host=aws-0-ap-northeast-1.pooler.supabase.com \
+            --port=5432 \
+            --username=postgres.dlpzffnqjjuumnljedor \
+            --dbname=postgres \
+            --no-owner --no-acl \
+            --format=custom \
+            --file="semestaislam-$(date +%Y%m%d-%H%M%S).dump"
+        env:
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+
+      - name: Create GitHub Release with backup
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: db-backup-${{ github.run_id }}
+          name: Database Backup ${{ github.run_number }}
+          files: semestaislam-*.dump
+          fail_on_unmatched_files: false
+          generate_release_notes: false
