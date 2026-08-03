@@ -1,19 +1,29 @@
-# Dependencies
+# ─────────────────────────────────────────────────────────────
+# SEMESTA ISLAM / ILMIFY.ID — .gitignore
+# Categories: Dependencies · Build · TypeScript · Environment &
+# Secrets · Supabase · Vercel · Agent/Skills · Sessions · Logs ·
+# Testing & Scratch · Coverage · IDE/OS · DB & Uploads · Docker ·
+# Temp
+# ─────────────────────────────────────────────────────────────
+
+# 1. Dependencies
 node_modules/
 .pnp
 .pnp.js
 
-# Next.js build output
+# 2. Build outputs
 .next/
 out/
 build/
 dist/
+.vercel/
+.vercel
 
-# TypeScript
+# 3. TypeScript
 *.tsbuildinfo
 next-env.d.ts
 
-# Environment variables (NEVER commit real credentials)
+# 4. Environment & Secrets (NEVER commit real credentials)
 .env
 .env.local
 .env.development
@@ -24,36 +34,52 @@ next-env.d.ts
 .env.production.local
 .env.*.local
 
-# Supabase CLI local state
+# 5. Supabase CLI local state
 supabase/.temp/
 supabase/.branches/
 supabase/.git/
 
-# Vercel
-.vercel/
+# 6. Internal research & private documentation (NOT for public GitHub)
+# Canonical specs docs/00_BRD.md..docs/10_ACCEPTANCE_CRITERIA.md stay public.
+docs/audit/
+docs/implementation/
+docs/plan/
+docs/productization/
+docs/contracts/
+docs/integrations/
+docs/architecture/
+docs/archive/
 
-# Skills installer runtime artifacts (lockfile tracked; agent/.claude dirs are transient)
+# 7. Agent / Skills installer runtime artifacts
+# (skills-lock.json is tracked; agent/.claude/.agents dirs are transient)
 agent/
 .claude/
+.agents/
 
-# Session transcripts & private logs (must never be published)
+# 8. Session transcripts & private logs (must never be published)
 session-ses_*.md
 *session*.md
 
-# Logs
+# 9. Logs
 logs/
 *.log
+*.test.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Testing / coverage
+# 10. Testing, debug & scratch scripts (local repro/QA utilities)
+*repro*.mjs
+qa-check*.js
+scratch/
+
+# 11. Test / coverage output
 coverage/
 .nyc_output/
 
-# Editor / OS
+# 12. Editor / OS
 .DS_Store
 Thumbs.db
 .idea/
@@ -61,18 +87,20 @@ Thumbs.db
 *.swp
 *.swo
 
-# Local databases & uploads
+# 13. Local databases & uploads
 *.sqlite
 *.sqlite-journal
 public/uploads/
 storage/
 
-# Docker
+# 14. Docker
 docker-data/
 
-# Temporary files
+# 15. Temporary files & IDE task artifacts
 tmp/
 temp/
 *.tmp
 *.bak
-.vercel
+.opencode/
+.cursor/
+.zed/
