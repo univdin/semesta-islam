@@ -1,9 +1,21 @@
 import React from 'react';
 import type { Metadata } from 'next';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Diagnostik & Rekomendasi Pembelajaran — SEMESTA ISLAM',
   description: 'Temukan jalur pembelajaran Islam yang sesuai dengan kebutuhan keluarga dan tingkat pemahaman Anda.',
+  openGraph: {
+    title: 'Diagnostik Pembelajaran Islam — SEMESTA ISLAM',
+    description: 'Temukan rekomendasi metode, materi, dan pengajar ber-sanad yang tepat untuk Anda & keluarga.',
+    images: [
+      {
+        url: '/og-image.svg',
+        width: 1200,
+        height: 630,
+        alt: 'Diagnostik Pembelajaran Islam — SEMESTA ISLAM',
+      },
+    ],
+  },
 };
 
 export default function DiscoveryPage() {

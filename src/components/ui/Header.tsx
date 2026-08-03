@@ -38,6 +38,7 @@ const PRIMARY_LINKS = [
   { href: '/directory', label: 'Direktori' },
   { href: '/booking', label: 'Ajukan Sesi' },
   { href: '/educator/verification', label: 'Verifikasi' },
+  { href: '/faq', label: 'FAQ' },
 ];
 
 const PREVIEW_LINKS = [

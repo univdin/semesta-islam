@@ -9,6 +9,18 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Masuk | SEMESTA ISLAM',
   description: 'Masuk ke portal Semesta Islam untuk mengelola pembelajaran dan sesi Anda.',
+  openGraph: {
+    title: 'Masuk Portal — SEMESTA ISLAM',
+    description: 'Masuk ke akun Anda di platform SEMESTA ISLAM.',
+    images: [
+      {
+        url: '/og-image.svg',
+        width: 1200,
+        height: 630,
+        alt: 'SEMESTA ISLAM — Portal Masuk',
+      },
+    ],
+  },
 };
 
 export default function LoginPage() {

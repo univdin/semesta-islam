@@ -21,6 +21,19 @@ export const metadata: Metadata = {
   title: 'Developer API Reference — SEMESTA ISLAM',
   description:
     'Referensi API read-only SEMESTA ISLAM yang mencerminkan kondisi implementasi aktual, bukan kontrak aspirasional.',
+  openGraph: {
+    title: 'Developer API Reference — SEMESTA ISLAM',
+    description:
+      'Dokumentasi API, skema, dan status implementasi teknis SEMESTA ISLAM.',
+    images: [
+      {
+        url: '/og-image.svg',
+        width: 1200,
+        height: 630,
+        alt: 'Developer API Reference — SEMESTA ISLAM',
+      },
+    ],
+  },
 };
 
 const NAV = [

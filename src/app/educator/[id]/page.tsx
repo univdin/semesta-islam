@@ -44,6 +44,14 @@ export async function generateMetadata({
           ? `Keahlian: ${educator.expertise.join(', ')}. Profil pendidik Islam di SEMESTA ISLAM.`
           : `Profil pendidik Islam di SEMESTA ISLAM.`,
       type: 'profile',
+      images: [
+        {
+          url: educator.avatar || '/og-image.svg',
+          width: 600,
+          height: 600,
+          alt: `${educator.name} — SEMESTA ISLAM`,
+        },
+      ],
     },
   };
 }
