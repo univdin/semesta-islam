@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.semestaislam.com/schemas/v1/pagination.schema.json",
+  "title": "PaginationMeta",
+  "description": "Standard Pagination & Filter Result Metadata Schema [DOCUMENT VERIFIED]",
+  "type": "object",
+  "properties": {
+    "page": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "totalItems": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "totalPages": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "hasNextPage": {
+      "type": "boolean"
+    },
+    "hasPrevPage": {
+      "type": "boolean"
+    }
+  },
+  "required": ["page", "limit", "totalItems", "totalPages", "hasNextPage", "hasPrevPage"],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "page": 1,
+      "limit": 10,
+      "totalItems": 42,
+      "totalPages": 5,
+      "hasNextPage": true,
+      "hasPrevPage": false
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.semestaislam.com/schemas/v1/error.schema.json",
+  "title": "ErrorEnvelope",
+  "description": "Canonical Error Payload Envelope [REPOSITORY VERIFIED — Decision #3 (2026-08-01): no internal `error` leak; `details` optional]",
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "const": false
+    },
+    "statusCode": {
+      "type": "integer",
+      "description": "HTTP status code (400, 401, 403, 404, 409, 422, 429, 500)"
+    },
+    "message": {
+      "type": "string",
+      "description": "Human-readable summary of the error"
+    },
+    "details": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": { "type": "string" },
+          "issue": { "type": "string" }
+        },
+        "required": ["field", "issue"]
+      },
+      "description": "OPTIONAL validation failure details by field — present only when safe for public/client consumption (Decision #3)"
+    }
+  },
+  "required": ["success", "statusCode", "message"],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "success": false,
+      "statusCode": 400,
+      "message": "Validation failed for verification submission payload",
+      "details": [
+        {
+          "field": "ktpNumber",
+          "issue": "KTP number must be 16 digits"
+        }
+      ]
+    },
+    {
+      "success": false,
+      "statusCode": 500,
+      "message": "Internal server error"
+    }
+  ]
+}

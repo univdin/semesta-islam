@@ -1,0 +1,22 @@
+name: Skill Contribution Proposal
+description: Propose a new custom skill for the .agents/ directory.
+title: "[SKILL PROPOSAL]: "
+labels: ["skill", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for contributing a skill to Oh My Antigravity (OmA)!
+  - type: input
+    id: skill_name
+    attributes:
+      label: Skill Name
+      description: Use lowercase with hyphens (e.g., `my-custom-skill`).
+    validations:
+      required: true
+  - type: textarea
+    id: skill_description
+    attributes:
+      label: Skill Overview & Use Case
+      description: Explain what this skill does and when it should trigger.
+    validations:
+      required: true

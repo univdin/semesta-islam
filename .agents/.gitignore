@@ -1,0 +1,7 @@
+# Cache and ephemeral state for agent runtimes
+.cache/
+*.log
+*.tmp
+tokens/
+secrets/
+.env.local

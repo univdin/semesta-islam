@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.semestaislam.com/schemas/v1/sanad.schema.json",
+  "title": "SanadRecord",
+  "description": "Sanad Chain & Transmission Verification Schema [REPOSITORY VERIFIED — CONTRACT-NEUTRAL per Decision #1 (2026-08-01)]. The public contract exposes domain-neutral semantic fields. The internal persistence field `SanadRecord.qiraahType` is intentionally NOT exposed as a generic type; see $comment for the explicit persistence → contract mapping.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "educatorId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "sanadType": {
+      "type": "string",
+      "description": "Semantic classification of the sanad/credential (e.g., Qira'at, Hadith, Tahsin, Tajwid sanad). Mapped from the internal `qiraahType` persistence value BY DOMAIN MEANING, never by field name. Enumeration is intentionally not closed — exact controlled vocabulary is pending domain review."
+    },
+    "knowledgeDomain": {
+      "type": "string",
+      "description": "The general area of Islamic knowledge (e.g., Qira'at, Fiqh, Hadith)"
+    },
+    "credentialName": {
+      "type": "string",
+      "description": "Name of the credential, ijazah, or authorization"
+    },
+    "chainDescription": {
+      "type": "string",
+      "description": "Chain of transmission lineage summary"
+    },
+    "verifiedByLajnah": {
+      "type": "boolean",
+      "description": "Whether verified by Lajnah verifiers"
+    },
+    "domainMetadata": {
+      "type": "object",
+      "description": "Optional domain-specific metadata. For Qira'at records this MAY carry a qiraah-specific attribute; kept generic to avoid leaking the internal column name as a public type.",
+      "additionalProperties": true
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["id", "educatorId", "sanadType", "knowledgeDomain", "credentialName", "chainDescription", "verifiedByLajnah"],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "id": "44444444-4444-4444-4444-444444444444",
+      "educatorId": "11111111-1111-1111-1111-111111111111",
+      "sanadType": "QIRAAT_SANAD",
+      "knowledgeDomain": "Qira'at",
+      "credentialName": "Ijazah Qira'at Ashim",
+      "chainDescription": "Bersambung 30 generasi sampai Rasulullah SAW melalui Syaikh Dr. Ayman Suwaid.",
+      "verifiedByLajnah": true,
+      "domainMetadata": {
+        "qiraahType": "Hafsh 'an Ashim thariq Asy-Syathibiyyah"
+      },
+      "createdAt": "2026-08-01T00:00:00.000Z"
+    }
+  ],
+  "$comment": "Decision #1 mapping (internal `SanadRecord.qiraahType` → public `sanadType`/`knowledgeDomain`), mapped by domain meaning: qiraahType=HAFSH_AN_ASHIM / QIRAAT_SANAD → sanadType QIRAAT_SANAD (knowledgeDomain Qira'at); HADITS_SANAD → HADITS_SANAD (knowledgeDomain Hadith); TAHSIN → Tahsin classification; TAJWID → Tajwid classification. This is a documentation mapping only — no DB migration, no runtime rename (Decision #1 APPROVED 2026-08-01)."
+}

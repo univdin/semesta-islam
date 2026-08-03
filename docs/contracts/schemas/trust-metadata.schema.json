@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.semestaislam.com/schemas/v1/trust-metadata.schema.json",
+  "title": "TrustMetadata",
+  "description": "Cryptographic Trust & Provenance Metadata Schema [DOCUMENT VERIFIED]",
+  "type": "object",
+  "properties": {
+    "verificationStatus": {
+      "type": "string",
+      "enum": ["DRAFT", "SUBMITTED", "UNDER_REVIEW_LAJNAH", "VERIFIED", "REJECTED", "REVOKED"]
+    },
+    "ethicsScore": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Normalized Lajnah ethics & confidence score"
+    },
+    "verificationAuthority": {
+      "type": "string",
+      "example": "Lajnah Semesta Islam"
+    },
+    "lastVerifiedAt": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "sanadAvailable": {
+      "type": "boolean"
+    },
+    "documentIntegrityHash": {
+      "type": ["string", "null"],
+      "pattern": "^[a-fA-F0-9]{64}$",
+      "description": "Cryptographic SHA-256 fingerprint of the verified document"
+    }
+  },
+  "required": ["verificationStatus", "ethicsScore", "verificationAuthority", "sanadAvailable"],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "verificationStatus": "VERIFIED",
+      "ethicsScore": 100,
+      "verificationAuthority": "Lajnah Semesta Islam",
+      "lastVerifiedAt": "2026-08-01T00:00:00.000Z",
+      "sanadAvailable": true,
+      "documentIntegrityHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

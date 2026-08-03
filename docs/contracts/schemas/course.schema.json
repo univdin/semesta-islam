@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.semestaislam.com/schemas/v1/course.schema.json",
+  "title": "Course",
+  "description": "Course Catalog & Schedule Schema [REPOSITORY VERIFIED]",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "educatorId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3
+    },
+    "category": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "duration": {
+      "type": "string"
+    },
+    "schedules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "dayOfWeek": { "type": "string" },
+          "startTime": { "type": "string", "pattern": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$" },
+          "endTime": { "type": "string", "pattern": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$" }
+        },
+        "required": ["id", "dayOfWeek", "startTime", "endTime"]
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["id", "educatorId", "title", "category", "description", "duration"],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "id": "22222222-2222-2222-2222-222222222222",
+      "educatorId": "11111111-1111-1111-1111-111111111111",
+      "title": "Tahsin Al-Fatihah & Juz Amma",
+      "category": "TAHSIN_QURAN",
+      "description": "Bimbingan perbaikan bacaan Al-Qur'an tajwid dan makhraj secara talaqqi.",
+      "duration": "60 menit / sesi",
+      "schedules": [
+        {
+          "id": "33333333-3333-3333-3333-333333333333",
+          "dayOfWeek": "SABTU",
+          "startTime": "08:00",
+          "endTime": "09:00"
+        }
+      ],
+      "createdAt": "2026-08-01T00:00:00.000Z"
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.semestaislam.com/schemas/v1/educator.schema.json",
+  "title": "Educator",
+  "description": "Public Educator Profile & Verification Metadata Representation [REPOSITORY VERIFIED]",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique Educator Profile UUID"
+    },
+    "fullName": {
+      "type": "string",
+      "minLength": 2,
+      "description": "Full name of the educator"
+    },
+    "avatarUrl": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "URL to educator profile picture"
+    },
+    "bio": {
+      "type": ["string", "null"],
+      "description": "Educator biography and focus areas"
+    },
+    "locationCity": {
+      "type": ["string", "null"],
+      "description": "Primary city of residence or teaching"
+    },
+    "titlePrefix": {
+      "type": ["string", "null"],
+      "description": "Title prefix (e.g. Ustadz, Kiai, Dr.)"
+    },
+    "titleSuffix": {
+      "type": ["string", "null"],
+      "description": "Academic or honorific suffix (e.g. Lc., M.A., Al-Hafizh)"
+    },
+    "institutionName": {
+      "type": ["string", "null"],
+      "description": "Associated Islamic institution or Pesantren"
+    },
+    "teachingMethod": {
+      "type": "string",
+      "enum": ["ONLINE_ZOOM", "PRIVATE_HOME", "GROUP_MAJELIS"],
+      "description": "Primary teaching delivery method"
+    },
+    "ratingAverage": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5,
+      "description": "Average learner review score"
+    },
+    "reviewsCount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of verified reviews"
+    },
+    "verifiedStatus": {
+      "type": "string",
+      "enum": ["DRAFT", "SUBMITTED", "UNDER_REVIEW_LAJNAH", "VERIFIED", "REJECTED", "REVOKED"],
+      "description": "Current Lajnah verification standing"
+    },
+    "trustMetadata": {
+      "$ref": "./trust-metadata.schema.json",
+      "description": "Embedded trust and provenance details"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "fullName",
+    "teachingMethod",
+    "ratingAverage",
+    "reviewsCount",
+    "verifiedStatus"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "id": "11111111-1111-1111-1111-111111111111",
+      "fullName": "Ustadz Abdullah Al-Hafizh",
+      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
+      "bio": "Pengajar Tahsin dan Tahfizh Al-Qur'an bersanad Qira'at Ashim riwayat Hafsh.",
+      "locationCity": "Jakarta Selatan",
+      "titlePrefix": "Ustadz",
+      "titleSuffix": "Al-Hafizh",
+      "institutionName": "Ma'had Qur'an Semesta",
+      "teachingMethod": "ONLINE_ZOOM",
+      "ratingAverage": 4.95,
+      "reviewsCount": 42,
+      "verifiedStatus": "VERIFIED",
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    }
+  ]
+}

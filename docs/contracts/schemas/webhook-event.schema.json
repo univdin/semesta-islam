@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.semestaislam.com/schemas/v1/webhook-event.schema.json",
+  "title": "WebhookEvent",
+  "description": "Webhook Event Delivery Envelope & Signature Schema [DOCUMENT VERIFIED]",
+  "type": "object",
+  "properties": {
+    "eventId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "eventType": {
+      "type": "string",
+      "enum": [
+        "educator.verified",
+        "educator.rejected",
+        "verification.submitted",
+        "booking.created",
+        "booking.confirmed",
+        "booking.cancelled",
+        "credential.updated"
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "data": {
+      "type": "object",
+      "description": "Event payload resource data"
+    }
+  },
+  "required": ["eventId", "eventType", "timestamp", "data"],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "eventId": "99999999-9999-9999-9999-999999999999",
+      "eventType": "educator.verified",
+      "timestamp": "2026-08-01T12:00:00.000Z",
+      "data": {
+        "educatorId": "11111111-1111-1111-1111-111111111111",
+        "status": "VERIFIED"
+      }
+    }
+  ]
+}
