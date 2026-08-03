@@ -1,33 +1,33 @@
-# SEMESTA ISLAM — Platform Ekosistem Pembelajaran Islam Terpercaya
+# ilmify.id (SEMESTA ISLAM) — Platform Ekosistem Pembelajaran Islam Terpercaya
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Domain](https://img.shields.io/badge/Domain-ilmify.id-0F3D2E.svg)](https://ilmify.id)
 [![Next.js](https://img.shields.io/badge/Framework-Next.js%2015-black.svg)](https://nextjs.org/)
 [![Prisma](https://img.shields.io/badge/ORM-Prisma%206-blue.svg)](https://www.prisma.io/)
 [![TypeScript](https://img.shields.io/badge/Language-TypeScript%205.7-blue.svg)](https://www.typescriptlang.org/)
 [![Tests](https://img.shields.io/badge/Tests-Vitest%20111%2F111%20Passing-brightgreen.svg)]()
 [![Database](https://img.shields.io/badge/Database-PostgreSQL%2016-blue.svg)](https://www.postgresql.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**SEMESTA ISLAM** adalah platform ekosistem digital terpercaya yang dirancang untuk menghubungkan murid, keluarga, pendidik (*asatizah*), dan lembaga pendidikan Islam dalam lingkungan belajar yang transparan, terstruktur, dan terverifikasi (*Sanad-backed*).
+**ilmify.id** (Platform Brand: **SEMESTA ISLAM**) adalah platform ekosistem digital terpercaya yang dirancang untuk menghubungkan murid, keluarga, pendidik (*asatizah*), dan lembaga pendidikan Islam dalam lingkungan belajar yang transparan, terstruktur, dan terverifikasi kredensial keilmuan &amp; sanadnya (*Sanad-backed*).
 
 ---
 
-## 💡 Nilai Utama & Pemangku Kepentingan (Stakeholders)
+## 💡 Nilai Utama &amp; Pemangku Kepentingan (Stakeholders)
 
-### 👨‍👩‍👧‍👦 Untuk Pelajar & Keluarga (B2C Marketplace)
+### 👨‍👩‍👧‍👦 Untuk Pelajar &amp; Keluarga Pembelajar
 - **Pencarian Terarah**: Menemukan pendidik Al-Qur'an, Tahsin, Fiqh, Bahasa Arab, dan Aqidah sesuai minat, lokasi, dan metode belajar (1-on-1, privat, kelompok).
-- **Kepercayaan & Keamanan**: Transparansi latar belakang pendidikan, ijazah, serta silsilah sanad keilmuan yang telah diverifikasi oleh Lajnah.
-- **Pemesanan Sesi Mudah**: Mengajukan jadwal dan program pembelajaran secara praktis.
+- **Kepercayaan &amp; Keamanan**: Transparansi latar belakang pendidikan, ijazah, serta silsilah sanad keilmuan yang telah diverifikasi 4-Lapis oleh Lajnah.
+- **Pengajuan Sesi Mudah**: Mengajukan jadwal dan program pembelajaran secara praktis tanpa retorika transaksional kasar.
 
-### 👨‍🏫 Untuk Pendidik & Lembaga Pendidikan
-- **Wadah Profesional**: Mempublikasikan profil, program pengajaran, kredensial, dan sanad keilmuan secara terstruktur.
+### 👨‍🏫 Untuk Pendidik &amp; Lembaga Pendidikan
+- **Wadah Bermartabat**: Mempublikasikan profil, program pengajaran, kredensial, dan sanad keilmuan secara terstruktur &amp; terhormat.
 - **Badge Verifikasi Resmi**: Memperoleh kredensial terverifikasi dari Dewan Verifikasi (Lajnah) untuk meningkatkan kepercayaan publik.
-- **Manajemen Pembelajaran**: Mengelola permintaan sesi, jadwal mengajar, dan peserta didik secara efisien.
+- **Manajemen Pembelajaran**: Mengelola permohonan sesi, jadwal mengajar, dan peserta didik secara efisien.
 
-### 💰 Untuk Investor, Donatur, & Mitra Dampak Sosial
-- **Dampak Sosial Berkelanjutan**: Memberdayakan ekonomi pendidik Islam dan memperluas akses pendidikan berbasis sanad yang terverifikasi di Indonesia.
-- **Transparansi & Akuntabilitas**: Infrastruktur data terstruktur (*Prisma + PostgreSQL*) dengan *Audit Trail* penuh untuk melacak dampak dan pencapaian pembelajaran.
-- **Potensi Scalability**: Berawal dari Marketplace B2C, platform ini dirancang modular sehingga berpotensi berkembang menjadi Infrastruktur API Verifikasi (*Verification API Infrastructure*) bagi institusi dan aplikasi mitra di masa depan.
+### 💰 Untuk Mitra Dampak Sosial &amp; Pengembang
+- **Dampak Sosial Berkelanjutan**: Memberdayakan ekonomi pendidik Islam dan memperluas akses pendidikan berbasis sanad terverifikasi di Indonesia (`https://ilmify.id`).
+- **Transparansi &amp; Akuntabilitas**: Infrastruktur data terstruktur (*Prisma + PostgreSQL*) dengan *Audit Trail* penuh untuk melacak dampak dan pencapaian pembelajaran.
+- **AI-Ready Indexing (AEO/GEO)**: Konfigurasi tingkat lanjut `llms.txt`, `sitemap.xml`, dan Schema JSON-LD untuk indeksasi mesin pencari masa depan.
 
 ---
 
@@ -133,13 +133,15 @@ Platform memfasilitasi alur hubungan end-to-end:
 Repositori ini dikelola secara ketat berbasis dokumentasi terstruktur (*Documentation-Driven Development*):
 
 - 📄 **[Indeks Dokumentasi Utama (`docs/README.md`)](docs/README.md)** — Panduan lengkap seluruh dokumen spesifikasi dan audit.
-- 📘 **Spesifikasi Bisnis & Produk**:
+- 🎨 **[Kit Pemasaran &amp; Aset Brand Resmi (`/marketing-kit`)](https://ilmify.id/marketing-kit)** — Unduh logo vektor, icon mark, banner OpenGraph, dan pedoman penulisan bermartabat.
+- 📘 **Spesifikasi Bisnis, Brand, &amp; Pemasaran**:
   - `docs/00_BRD.md` — Business Requirements Document
-  - `docs/01_BSD.md` — Business & System Definition
-  - `docs/02_PRD.md` | `docs/03_ERD.md` — Product Specs & Relational Data Model
-- 📊 **Audit & Eksekusi Terkini**:
+  - `docs/plan/MARKETING_CANVAS_ILMIFY.md` — Brand Synthesis, BMC, Marketing Canvas, &amp; UX Copywriting Master Spec
+  - `docs/01_BSD.md` — Business &amp; System Definition
+  - `docs/02_PRD.md` | `docs/03_ERD.md` — Product Specs &amp; Relational Data Model
+- 📊 **Audit &amp; Eksekusi Terkini**:
   - `docs/audit/FUNDAMENTAL_DOCS_AUDIT.md` — Audit menyeluruh keselarasan spesifikasi dan kode.
-  - `docs/implementation/POST_AUDIT_EXECUTION_REPORT.md` — Laporan migrasi database & realitas runtime.
+  - `docs/implementation/POST_AUDIT_EXECUTION_REPORT.md` — Laporan migrasi database &amp; realitas runtime.
 
 ---
 
