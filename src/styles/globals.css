@@ -1199,3 +1199,34 @@ h1, h2, h3, h4, .brand-title {
     }
 }
 
+/* 10. Accessibility — Skip Link */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 1rem;
+    z-index: 9999;
+    padding: 0.75rem 1.25rem;
+    background: #0F3D2E;
+    color: #fff;
+    border-radius: 0 0 0.75rem 0.75rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+.skip-link:focus-visible {
+    outline: 3px solid #D4AF37;
+    outline-offset: 2px;
+}
+
+/* 11. Accessibility — Visible Focus States */
+:focus-visible {
+    outline: 2px solid #D4AF37;
+    outline-offset: 2px;
+}
+

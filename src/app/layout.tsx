@@ -62,10 +62,16 @@ export default async function RootLayout({
   return (
     <html lang="id" className={`${inter.variable} ${outfit.variable}`}>
       <body>
+        <a
+          href="#main-content"
+          className="skip-link"
+        >
+          Lewati ke konten utama
+        </a>
         <ToastProvider>
           <div id="app" className="app-shell">
             <HeaderServer />
-            {children}
+            <div id="main-content">{children}</div>
             <BottomNav />
             {demoMode && <DemoRoleSwitcher />}
           </div>
