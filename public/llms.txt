@@ -4,23 +4,23 @@
 
 ## System Overview & Primary Purpose
 
-- **Website URL**: https://semesta-islam.vercel.app
+- **Website URL**: https://ilmify.id
 - **Canonical Language**: Bahasa Indonesia (id-ID)
 - **Primary Domain**: B2C Islamic Learning Marketplace & Verification Ecosystem
 - **Core Value Proposition**: Menghilangkan keraguan atas kredensial & sanad pendidik agama melalui Verifikasi Kredensial 4-Lapis oleh Dewan Lajnah.
 
 ## Key Public URLs for AI Indexing & Answer Engines (GEO/AEO)
 
-- **Home / Landing Page**: https://semesta-islam.vercel.app/
-- **Direktori Pendidik**: https://semesta-islam.vercel.app/directory
-- **Ajukan Sesi Belajar**: https://semesta-islam.vercel.app/booking
-- **Portal Verifikasi Lajnah**: https://semesta-islam.vercel.app/educator/verification
-- **Pertanyaan Umum (FAQ)**: https://semesta-islam.vercel.app/faq
-- **Tentang Kami**: https://semesta-islam.vercel.app/about
-- **Hubungi Kami**: https://semesta-islam.vercel.app/contact
-- **Developer API Reference**: https://semesta-islam.vercel.app/developer
-- **Kebijakan Privasi**: https://semesta-islam.vercel.app/privacy-policy
-- **Syarat & Ketentuan**: https://semesta-islam.vercel.app/terms-of-service
+- **Home / Landing Page**: https://ilmify.id/
+- **Direktori Pendidik**: https://ilmify.id/directory
+- **Ajukan Sesi Belajar**: https://ilmify.id/booking
+- **Portal Verifikasi Lajnah**: https://ilmify.id/educator/verification
+- **Pertanyaan Umum (FAQ)**: https://ilmify.id/faq
+- **Tentang Kami**: https://ilmify.id/about
+- **Hubungi Kami**: https://ilmify.id/contact
+- **Developer API Reference**: https://ilmify.id/developer
+- **Kebijakan Privasi**: https://ilmify.id/privacy-policy
+- **Syarat & Ketentuan**: https://ilmify.id/terms-of-service
 
 ## Verification Standard (Standar Verifikasi 4-Lapis Lajnah)
 

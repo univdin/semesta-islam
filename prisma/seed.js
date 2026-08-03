@@ -77,6 +77,13 @@ const ID = {
   // BookingRequests
   BK_LEARNER_EDU1: 'a0000000-0000-0000-0000-000000000001',
   BK_LEARNER_EDU2: 'a0000000-0000-0000-0000-000000000002',
+  // Sources / Evidence / KnowledgeClaims (Slice A)
+  SRC_EDU4_1: 'f1000000-0000-0000-0000-000000000001',
+  EV_EDU4_1: 'f2000000-0000-0000-0000-000000000001',
+  CL_EDU4_1: 'f3000000-0000-0000-0000-000000000401',
+  CL_EDU4_2: 'f3000000-0000-0000-0000-000000000402',
+  CL_EDU1_1: 'f3000000-0000-0000-0000-000000000101',
+  CL_EDU2_1: 'f3000000-0000-0000-0000-000000000201',
   // Organizations (WAVE 0)
   ORG_1: 'b0000000-0000-0000-0000-000000000001',
   ORG_2: 'b0000000-0000-0000-0000-000000000002',
@@ -121,6 +128,9 @@ async function main() {
   await prisma.organizationMembership.deleteMany();
   await prisma.organization.deleteMany();
   await prisma.reviewRating.deleteMany();
+  await prisma.knowledgeClaim.deleteMany();
+  await prisma.evidence.deleteMany();
+  await prisma.source.deleteMany();
   await prisma.referralConversion.deleteMany();
   await prisma.referralCode.deleteMany();
   await prisma.auditLog.deleteMany();
@@ -270,6 +280,7 @@ async function main() {
         layer1KtpUrl: 'https://storage.supabase.co/ktp/edu4.pdf', layer2IjazahUrl: 'https://storage.supabase.co/ijazah/edu4.pdf',
         layer2Sha256Hash: '1f1f0e8f7c0b9a3d5e6a4c2b8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f', layer3RecommenderEmail: 'rektor@uinsu.ac.id',
         layer3TokenConfirmed: true, layer4EthicsScore: 98,
+        verifiedById: ID.U_LAJNAH, verifiedAt: new Date(),
       },
     ],
   });
@@ -403,6 +414,66 @@ async function main() {
       { provider: 'local', status: 'CONNECTED' },
       { provider: 'google-drive', status: 'DISCONNECTED', errorMessage: 'CLOUD CONFIGURATION REQUIRED' },
       { provider: 'gmail', status: 'DISCONNECTED', errorMessage: 'CLOUD CONFIGURATION REQUIRED' },
+    ],
+  });
+
+  // ---- Knowledge Claims (Slice A — provenance-marked demo) ----
+  await prisma.source.createMany({
+    data: [
+      {
+        id: ID.SRC_EDU4_1,
+        title: 'Profil publik pendidik SEMESTA ISLAM (Demo)',
+        url: `https://ilmify.id/educator/${ID.E_EDU4}`,
+        publisher: 'SEMESTA ISLAM Demo',
+      },
+    ],
+  });
+
+  await prisma.evidence.createMany({
+    data: [
+      {
+        id: ID.EV_EDU4_1,
+        sourceId: ID.SRC_EDU4_1,
+        url: `https://ilmify.id/educator/${ID.E_EDU4}`,
+        description: 'Data profil yang ditampilkan pada direktori publik (demo)',
+      },
+    ],
+  });
+
+  await prisma.knowledgeClaim.createMany({
+    data: [
+      {
+        id: ID.CL_EDU4_1,
+        educatorId: ID.E_EDU4,
+        predicate: 'SPECIALIZES_IN',
+        objectText: "Tajwid, Tahfidz Juz Amma, dan pembelajaran Al-Qur'an untuk pemula",
+        status: 'VERIFIED',
+        verifiedById: ID.U_LAJNAH,
+        verifiedAt: new Date(),
+        sourceId: ID.SRC_EDU4_1,
+        evidenceId: ID.EV_EDU4_1,
+      },
+      {
+        id: ID.CL_EDU4_2,
+        educatorId: ID.E_EDU4,
+        predicate: 'GRADUATED_FROM',
+        objectText: 'UIN Sumatera Utara',
+        status: 'UNVERIFIED',
+      },
+      {
+        id: ID.CL_EDU1_1,
+        educatorId: ID.E_EDU1,
+        predicate: 'SPECIALIZES_IN',
+        objectText: "Fiqh Muamalah & Tahsin Qira'ah",
+        status: 'UNVERIFIED',
+      },
+      {
+        id: ID.CL_EDU2_1,
+        educatorId: ID.E_EDU2,
+        predicate: 'SPECIALIZES_IN',
+        objectText: "Pembelajaran Al-Qur'an Anak & Keluarga",
+        status: 'DRAFT',
+      },
     ],
   });
 

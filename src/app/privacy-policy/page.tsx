@@ -91,7 +91,7 @@ export default function PrivacyPolicyPage() {
           <section className="space-y-3 pt-4 border-t border-gray-200">
             <h2 className="text-lg font-bold text-[#0F3D2E]">Kontak Layanan Privasi</h2>
             <p className="text-xs text-gray-500">
-              Jika Anda memiliki pertanyaan atau permohonan terkait Kebijakan Privasi ini, silakan hubungi kami melalui surel resmi di <code className="font-mono text-[#0F3D2E]">privacy@semesta-islam.vercel.app</code> atau kunjungi halaman <Link href="/contact" className="text-emerald-700 font-semibold hover:underline">Hubungi Kami</Link>.
+              Jika Anda memiliki pertanyaan atau permohonan terkait Kebijakan Privasi ini, silakan hubungi kami melalui surel resmi di <code className="font-mono text-[#0F3D2E]">privacy@ilmify.id</code> atau kunjungi halaman <Link href="/contact" className="text-emerald-700 font-semibold hover:underline">Hubungi Kami</Link>.
             </p>
           </section>
         </article>

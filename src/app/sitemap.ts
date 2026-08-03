@@ -5,7 +5,7 @@ import { listEducatorSummaries } from '@/lib/educators/service';
 export const dynamic = 'force-dynamic';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://semesta-islam.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ilmify.id';
   const now = new Date();
 
   const staticRoutes: Array<{ path: string; priority: number }> = [

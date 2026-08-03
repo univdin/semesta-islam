@@ -197,6 +197,10 @@ model User {
   notifications       Notification[]
   changelogEntries    ChangelogEntry[]      @relation("ChangelogAuthor")
 
+  // Knowledge Domain (Slice A — claim verifier provenance)
+  verificationsReviewed VerificationRequest[] @relation("VerificationVerifiedBy")
+  verifiedClaims         KnowledgeClaim[]      @relation("ClaimVerifier")
+
   @@map("users")
 }
 
@@ -261,6 +265,7 @@ model EducatorProfile {
   courses         CourseCatalog[]
   bookings        BookingRequest[]   @relation("EducatorBookings")
   reviews         ReviewRating[]
+  knowledgeClaims KnowledgeClaim[]
 
   @@map("educator_profiles")
 }
@@ -290,10 +295,13 @@ model VerificationRequest {
   layer3TokenConfirmed Boolean            @default(false) @map("layer_3_token_confirmed")
   layer4EthicsScore    Float              @default(100.0) @map("layer_4_ethics_score")
   reviewNotes          String?            @map("review_notes")
+  verifiedById         String?            @map("verified_by_id") @db.Uuid
+  verifiedAt           DateTime?          @map("verified_at")
   createdAt            DateTime           @default(now()) @map("created_at")
   updatedAt            DateTime           @updatedAt @map("updated_at")
 
   educator             EducatorProfile    @relation(fields: [educatorId], references: [id], onDelete: Cascade)
+  verifiedBy           User?              @relation("VerificationVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
 
   @@map("verification_requests")
 }
@@ -761,4 +769,82 @@ model IntegrationJob {
 
   @@index([provider, status])
   @@map("integration_jobs")
+}
+
+// 9. KNOWLEDGE DOMAIN (Slice A — Claim / Source / Evidence provenance)
+// Governed by the Knowledge/Trust foundation slice. Postgres remains the system
+// of record; a graph projection may consume these relations later.
+
+enum ClaimStatus {
+  DRAFT
+  UNVERIFIED
+  VERIFIED
+  REJECTED
+}
+
+enum ClaimPredicate {
+  GRADUATED_FROM
+  HOLDS_CREDENTIAL
+  HAS_SANAD_IN
+  SPECIALIZES_IN
+  AFFILIATED_WITH
+  AUTHORED
+}
+
+// Origin of a claim (certificate, publication, website, biography).
+model Source {
+  id          String    @id @default(uuid()) @db.Uuid
+  title       String
+  url         String?
+  publisher   String?
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  evidences   Evidence[]
+  claims      KnowledgeClaim[]
+
+  @@map("sources")
+}
+
+// A specific artifact supporting a claim (document URL + optional SHA-256).
+model Evidence {
+  id          String   @id @default(uuid()) @db.Uuid
+  sourceId    String?  @map("source_id") @db.Uuid
+  url         String
+  sha256      String?
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  source      Source?          @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+  claims      KnowledgeClaim[]
+
+  @@index([sourceId])
+  @@map("evidences")
+}
+
+// A factual knowledge claim about an educator, with source/evidence provenance
+// and verifier attribution. Claims are NOT authoritative until VERIFIED.
+model KnowledgeClaim {
+  id           String         @id @default(uuid()) @db.Uuid
+  educatorId   String         @map("educator_id") @db.Uuid
+  predicate    ClaimPredicate
+  objectText   String         @map("object_text")
+  objectType   String?        @map("object_type")
+  status       ClaimStatus    @default(UNVERIFIED)
+  confidence   Float?
+  sourceId     String?        @map("source_id") @db.Uuid
+  evidenceId   String?        @map("evidence_id") @db.Uuid
+  verifiedById String?        @map("verified_by_id") @db.Uuid
+  verifiedAt   DateTime?      @map("verified_at")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  educator    EducatorProfile @relation(fields: [educatorId], references: [id], onDelete: Cascade)
+  source      Source?         @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+  evidence    Evidence?       @relation(fields: [evidenceId], references: [id], onDelete: SetNull)
+  verifiedBy  User?           @relation("ClaimVerifier", fields: [verifiedById], references: [id], onDelete: SetNull)
+
+  @@index([educatorId, status])
+  @@index([predicate])
+  @@map("knowledge_claims")
 }

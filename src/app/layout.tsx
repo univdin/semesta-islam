@@ -22,7 +22,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://semesta-islam.vercel.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ilmify.id'),
   title: {
     default: 'SEMESTA ISLAM — Platform Edukasi & Pendidik Islam Terverifikasi',
     template: '%s | SEMESTA ISLAM',
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     siteName: 'SEMESTA ISLAM',
     locale: 'id_ID',
     type: 'website',
-    url: 'https://semesta-islam.vercel.app',
+    url: 'https://ilmify.id',
     images: [
       {
         url: '/og-image.svg',

@@ -33,6 +33,7 @@ const EnvSchema = z.object({
   UPSTASH_REDIS_REST_URL: z.string().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
   RESEND_API_KEY: z.string().optional(),
+  RESEND_EMAIL_DOMAIN: z.string().min(3).optional(),
 
   // Business fallback (DECISION-01): integer percent 0..100
   PLATFORM_COMMISSION_PERCENTAGE: z.coerce.number().int().min(0).max(100).default(0),
@@ -42,7 +43,7 @@ const EnvSchema = z.object({
   BOOTSTRAP_FOUNDER_NAME: z.string().optional(),
 
   // Adapter selection (see docs/plan/EXECUTION_REGISTRY.md section A/B)
-  MAGIC_LINK_PROVIDER: z.enum(['supabase', 'resend', 'mock']).default('supabase'),
+  MAGIC_LINK_PROVIDER: z.enum(['supabase', 'resend', 'mock']).default('resend'),
   STORAGE_MODE: z.enum(['local', 'supabase', 'mock']).default('mock'),
   OCR_MODE: z.enum(['tesseract', 'mock']).default('mock'),
   PAYMENT_PROVIDER: z.enum(['mock', 'midtrans', 'xendit']).default('mock'),

@@ -43,3 +43,38 @@ export const DirectoryFilterSchema = z.object({
   page: z.number().int().positive().optional().default(1),
   limit: z.number().int().positive().max(50).optional().default(10)
 });
+
+// Knowledge Domain (Slice A)
+
+export const ClaimPredicateSchema = z.enum([
+  'GRADUATED_FROM',
+  'HOLDS_CREDENTIAL',
+  'HAS_SANAD_IN',
+  'SPECIALIZES_IN',
+  'AFFILIATED_WITH',
+  'AUTHORED',
+]);
+
+export const ClaimStatusSchema = z.enum(['DRAFT', 'UNVERIFIED', 'VERIFIED', 'REJECTED']);
+
+export const KnowledgeClaimCreateSchema = z.object({
+  educatorId: z.string().uuid({ message: 'Invalid Educator UUID' }),
+  predicate: ClaimPredicateSchema,
+  objectText: z.string().min(3, 'Object text is required (min 3 characters)').max(300, 'Object text max 300 characters'),
+  objectType: z.string().min(2).max(50).optional(),
+  status: ClaimStatusSchema.optional(),
+  sourceId: z.string().uuid().optional(),
+  evidenceId: z.string().uuid().optional(),
+  confidence: z.number().min(0).max(1).optional(),
+});
+
+export const KnowledgeClaimStatusSchema = z.object({
+  status: ClaimStatusSchema,
+});
+
+export const KnowledgeSourceCreateSchema = z.object({
+  title: z.string().min(3).max(200),
+  url: z.string().url().optional().or(z.literal('')),
+  publisher: z.string().max(200).optional().or(z.literal('')),
+  publishedAt: z.string().datetime().optional().or(z.literal('')),
+});

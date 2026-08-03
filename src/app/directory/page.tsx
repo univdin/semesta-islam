@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 
 export default async function DirectoryPage() {
   const educators = await listEducatorSummaries();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://semesta-islam.vercel.app';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ilmify.id';
 
   const jsonLd = {
     '@context': 'https://schema.org',

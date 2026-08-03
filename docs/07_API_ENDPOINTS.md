@@ -161,3 +161,21 @@ Diperbarui `2026-08-01` (lihat `docs/implementation/POST_EXECUTION_VERIFICATION.
 - **Endpoint terdaftar namun belum diimplementasikan (defer pasca-MVP):** `/api/v1/member/*`, `/api/v1/courses` & `/api/v1/lms/*`, `/api/v1/referrals/*`, `/api/v1/management/*`, `/api/v1/bookings/ledger`, `/api/v1/verification/confirm-token`.
 - **Verifier/actor role:** identity (`verifierUserId`, `actorUserId`) dan role (`verifierRoles`, `actorRoles`) **tidak** dikirim melalui payload maupun header. Keduanya diresolusi server-side dari session (`getServerIdentity()`, DECISION-07). Dokumentasi lama yang menyebut field tersebut sebagai request body sudah dikoreksi (registry dev & §2.5 di atas).
 - **`X-Verifier-Role` (OpenAPI):** header ini tidak digunakan; kontradiksi sebelumnya dengan `verifierRoles` payload sudah diselesaikan karena identity & role kini sepenuhnya server-derived (lihat `docs/audit/CONTRACT_DRIFT_REPORT.md` §2.3).
+
+---
+
+## 6. SLICE A — KNOWLEDGE DOMAIN (Claim/Source/Evidence) — IMPLEMENTED + RUNTIME VERIFIED
+
+Diperbarui `2026-08-03` (Slice A, lihat `docs/audit/SEMESTA_ISLAM_HELICOPTER_VIEW.md` §17).
+
+| Endpoint | Method | Auth | Status |
+| --- | --- | --- | --- |
+| `/api/v1/educators/[id]/knowledge` | GET | Public | IMPLEMENTED + RUNTIME VERIFIED (200 live) |
+| `/api/v1/knowledge/claims` | POST | Auth — owning educator (self-declare UNVERIFIED) atau `verification.manage` | IMPLEMENTED (201/401/403/404) |
+| `/api/v1/knowledge/claims/[id]/status` | POST | Auth — `LAJNAH_VERIFIER` / `FOUNDER_ADMIN` saja | IMPLEMENTED (200/401/403/404/409) |
+
+Catatan:
+- **Hanya klaim `VERIFIED` yang diekspos ke publik** (peraturan §8 integritas faktual). Semua klaim menyimpan provenance: `source`, `evidence`, `verifiedById`, `verifiedAt`.
+- `VerificationRequest` kini menyimpan `verified_by_id` + `verified_at` (set saat review menuju `VERIFIED`, di-clear saat REJECTED/REVOKED). Diekspos sebagai `verifiedByName`/`verifiedAt` pada `GET /api/v1/verification/status`.
+- Authorisasi identitas & role **server-derived** (DECISION-07) — tidak pernah dari payload.
+- Rate limiting per-endpoint (rute publik/auth) dijadwalkan di Slice F.

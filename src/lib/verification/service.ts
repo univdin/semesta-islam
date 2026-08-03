@@ -149,12 +149,15 @@ export async function reviewVerificationRequest(
   }
 
   await prisma.$transaction(async (tx) => {
+    const isVerified = input.targetStatus === 'VERIFIED';
     await tx.verificationRequest.update({
       where: { id: input.verificationRequestId },
       data: {
         status: input.targetStatus,
         reviewNotes: input.reviewNotes,
         layer4EthicsScore: input.ethicsScore,
+        verifiedById: isVerified ? input.verifierUserId : null,
+        verifiedAt: isVerified ? new Date() : null,
       },
     });
 
@@ -327,6 +330,8 @@ export interface VerificationStatusInfo {
   recommenderEmail: string | null;
   reviewNotes: string | null;
   ethicsScore: number;
+  verifiedByName: string | null;
+  verifiedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -337,6 +342,9 @@ export async function getVerificationStatus(
   const request = await prisma.verificationRequest.findFirst({
     where: { educatorId },
     orderBy: { updatedAt: 'desc' },
+    include: {
+      verifiedBy: { select: { email: true, profile: { select: { fullName: true } } } },
+    },
   });
 
   if (!request) return null;
@@ -351,6 +359,8 @@ export async function getVerificationStatus(
     recommenderEmail: request.layer3RecommenderEmail,
     reviewNotes: request.reviewNotes,
     ethicsScore: request.layer4EthicsScore,
+    verifiedByName: request.verifiedBy?.profile?.fullName ?? request.verifiedBy?.email ?? null,
+    verifiedAt: request.verifiedAt ? request.verifiedAt.toISOString() : null,
     createdAt: request.createdAt.toISOString(),
     updatedAt: request.updatedAt.toISOString(),
   };

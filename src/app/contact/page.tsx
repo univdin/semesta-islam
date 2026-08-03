@@ -41,7 +41,7 @@ export default function ContactPage() {
                 <Mail className="w-4 h-4" />
               </div>
               <h3 className="font-bold text-[#0F3D2E] text-sm">Surel Resmi</h3>
-              <p className="text-xs text-gray-600 font-mono">support@semesta-islam.vercel.app</p>
+              <p className="text-xs text-gray-600 font-mono">support@ilmify.id</p>
               <p className="text-xs text-gray-400">Respons dalam 1x24 jam kerja.</p>
             </div>
 
@@ -50,7 +50,7 @@ export default function ContactPage() {
                 <ShieldCheck className="w-4 h-4" />
               </div>
               <h3 className="font-bold text-[#0F3D2E] text-sm">Sekretariat Lajnah</h3>
-              <p className="text-xs text-gray-600 font-mono">lajnah@semesta-islam.vercel.app</p>
+              <p className="text-xs text-gray-600 font-mono">lajnah@ilmify.id</p>
               <p className="text-xs text-gray-400">Khusus penelaahan berkas ijazah &amp; sanad.</p>
             </div>
 

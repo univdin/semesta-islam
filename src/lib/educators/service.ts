@@ -113,6 +113,8 @@ export interface VerificationDetail {
   createdAt: Date;
   updatedAt: Date;
   reviewNotes: string | null;
+  verifiedByName: string | null;
+  verifiedAt: Date | null;
 }
 
 export interface EducatorDetail {
@@ -144,7 +146,13 @@ export async function getEducatorDetail(id: string): Promise<EducatorDetail | nu
       sanadRecords: { orderBy: { createdAt: 'asc' } },
       courses: { select: { id: true, title: true, category: true } },
       badges: { orderBy: { issuedAt: 'asc' } },
-      verifications: { orderBy: { createdAt: 'desc' }, take: 1 },
+      verifications: {
+        orderBy: { createdAt: 'desc' },
+        take: 1,
+        include: {
+          verifiedBy: { select: { email: true, profile: { select: { fullName: true } } } },
+        },
+      },
     },
   });
 
@@ -186,6 +194,11 @@ export async function getEducatorDetail(id: string): Promise<EducatorDetail | nu
           createdAt: latestVerification.createdAt,
           updatedAt: latestVerification.updatedAt,
           reviewNotes: latestVerification.reviewNotes,
+          verifiedByName:
+            latestVerification.verifiedBy?.profile?.fullName ??
+            latestVerification.verifiedBy?.email ??
+            null,
+          verifiedAt: latestVerification.verifiedAt,
         }
       : null,
     courses: educator.courses.map((c) => ({ id: c.id, title: c.title, category: c.category })),

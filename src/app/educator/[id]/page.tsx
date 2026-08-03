@@ -16,8 +16,10 @@ import {
   FileBadge,
 } from 'lucide-react';
 import { getEducatorDetail } from '@/lib/educators/service';
+import { getKnowledgeOverview, listClaimsForEducator } from '@/lib/knowledge/service';
 import { isDemoMode } from '@/lib/auth/session';
 import type { VerificationStatus } from '@/types';
+import type { ClaimPredicate } from '@prisma/client';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -100,6 +102,15 @@ const CREDENTIAL_LABELS: Record<string, string> = {
   SANAD_VERIFIED: 'Sanad Terverifikasi Lajnah',
 };
 
+const CLAIM_PREDICATE_LABELS: Record<ClaimPredicate, string> = {
+  GRADUATED_FROM: 'Lulusan',
+  HOLDS_CREDENTIAL: 'Memegang kredensial',
+  HAS_SANAD_IN: 'Sanad dalam',
+  SPECIALIZES_IN: 'Spesialisasi',
+  AFFILIATED_WITH: 'Berafiliasi dengan',
+  AUTHORED: 'Menulis / mengarang',
+};
+
 function formatDate(date: Date): string {
   return date.toLocaleDateString('id-ID', {
     day: 'numeric',
@@ -136,6 +147,11 @@ export default async function EducatorProfilePage({ params }: PageProps) {
     notFound();
   }
 
+  const [verifiedClaims, knowledgeOverview] = await Promise.all([
+    listClaimsForEducator(resolvedParams.id, { onlyVerified: true }),
+    getKnowledgeOverview(resolvedParams.id),
+  ]);
+
   return (
     <main className="main-content pt-20">
       <script
@@ -149,7 +165,7 @@ export default async function EducatorProfilePage({ params }: PageProps) {
             address: educator.location
               ? { '@type': 'PostalAddress', addressLocality: educator.location, addressCountry: 'ID' }
               : undefined,
-            url: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://semesta-islam.vercel.app'}/educator/${resolvedParams.id}`,
+            url: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ilmify.id'}/educator/${resolvedParams.id}`,
             aggregateRating: educator.reviewsCount > 0
               ? {
                   '@type': 'AggregateRating',
@@ -258,6 +274,15 @@ export default async function EducatorProfilePage({ params }: PageProps) {
                     Terakhir diperbarui {formatDate(educator.verification.updatedAt)}
                   </p>
                 )}
+                {educator.verification?.status === 'VERIFIED' &&
+                  educator.verification.verifiedByName && (
+                    <p className="text-xs font-medium text-emerald-700">
+                      Diverifikasi oleh {educator.verification.verifiedByName}
+                      {educator.verification.verifiedAt
+                        ? ` · ${formatDate(educator.verification.verifiedAt)}`
+                        : ''}
+                    </p>
+                  )}
                 {educator.verification?.reviewNotes && (
                   <div className="bg-white/60 border border-emerald-900/10 rounded-xl p-3 text-sm text-gray-700">
                     <p className="text-xs font-semibold text-[#0F3D2E] mb-1">Catatan Lajnah</p>
@@ -344,6 +369,71 @@ export default async function EducatorProfilePage({ params }: PageProps) {
               ) : (
                 <p className="text-sm text-gray-500">
                   Belum ada kredensial yang ditampilkan untuk pendidik ini.
+                </p>
+              )}
+            </section>
+
+            {/* Knowledge Claims (verified only, provenance-backed) */}
+            <section className="glass-panel p-6 rounded-2xl">
+              <h2 className="text-lg font-bold text-[#0F3D2E] mb-1 flex items-center gap-2">
+                <FileBadge className="w-5 h-5 text-[#D4AF37]" /> Klaim Keilmuan & Sumber
+              </h2>
+              <p className="text-xs text-gray-500 mb-4">
+                Fakta keilmuan yang terverifikasi, lengkap dengan sumber & bukti pendukung. Hanya klaim
+                terverifikasi yang ditampilkan kepada publik.
+                {knowledgeOverview.evidenceCount > 0 && (
+                  <span className="font-medium text-gray-600">
+                    {' '}· {knowledgeOverview.evidenceCount} klaim terverifikasi
+                  </span>
+                )}
+              </p>
+              {verifiedClaims.length > 0 ? (
+                <ul className="space-y-3">
+                  {verifiedClaims.map((claim) => (
+                    <li
+                      key={claim.id}
+                      className="bg-white/60 p-4 rounded-xl border border-emerald-900/10"
+                    >
+                      <div className="flex flex-wrap items-baseline gap-1.5">
+                        <span className="text-[11px] font-semibold uppercase tracking-wide text-[#B08A2E]">
+                          {CLAIM_PREDICATE_LABELS[claim.predicate]}
+                        </span>
+                        <p className="text-sm font-semibold text-gray-800">{claim.objectText}</p>
+                      </div>
+                      <div className="mt-2 space-y-1 text-xs text-gray-500">
+                        {claim.source && (
+                          <p className="flex items-start gap-1.5">
+                            <span className="text-gray-400">Sumber:</span>
+                            {claim.source.url ? (
+                              <a
+                                href={claim.source.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-emerald-800 underline underline-offset-2 hover:text-emerald-600"
+                              >
+                                {claim.source.title}
+                              </a>
+                            ) : (
+                              <span>{claim.source.title}</span>
+                            )}
+                          </p>
+                        )}
+                        <p className="flex flex-wrap items-center gap-x-2">
+                          <span className="inline-flex items-center gap-1 text-emerald-700">
+                            <CheckCircle2 className="w-3 h-3" /> Terverifikasi Lajnah
+                          </span>
+                          {claim.verifiedByName && <span>oleh {claim.verifiedByName}</span>}
+                          {claim.verifiedAt && (
+                            <span>{formatDate(claim.verifiedAt)}</span>
+                          )}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-gray-500">
+                  Belum ada klaim keilmuan terverifikasi yang ditampilkan untuk pendidik ini.
                 </p>
               )}
             </section>

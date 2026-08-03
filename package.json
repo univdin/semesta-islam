@@ -33,6 +33,7 @@
     "pdf-lib": "^1.17.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "resend": "^6.18.1",
     "tailwind-merge": "^2.6.0",
     "tesseract.js": "^5.1.1",
     "vaul": "^1.1.2",
