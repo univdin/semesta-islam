@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
+import { rateLimitAnonymous } from '@/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: Request) {
   const started = Date.now();
   const result: {
     success: boolean;
@@ -29,6 +30,18 @@ export async function GET() {
       responseTimeMs: 0,
     },
   };
+
+  const ip =
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    request.headers.get('x-real-ip') ??
+    'unknown';
+  const rl = await rateLimitAnonymous(`health:${ip}`);
+  if (rl && !rl.success) {
+    return NextResponse.json(
+      { success: false, statusCode: 429, message: 'Too many requests. Try again shortly.' },
+      { status: 429, headers: { 'Retry-After': String(Math.ceil((rl.reset - Date.now()) / 1000)) } }
+    );
+  }
 
   const dbUrl = process.env.DATABASE_URL ?? '';
   if (dbUrl.includes('localhost') || dbUrl.includes('placeholder')) {
