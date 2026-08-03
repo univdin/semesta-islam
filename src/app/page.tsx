@@ -19,6 +19,69 @@ export const metadata: Metadata = {
     type: 'website',
   },
 };
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://semesta-islam.vercel.app';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${siteUrl}/#organization`,
+      name: 'SEMESTA ISLAM',
+      url: siteUrl,
+      logo: `${siteUrl}/apple-touch-icon.png`,
+      description:
+        'Platform ekosistem pembelajaran Islam terpercaya yang menghubungkan keluarga dengan pendidik dan lembaga Islam terverifikasi.',
+      areaServed: 'ID',
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}/#website`,
+      url: siteUrl,
+      name: 'SEMESTA ISLAM',
+      inLanguage: 'id-ID',
+      publisher: { '@id': `${siteUrl}/#organization` },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Apa itu SEMESTA ISLAM?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'SEMESTA ISLAM adalah platform yang menghubungkan keluarga dan pembelajar dengan pendidik Islam terverifikasi — ustaz, ustazah, dan lembaga — yang kredensial, sanad, dan keilmuannya diverifikasi oleh Lajnah.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Bagaimana pendidik diverifikasi di SEMESTA ISLAM?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Setiap pendidik melewati verifikasi kredensial 4-lapis: validasi identitas resmi, verifikasi sanad & ijazah, rekomendasi tokoh atau lembaga, dan evaluasi etika serta integritas.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Metode belajar apa saja yang tersedia?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Anda dapat memilih metode belajar online (video call), privat di rumah, atau kelompok majelis sesuai kebutuhan keluarga.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Apakah layanan SEMESTA ISLAM tersedia di seluruh Indonesia?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Ya, SEMESTA ISLAM menghubungkan pendidik dari berbagai kota di Indonesia dengan keluarga pembelajar, baik secara online maupun tatap muka.',
+          },
+        },
+      ],
+    },
+  ],
+};
 import { EducatorCard } from '@/components/ui/EducatorCard';
 import { HeroSearch } from '@/components/ui/HeroSearch';
 import {
@@ -59,6 +122,10 @@ export default async function HomePage() {
 
   return (
     <main className="main-content">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {demoMode && (
         <div className="bg-amber-50 border-b border-amber-200 text-amber-900 text-xs px-4 py-2 flex items-center justify-center gap-1.5">
           <Info className="w-3.5 h-3.5 shrink-0" />
