@@ -22,7 +22,7 @@ export function isRedisConfigured(): boolean {
 
 const anonymousLimiter = isRedisConfigured()
   ? new Ratelimit({
-      redis: Redis.fromEnv(),
+      redis: new Redis({ url, token }),
       limiter: Ratelimit.fixedWindow(30, '60 s'),
       prefix: 'semesta:rl:anon',
     })
