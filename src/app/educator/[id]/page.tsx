@@ -130,6 +130,28 @@ export default async function EducatorProfilePage({ params }: PageProps) {
 
   return (
     <main className="main-content pt-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Person',
+            name: educator.name,
+            jobTitle: educator.title,
+            address: educator.location
+              ? { '@type': 'PostalAddress', addressLocality: educator.location, addressCountry: 'ID' }
+              : undefined,
+            url: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://semesta-islam.vercel.app'}/educator/${resolvedParams.id}`,
+            aggregateRating: educator.reviewsCount > 0
+              ? {
+                  '@type': 'AggregateRating',
+                  ratingValue: educator.rating,
+                  reviewCount: educator.reviewsCount,
+                }
+              : undefined,
+          }),
+        }}
+      />
       <div className="container py-8 max-w-5xl">
         {demoMode && (
           <div className="mb-5 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-900 flex items-start gap-2">
