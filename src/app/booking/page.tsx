@@ -1,11 +1,19 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import { UserRound, ArrowRight, Info } from 'lucide-react';
 import { getEducatorDetail } from '@/lib/educators/service';
 import { BookingClient } from './BookingClient';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Ajukan Sesi Belajar — SEMESTA ISLAM',
+  description:
+    'Ajukan jadwal sesi belajar dengan pendidik Islam terverifikasi. Pilih metode online, privat, atau majelis sesuai kebutuhan keluarga.',
+  alternates: { canonical: '/booking' },
+};
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

@@ -20,6 +20,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://semesta-islam.vercel.app'),
   title: 'SEMESTA ISLAM — Platform Edukasi & Pendidik Islam Terverifikasi',
   description: 'Ekosistem digital terpercaya yang menghubungkan keluarga & pembelajar dengan pendidik dan lembaga Islam terverifikasi.',
   icons: {
@@ -33,6 +34,16 @@ export const metadata: Metadata = {
     siteName: 'SEMESTA ISLAM',
     locale: 'id_ID',
     type: 'website',
+    url: 'https://semesta-islam.vercel.app',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SEMESTA ISLAM — Platform Edukasi & Pendidik Islam Terverifikasi',
+    description: 'Ekosistem digital terpercaya yang menghubungkan keluarga & pembelajar dengan pendidik dan lembaga Islam terverifikasi.',
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
