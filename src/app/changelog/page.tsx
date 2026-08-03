@@ -1,9 +1,17 @@
 import React from 'react';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { ArrowLeft, Megaphone } from 'lucide-react';
 import { listPublishedChangelog } from '@/lib/changelog/service';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Catatan Perubahan & Pembaruan — SEMESTA ISLAM',
+  description:
+    'Lihat pembaruan terbaru platform SEMESTA ISLAM: fitur baru, perbaikan, dan peningkatan keamanan.',
+  alternates: { canonical: '/changelog' },
+};
 
 export default async function ChangelogPublicPage() {
   const entries = await listPublishedChangelog();

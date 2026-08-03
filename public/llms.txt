@@ -1,0 +1,42 @@
+# SEMESTA ISLAM
+
+> Trusted Islamic learning ecosystem connecting learners & families with verified educators (sanad-backed).
+
+## About
+
+SEMESTA ISLAM is a digital platform that connects learners and families with qualified Islamic educators
+(ustadz/ustadzah) and institutions whose credentials, sanad, and scholarly lineage have been verified by
+the Lajnah verification board. Built on Next.js, Prisma, PostgreSQL, and Supabase.
+
+## Key Public Pages
+
+- [Home](https://semesta-islam.vercel.app/): Landing page with impact stats and verified educator showcase.
+- [Directory](https://semesta-islam.vercel.app/directory): Browse verified educators by subject, location, and method.
+- [Educator Profile](https://semesta-islam.vercel.app/educator/[id]): Public educator profile with sanad & credentials.
+- [Booking](https://semesta-islam.vercel.app/booking): Request a learning session.
+- [Discovery](https://semesta-islam.vercel.app/discovery): Explore learning journeys.
+- [Contributions](https://semesta-islam.vercel.app/contributions): Social impact transparency.
+- [Changelog](https://semesta-islam.vercel.app/changelog): Product updates.
+- [Developer Portal](https://semesta-islam.vercel.app/developer): API & platform docs.
+
+## Technology Stack
+
+- Next.js 15 (App Router), React 19, TypeScript 5.7
+- Tailwind CSS 3.4
+- PostgreSQL 16 + Prisma 6 ORM
+- Supabase (Auth + Postgres)
+- Vitest test suite (111 tests)
+
+## Data Model Highlights
+
+- Users, profiles, and role assignments (LEARNER / EDUCATOR / LAJNAH_VERIFIER / FOUNDER_ADMIN)
+- Educator profiles with verification status (4-layer Lajnah verification)
+- Sanad records and credential badges
+- Course catalogs, schedules, and booking requests
+- Internal economy: economic transactions + ledger, XP ledger, reputation profiles, commissions
+- Referral program, organizations, delegations, audit logs
+
+## Documentation
+
+Full governance docs (BRD, PRD, ERD, OSS, security) live in the GitHub repository
+[univdin/semesta-islam](https://github.com/univdin/semesta-islam).

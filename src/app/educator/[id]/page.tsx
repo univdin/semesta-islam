@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import {
   ShieldCheck,
   Star,
@@ -23,6 +24,29 @@ interface PageProps {
 }
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const educator = await getEducatorDetail(id);
+  if (!educator) {
+    return { title: 'Pendidik Tidak Ditemukan — SEMESTA ISLAM' };
+  }
+  return {
+    title: `${educator.name} — Pendidik ${educator.verified ? 'Terverifikasi' : ''} SEMESTA ISLAM`,
+    description: `${educator.name}${educator.title ? `, ${educator.title}` : ''}${educator.location ? ` (${educator.location})` : ''}. Pelajari kredensial, sanad, dan profil pendidik di SEMESTA ISLAM.`,
+    alternates: { canonical: `/educator/${id}` },
+    openGraph: {
+      title: `${educator.name} — SEMESTA ISLAM`,
+      description:
+        educator.expertise.length > 0
+          ? `Keahlian: ${educator.expertise.join(', ')}. Profil pendidik Islam di SEMESTA ISLAM.`
+          : `Profil pendidik Islam di SEMESTA ISLAM.`,
+      type: 'profile',
+    },
+  };
+}
 
 const VERIFICATION_LABELS: Record<VerificationStatus, string> = {
   VERIFIED: 'Terverifikasi Lajnah',

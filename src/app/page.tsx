@@ -1,8 +1,24 @@
 import React from 'react';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { ShieldCheck, Award, Calendar, Info } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'SEMESTA ISLAM — Platform Edukasi & Pendidik Islam Terverifikasi',
+  description:
+    'Temukan pendidik Islam terverifikasi: ustaz, ustazah, dan lembaga dengan kredensial, sanad, dan keilmuan yang diverifikasi Lajnah. Ajukan sesi belajar online, privat, atau majelis.',
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'SEMESTA ISLAM — Platform Edukasi & Pendidik Islam Terverifikasi',
+    description:
+      'Temukan pendidik Islam terverifikasi dengan sanad keilmuan yang diverifikasi Lajnah.',
+    type: 'website',
+  },
+};
 import { EducatorCard } from '@/components/ui/EducatorCard';
 import { HeroSearch } from '@/components/ui/HeroSearch';
 import {
