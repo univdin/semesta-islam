@@ -3,6 +3,7 @@ import React from 'react';
 export const metadata = {
   title: 'Program Syi\'ar & Apresiasi Kemitraan — ILMIFY',
   description: 'Panel pengawasan dukungan apresiasi kemitraan terverifikasi dan siklus transparansi alokasi.',
+  robots: { index: false, follow: false },
 };
 
 export default function AffiliatePage() {
@@ -50,6 +51,14 @@ export default function AffiliatePage() {
           <div className="flex items-center justify-between">
             <h3 className="text-base font-semibold text-slate-900">Catatan Audit Apresiasi</h3>
             <span className="text-xs text-slate-400 font-mono">Disiplin Transparansi Amanah</span>
+          </div>
+
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-900">
+            <p className="font-semibold mb-0.5">Pratinjau — Data Ilustrasi</p>
+            <p>
+              Entri pada tabel ini adalah contoh ilustrasi untuk pengembangan, bukan catatan audit nyata.
+              Alokasi apresiasi hanya tercatat setelah program kemitraan dibuka.
+            </p>
           </div>
 
           <div className="overflow-x-auto">

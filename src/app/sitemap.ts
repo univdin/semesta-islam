@@ -14,7 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '', priority: 1.0 },
     { path: '/directory', priority: 0.9 },
     { path: '/booking', priority: 0.8 },
-    { path: '/discovery', priority: 0.8 },
+    { path: '/topics', priority: 0.7 },
     { path: '/about', priority: 0.7 },
     { path: '/faq', priority: 0.7 },
     { path: '/contact', priority: 0.6 },
@@ -26,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/contributions', priority: 0.5 },
     { path: '/affiliate', priority: 0.4 },
     { path: '/ambassador', priority: 0.4 },
-    { path: '/login', priority: 0.3 },
+    { path: '/discovery', priority: 0.3 },
   ];
 
   const staticEntries = staticRoutes.map(({ path, priority }) => ({
@@ -37,11 +37,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Dynamic Educator Profiles for SERP & AI Indexing
-  // Only canonical slug URLs are emitted; educators without a slug are not
-  // indexable entities yet and must never appear in the sitemap.
+  // Only VERIFIED educators with a canonical slug are emitted. Unverified
+  // educators are not indexable trust entities and must never appear in the
+  // sitemap (trust-gate; the directory page mirrors this contract).
   let dynamicEducatorEntries: MetadataRoute.Sitemap = [];
   try {
-    const educators = await listEducatorSummaries({ take: 100 });
+    const educators = await listEducatorSummaries({ take: 100, verifiedOnly: true });
     dynamicEducatorEntries = educators
       .filter((edu) => edu.slug)
       .map((edu) => ({

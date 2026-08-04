@@ -5,34 +5,48 @@ import type { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'Direktori Pendidik Islam Terverifikasi — ILMIFY',
-  description:
-    'Cari dan telusuri direktori ustaz, ustazah, dan pendidik Islam terverifikasi Lajnah berdasarkan mata pelajaran, lokasi, dan metode belajar.',
-  alternates: {
-    canonical: '/directory',
-  },
-  openGraph: {
-    title: 'Direktori Pendidik Islam Terverifikasi — ILMIFY',
-    description:
-      'Cari dan telusuri direktori ustaz, ustazah, dan pendidik Islam terverifikasi Lajnah.',
-    images: [
-      {
-        url: '/og-image.svg',
-        width: 1200,
-        height: 630,
-        alt: 'Direktori Pendidik Islam Terverifikasi — ILMIFY',
-      },
-    ],
-  },
-};
-
 interface PageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 function str(value: string | string[] | undefined): string | undefined {
   return typeof value === 'string' && value.trim() ? value.trim() : undefined;
+}
+
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+  const sp = await searchParams;
+  void sp;
+  const directoryEnabled = await isPlatformSettingEnabled(
+    PLATFORM_SETTING_KEYS.PUBLIC_DIRECTORY_ENABLED
+  );
+
+  const baseMetadata: Metadata = {
+    title: 'Direktori Pendidik Islam Terverifikasi — ILMIFY',
+    description:
+      'Cari dan telusuri direktori ustaz, ustazah, dan pendidik Islam yang kredensial & sanadnya telah diverifikasi Lajnah berdasarkan mata pelajaran, lokasi, dan metode belajar.',
+    alternates: {
+      canonical: '/directory',
+    },
+    openGraph: {
+      title: 'Direktori Pendidik Islam Terverifikasi — ILMIFY',
+      description:
+        'Cari dan telusuri direktori ustaz, ustazah, dan pendidik Islam terverifikasi Lajnah.',
+      images: [
+        {
+          url: '/og-image.svg',
+          width: 1200,
+          height: 630,
+          alt: 'Direktori Pendidik Islam Terverifikasi — ILMIFY',
+        },
+      ],
+    },
+  };
+
+  if (!directoryEnabled) {
+    return { ...baseMetadata, robots: { index: false, follow: false } };
+  }
+
+  return baseMetadata;
 }
 
 export default async function DirectoryPage({ searchParams }: PageProps) {
@@ -76,6 +90,7 @@ export default async function DirectoryPage({ searchParams }: PageProps) {
       sort: (filters.sort ?? 'rating') as 'rating' | 'reviews',
       page,
       limit,
+      verifiedOnly: true,
     }),
     listDirectoryFilterOptions(),
   ]);
@@ -86,7 +101,8 @@ export default async function DirectoryPage({ searchParams }: PageProps) {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'Direktori Pendidik Islam Terverifikasi SEMESTA ISLAM',
-    description: 'Daftar pendidik Islam, ustaz, dan ustazah terverifikasi Lajnah.',
+    description:
+      'Daftar pendidik Islam, ustaz, dan ustazah yang kredensial & sanadnya telah diverifikasi oleh Lajnah.',
     url: `${siteUrl}/directory`,
     numberOfItems: result.total,
     itemListElement: result.educators.map((edu, idx) => ({

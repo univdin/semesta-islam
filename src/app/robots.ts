@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-export const metadataRoute = 'force-dynamic';
+export const dynamic = 'force-dynamic';
 
 export default function robots(): MetadataRoute.Robots {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ilmify.id';
@@ -16,7 +16,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: ['GPTBot', 'ChatGPT-User', 'ClaudeBot', 'PerplexityBot', 'GoogleOther', 'Bingbot'],
         allow: ['/', '/directory', '/topics', '/educator/*', '/about', '/faq', '/changelog', '/developer', '/llms.txt'],
-        disallow: ['/api/', '/management/', '/member/', '/educator/workspace'],
+        disallow: ['/api/', '/management/', '/member/', '/educator/workspace', '/learner/'],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

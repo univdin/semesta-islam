@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Calendar, User, Phone, Award, Info, CheckCircle, AlertCircle, History, BookOpen, MapPin, ClipboardList, ArrowRight } from 'lucide-react';
 import { BookingInquirySchema } from '@/lib/validations';
 import type { EducatorDetail } from '@/lib/educators/service';
@@ -24,6 +25,7 @@ const VERIFICATION_STATUS: Record<VerificationStatus, { label: string; cls: stri
 
 export function BookingClient({ educator, courseId }: BookingClientProps) {
   const toast = useToast();
+  const router = useRouter();
   const [learningMethod, setLearningMethod] = useState<'ONLINE_ZOOM' | 'PRIVATE_HOME' | 'GROUP_MAJELIS'>(
     (educator.method === 'Online (Zoom / Google Meet)') ? 'ONLINE_ZOOM' : 
     (educator.method === 'Privat Tatap Muka di Rumah') ? 'PRIVATE_HOME' : 'GROUP_MAJELIS'
@@ -40,8 +42,9 @@ export function BookingClient({ educator, courseId }: BookingClientProps) {
   const [result, setResult] = useState<{
     bookingId: string;
     ledgerPointsEarned: number;
-    invoiceStatus: string;
-    paymentMode: string;
+    paymentAmount: number;
+    invoiceStatus: string | null;
+    paymentMode: string | null;
   } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,6 +80,15 @@ export function BookingClient({ educator, courseId }: BookingClientProps) {
 
       const body = await res.json();
 
+      if (res.status === 401) {
+        // Session expired / not authenticated (server-side identity check).
+        // Redirect to login preserving the booking page so the user returns.
+        const redirect = encodeURIComponent(`/booking?educatorId=${educator.id}`);
+        router.push(`/login?redirect=${redirect}`);
+        router.refresh();
+        return;
+      }
+
       if (!res.ok || !body.success) {
         const msg = body.message || 'Pengajuan gagal dikirim. Silakan coba lagi.';
         setStatus('error');
@@ -93,8 +105,9 @@ export function BookingClient({ educator, courseId }: BookingClientProps) {
       setResult({
         bookingId: body.data?.bookingId ?? '',
         ledgerPointsEarned: body.data?.ledgerPointsEarned ?? 50,
-        invoiceStatus: body.data?.invoiceStatus ?? 'SIMULATED',
-        paymentMode: body.data?.paymentMode ?? 'mock',
+        paymentAmount: body.data?.paymentAmount ?? 0,
+        invoiceStatus: body.data?.invoiceStatus ?? null,
+        paymentMode: body.data?.paymentMode ?? null,
       });
     } catch {
       const msg = 'Tidak dapat terhubung ke server. Pastikan layanan backend berjalan.';
@@ -188,7 +201,7 @@ export function BookingClient({ educator, courseId }: BookingClientProps) {
           <div className="mt-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-left max-w-md mx-auto space-y-1">
             <p className="text-xs font-semibold text-amber-900 flex items-center gap-2">
               <Info className="w-4 h-4 shrink-0" />
-              SIMULATED_INTERNAL — Belum ada pembayaran riil.
+              Belum ada pembayaran — tagihan hanya dibuat setelah sesi dikonfirmasi pendidik.
             </p>
           </div>
 

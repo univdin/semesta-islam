@@ -1,5 +1,5 @@
 /**
- * SEMESTA ISLAM — Demo Identity Session (Development Only)
+ * ILMIFY — Demo Identity Session (Development Only)
  * Decisions: DECISION-08 (demo identity retention for dev/testing only).
  * Sets a server-read, httpOnly demo identity cookie. Enabled ONLY when
  * isDemoMode() is true (NODE_ENV !== production && APP_ENV === development &&

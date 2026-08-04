@@ -1,8 +1,10 @@
 import React from 'react';
+import { CopyButton } from './CopyButton';
 
 export const metadata = {
   title: 'Ambassador Syi\'ar Komunitas — ILMIFY',
   description: 'Pusat Syi\'ar Komunitas SEMESTA ISLAM: Menyebarkan manfaat dan menghubungkan penuntut ilmu.',
+  robots: { index: false, follow: false },
 };
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ilmify.id';
@@ -41,12 +43,14 @@ export default function AmbassadorPage() {
             <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono break-all text-emerald-900">
               {`${siteUrl}/discovery?ref=AMBASSADOR_USER_KEY`}
             </div>
-            <button
-              type="button"
-              className="w-full py-2.5 bg-emerald-900 hover:bg-emerald-800 text-white font-medium text-xs rounded-xl transition"
-            >
-              Salin Link Syi'ar Unik
-            </button>
+            <CopyButton
+              text={`${siteUrl}/discovery?ref=AMBASSADOR_USER_KEY`}
+              label="Salin Link Syi'ar Unik"
+            />
+            <p className="text-[10px] text-slate-400">
+              Link di atas menggunakan contoh kunci pengguna (<code>AMBASSADOR_USER_KEY</code>). Kunci nyata
+              tersedia setelah program ambassador dibuka.
+            </p>
           </div>
 
           <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-sm">
@@ -60,12 +64,11 @@ export default function AmbassadorPage() {
                 "Assalamu'alaikum wr. wb. Bagi bapak/ibu yang ingin berkonsultasi mengenai kebutuhan pembelajaran Al-Qur'an dan ilmu agama untuk keluarga, SEMESTA ISLAM menyediakan diagnostik online gratis untuk rekomendasi guru ber-sanad..."
               </p>
             </div>
-            <button
-              type="button"
-              className="w-full py-2.5 border border-emerald-900 text-emerald-900 hover:bg-emerald-50 font-medium text-xs rounded-xl transition"
-            >
-              Salin Template Pesan WA
-            </button>
+            <CopyButton
+              text={`Assalamu'alaikum wr. wb. Bagi bapak/ibu yang ingin berkonsultasi mengenai kebutuhan pembelajaran Al-Qur'an dan ilmu agama untuk keluarga, SEMESTA ISLAM menyediakan diagnostik online gratis untuk rekomendasi guru ber-sanad. Informasi lebih lanjut: ${siteUrl}/discovery`}
+              label="Salin Template Pesan WA"
+              className="w-full py-2.5 border border-emerald-900 text-emerald-900 hover:bg-emerald-50 font-medium text-xs rounded-xl transition inline-flex items-center justify-center gap-2"
+            />
           </div>
         </div>
       </div>

@@ -1,9 +1,11 @@
 import React from 'react';
+import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Diagnostik & Rekomendasi Pembelajaran — ILMIFY',
   description: 'Temukan jalur pembelajaran Islam yang sesuai dengan kebutuhan keluarga dan tingkat pemahaman Anda.',
+  robots: { index: false, follow: false },
   openGraph: {
     title: 'Diagnostik Pembelajaran Islam — ILMIFY',
     description: 'Temukan rekomendasi metode, materi, dan pengajar ber-sanad yang tepat untuk Anda & keluarga.',
@@ -25,7 +27,7 @@ export default function DiscoveryPage() {
         {/* Header */}
         <div className="text-center space-y-4">
           <span className="inline-block px-3 py-1 bg-amber-500/10 text-amber-700 font-medium text-xs rounded-full border border-amber-500/20">
-            Syi'ar & Discovery Engine
+            Syi'ar & Discovery Engine · Pratinjau (UI)
           </span>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-emerald-950 font-serif">
             Diagnostik Pembelajaran Islam Keluarga
@@ -81,14 +83,14 @@ export default function DiscoveryPage() {
 
             <div className="pt-4 flex items-center justify-between border-t border-slate-100">
               <span className="text-xs text-slate-500">
-                * Hasil diagnostik memberikan panduan rekomendasi tanpa kewajiban pendaftaran.
+                * Alur diagnostik ini masih berupa pratinjau. Telusuri pendidik terverifikasi langsung dari direktori.
               </span>
-              <button
-                type="button"
-                className="px-6 py-2.5 bg-emerald-900 hover:bg-emerald-800 text-white font-medium text-sm rounded-xl transition shadow-sm"
+              <Link
+                href="/directory"
+                className="px-6 py-2.5 bg-emerald-900 hover:bg-emerald-800 text-white font-medium text-sm rounded-xl transition shadow-sm inline-flex items-center gap-2"
               >
-                Lanjutkan Diagnostik
-              </button>
+                Telusuri Direktori Pendidik
+              </Link>
             </div>
           </form>
         </div>

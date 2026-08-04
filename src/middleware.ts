@@ -62,9 +62,19 @@ export async function middleware(request: NextRequest) {
     }
 
     if (!isAuthenticated) {
-      const demoCookie = request.cookies.get('semesta_demo_identity')?.value;
-      if (demoCookie && demoCookie.endsWith('@localhost.test')) {
-        isAuthenticated = true;
+      // Demo identity is ONLY accepted outside production AND when demo mode is
+      // explicitly enabled (mirrors isDemoMode() in src/lib/auth/session.ts,
+      // duplicated here because middleware runs on the Edge runtime and cannot
+      // import the server-only session module). SEC-07 guardrail.
+      const demoModeEnabled =
+        process.env.NODE_ENV !== 'production' &&
+        process.env.APP_ENV === 'development' &&
+        process.env.LOCAL_DEMO_MODE === 'true';
+      if (demoModeEnabled) {
+        const demoCookie = request.cookies.get('semesta_demo_identity')?.value;
+        if (demoCookie && demoCookie.endsWith('@localhost.test')) {
+          isAuthenticated = true;
+        }
       }
     }
 

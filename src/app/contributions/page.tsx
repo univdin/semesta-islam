@@ -3,6 +3,7 @@ import React from 'react';
 export const metadata = {
   title: 'Apresiasi Kontributor Syi\'ar & XP Ledger — ILMIFY',
   description: 'Pusat apresiasi kontribusi komunitas dan transparansi audit XP Ledger.',
+  robots: { index: false, follow: false },
 };
 
 export default function ContributionsPage() {
@@ -19,6 +20,15 @@ export default function ContributionsPage() {
           </h1>
           <p className="text-sm text-emerald-100/80 max-w-2xl">
             Sistem pengakuan kontribusi komunitas SEMESTA ISLAM. XP adalah skor pengakuan aktivitas terkualifikasi, bukan bentuk reputasi keilmuan atau ijazah sanad.
+          </p>
+        </div>
+
+        {/* Governance Notice Alert */}
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-900 space-y-1">
+          <p className="font-semibold">Pratinjau — Data Ilustrasi (Bukan Data Riil)</p>
+          <p className="text-amber-800">
+            Status, skor, dan entri ledger pada halaman ini adalah contoh ilustrasi untuk pengembangan.
+            Data riil hanya ditampilkan setelah program kontributor dibuka dan terhubung ke ledger.
           </p>
         </div>
 

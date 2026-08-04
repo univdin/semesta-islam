@@ -296,7 +296,7 @@ export default async function HomePage() {
           <div className="footer-brand">
             <Link href="/" className="brand-logo">
               <span className="brand-title">
-                SEMESTA<span className="brand-accent">ISLAM</span>
+                ILMIFY<span className="brand-accent">.ID</span>
               </span>
             </Link>
             <p>

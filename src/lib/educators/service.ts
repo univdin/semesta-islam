@@ -57,8 +57,12 @@ function toEducatorSummary(educator: EducatorWithProfile): EducatorSummary {
   };
 }
 
-export async function listEducatorSummaries(options: { take?: number } = {}): Promise<EducatorSummary[]> {
+export async function listEducatorSummaries(options: {
+  take?: number;
+  verifiedOnly?: boolean;
+} = {}): Promise<EducatorSummary[]> {
   const educators = await prisma.educatorProfile.findMany({
+    where: options.verifiedOnly ? { verifiedStatus: 'VERIFIED' } : undefined,
     include: educatorInclude,
     orderBy: [{ ratingAverage: 'desc' }, { reviewsCount: 'desc' }],
     take: options.take,
@@ -159,6 +163,7 @@ export interface EducatorSearchFilters {
   sort?: 'rating' | 'reviews';
   page?: number;
   limit?: number;
+  verifiedOnly?: boolean;
 }
 
 export interface EducatorSearchResult {
@@ -179,6 +184,10 @@ export async function searchEducators(
   const skip = (page - 1) * limit;
 
   const where: Prisma.EducatorProfileWhereInput = {};
+
+  if (filters.verifiedOnly) {
+    where.verifiedStatus = 'VERIFIED';
+  }
 
   if (filters.method && filters.method !== 'all') {
     where.teachingMethod = filters.method;

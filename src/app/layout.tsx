@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   description:
     'Ekosistem digital terpercaya yang menghubungkan keluarga & pembelajar dengan ustaz, ustazah, dan lembaga Islam terverifikasi sanad keilmuannya.',
   keywords: [
-    'SEMESTA ISLAM',
+    'ILMIFY',
     'Pendidik Islam Terverifikasi',
     'Cari Ustaz Online',
     'Guru Mengaji Privat',

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Sparkles,
   Sun,
@@ -19,6 +19,9 @@ import {
   Building2,
   Code2,
   ShieldCheck,
+  LogOut,
+  LogIn,
+  UserPlus,
 } from 'lucide-react';
 import type { UserRole } from '@/types';
 
@@ -51,8 +54,10 @@ const PREVIEW_LINKS = [
 export function Header({ identity, demoMode }: HeaderProps) {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [workspaceOpen, setWorkspaceOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const workspaceRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const saved = localStorage.getItem('semesta_theme') as 'light' | 'dark' || 'light';
@@ -81,6 +86,19 @@ export function Header({ identity, demoMode }: HeaderProps) {
   const isEducator = roles.includes('EDUCATOR');
   const isVerifier = roles.includes('LAJNAH_VERIFIER') || roles.includes('FOUNDER_ADMIN');
   const isFounder = roles.includes('FOUNDER_ADMIN');
+
+  const handleLogout = async () => {
+    if (signingOut) return;
+    setSigningOut(true);
+    setWorkspaceOpen(false);
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } finally {
+      setSigningOut(false);
+      router.push('/login');
+      router.refresh();
+    }
+  };
 
   return (
     <header className="top-bar">
@@ -214,7 +232,7 @@ export function Header({ identity, demoMode }: HeaderProps) {
                       <span className="drop-item-desc">Referensi endpoint & skema</span>
                     </span>
                   </Link>
-                  
+
                   {isFounder && (
                     <>
                       <div className="drop-divider" />
@@ -238,15 +256,50 @@ export function Header({ identity, demoMode }: HeaderProps) {
                       })}
                     </>
                   )}
+
+                  <div className="drop-divider" />
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    disabled={signingOut}
+                    className="drop-item w-full text-left"
+                    role="menuitem"
+                  >
+                    {signingOut ? (
+                      <svg className="animate-spin w-4 h-4 text-red-600 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                      </svg>
+                    ) : (
+                      <LogOut className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                    )}
+                    <span>
+                      <span className="drop-item-label">{signingOut ? 'Keluar…' : 'Keluar'}</span>
+                      <span className="drop-item-desc">Akhiri sesi beranda ini</span>
+                    </span>
+                  </button>
                 </div>
               )}
             </div>
           )}
 
           {!identity && (
-            <Link href="/login" className="nav-link font-semibold text-emerald-900 dark:text-emerald-100 hidden sm:block">
-              Masuk
-            </Link>
+            <>
+              <Link
+                href="/login"
+                className="nav-link font-semibold text-emerald-900 dark:text-emerald-100 hidden sm:inline-flex items-center gap-1.5"
+              >
+                <LogIn className="w-4 h-4" />
+                Masuk
+              </Link>
+              <Link
+                href="/login?register=1"
+                className="btn btn-primary hidden sm:inline-flex items-center gap-1.5"
+              >
+                <UserPlus className="w-4 h-4" />
+                Daftar
+              </Link>
+            </>
           )}
 
           <button onClick={toggleTheme} className="icon-btn" aria-label="Ubah tema">

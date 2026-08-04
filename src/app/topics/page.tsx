@@ -7,20 +7,30 @@ import { isPlatformSettingEnabled, PLATFORM_SETTING_KEYS } from '@/lib/settings/
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'Topik Pembelajaran — ILMIFY',
-  description:
-    'Jelajahi topik pembelajaran Islam: tahsin, fiqh, hadits, aqidah, bahasa Arab, dan lainnya, beserta pendidik terverifikasi.',
-  alternates: { canonical: '/topics' },
-  openGraph: {
+export async function generateMetadata(): Promise<Metadata> {
+  const topicsEnabled = await isPlatformSettingEnabled(PLATFORM_SETTING_KEYS.PUBLIC_TOPICS_ENABLED);
+
+  const baseMetadata: Metadata = {
     title: 'Topik Pembelajaran — ILMIFY',
     description:
-      'Jelajahi topik pembelajaran Islam beserta pendidik terverifikasi.',
-    url: '/topics',
-    type: 'website',
-    images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'Topik Pembelajaran — ILMIFY' }],
-  },
-};
+      'Jelajahi topik pembelajaran Islam: tahsin, fiqh, hadits, aqidah, bahasa Arab, dan lainnya, beserta pendidik terverifikasi.',
+    alternates: { canonical: '/topics' },
+    openGraph: {
+      title: 'Topik Pembelajaran — ILMIFY',
+      description:
+        'Jelajahi topik pembelajaran Islam beserta pendidik terverifikasi.',
+      url: '/topics',
+      type: 'website',
+      images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'Topik Pembelajaran — ILMIFY' }],
+    },
+  };
+
+  if (!topicsEnabled) {
+    return { ...baseMetadata, robots: { index: false, follow: false } };
+  }
+
+  return baseMetadata;
+}
 
 export default async function TopicsIndexPage() {
   const topicsEnabled = await isPlatformSettingEnabled(PLATFORM_SETTING_KEYS.PUBLIC_TOPICS_ENABLED);

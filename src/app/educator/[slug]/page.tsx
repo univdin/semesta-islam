@@ -48,8 +48,8 @@ export async function generateMetadata({
     return { title: 'Pendidik Tidak Ditemukan — SEMESTA ISLAM' };
   }
   const canonicalSlug = resolution.matchedBy === 'uuid' ? educator.slug : slug;
-  return {
-    title: `${educator.name} — Pendidik ${educator.verified ? 'Terverifikasi' : ''} ILMIFY`,
+  const baseMetadata: Metadata = {
+    title: `${educator.name} — Pendidik ${educator.verified ? 'Terverifikasi' : 'Belum Terverifikasi'} — ILMIFY`,
     description: `${educator.name}${educator.title ? `, ${educator.title}` : ''}${educator.location ? ` (${educator.location})` : ''}. Pelajari kredensial, sanad, dan profil pendidik di SEMESTA ISLAM.`,
     alternates: { canonical: `/educator/${canonicalSlug}` },
     openGraph: {
@@ -69,6 +69,15 @@ export async function generateMetadata({
       ],
     },
   };
+
+  // Unverified educators are not indexable trust entities: exclude them from
+  // search engines until Lajnah verification completes (trust-gate contract
+  // mirrored in the directory and sitemap).
+  if (!educator.verified) {
+    return { ...baseMetadata, robots: { index: false, follow: false } };
+  }
+
+  return baseMetadata;
 }
 
 const VERIFICATION_LABELS: Record<VerificationStatus, string> = {

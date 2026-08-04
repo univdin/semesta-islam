@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import { Mail, MapPin, MessageSquare, ShieldCheck, Clock, CheckCircle2 } from 'lucide-react';
+import { Mail, ShieldCheck, Clock, MessageSquare } from 'lucide-react';
+import { ContactForm } from './ContactForm';
 
 export const metadata: Metadata = {
   title: 'Hubungi Kami (Contact Us) — ILMIFY',
@@ -67,52 +67,7 @@ export default function ContactPage() {
           {/* Form */}
           <div className="md:col-span-2 glass-panel p-6 sm:p-8 rounded-2xl">
             <h2 className="text-lg font-bold text-[#0F3D2E] mb-4">Kirim Pesan Bantuan</h2>
-            <form className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Nama Lengkap</label>
-                  <input
-                    type="text"
-                    placeholder="contoh: Ahmad Fauzi"
-                    className="w-full text-sm p-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#0F3D2E] bg-white/80"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Alamat Email</label>
-                  <input
-                    type="email"
-                    placeholder="contoh: ahmad@gmail.com"
-                    className="w-full text-sm p-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#0F3D2E] bg-white/80"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Kategori Pertanyaan</label>
-                <select className="w-full text-sm p-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#0F3D2E] bg-white/80">
-                  <option value="GENERAL">Pertanyaan Umum Platform</option>
-                  <option value="BOOKING">Pengajuan &amp; Jadwal Belajar</option>
-                  <option value="VERIFICATION">Verifikasi Pendidik / Lajnah</option>
-                  <option value="TECHNICAL">Kendala Teknis Account</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Pesan Anda</label>
-                <textarea
-                  rows={4}
-                  placeholder="Tuliskan pertanyaan atau kendala Anda secara rinci..."
-                  className="w-full text-sm p-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#0F3D2E] bg-white/80 resize-none"
-                />
-              </div>
-
-              <button
-                type="button"
-                className="w-full btn btn-primary text-sm py-3"
-              >
-                Kirim Pesan Support
-              </button>
-            </form>
+            <ContactForm />
           </div>
         </div>
       </div>

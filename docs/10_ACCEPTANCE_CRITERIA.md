@@ -42,7 +42,7 @@ Setiap modul dan fitur pada SEMESTA ISLAM wajib memenuhi **Acceptance Criteria (
 ### 2.4 Modul 4: Booking Inquiry & Virtual Economic Ledger
 - [ ] **Multi-Step Booking**: Formulir reservasi bimbingan berjalan 3-langkah (Metode & Jadwal $\rightarrow$ Data Pembelajar $\rightarrow$ Konfirmasi). — `[MVP VERIFIED]`
 - [ ] **Virtual Ledger Accrual**: Setiap inkuiri mencatat transaksi simulasi pada `economic_ledgers` (insentif poin `LearnerPoints` & komisi platform). — `[MVP VERIFIED]`
-- [ ] **Pre-Wired Payment Adapter**: `MockPaymentGatewayAdapter` merespon transaksi simulasi dengan sukses dan siap diganti dengan API Key Midtrans/Xendit di kemudian hari. — `[MVP VERIFIED]`
+- [ ] **Payment Fail-Closed Contract**: Inkuiri booking tidak membuat invoice/tagihan (payment provider aktif adalah fail-closed; respons API mengembalikan `paymentAmount: 0`, `invoiceStatus: null`, `paymentMode: null`). Adapter `PaymentGatewayAdapter` tersedia sebagai seam siap-swap ke Midtrans/Xendit, namun TIDAK dipanggil pada jalur inkuiri MVP. — `[MVP VERIFIED]`
 
 ### 2.5 Modul 5: Referral, Affiliate & Gamifikasi
 - [ ] **Referral Code Generation**: Pengguna dapat membuat kode unik (`REF-USTADZ-123`). — `[DEFERRED]`

@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { BookingInquirySchema } from '@/lib/validations';
 import { createBookingInquiry } from '@/lib/bookings/service';
-import { MockPaymentGatewayAdapter } from '@/lib/payment/mockAdapter';
 import { getServerIdentity, unauthorizedIdentity } from '@/lib/auth/session';
 
 /**
@@ -10,6 +9,13 @@ import { getServerIdentity, unauthorizedIdentity } from '@/lib/auth/session';
  * hardcoded demo-user fallback. Unauthenticated requests are rejected 401.
  * Demo authentication flows through the existing demo session cookie
  * (semesta_demo_identity) only while LOCAL_DEMO_MODE is enabled.
+ *
+ * MVP note: inquiries carry NO pricing and NO payment. Creating a payment
+ * record here would require the fail-closed payment provider gate
+ * (getPaymentProvider in src/lib/payment/service.ts), which intentionally
+ * throws in production without a real provider configured. We therefore never
+ * fabricate an invoice; payment fields are reported as absent until a payment
+ * provider is wired and a booking is confirmed.
  */
 export async function POST(request: Request) {
   try {
@@ -51,14 +57,6 @@ export async function POST(request: Request) {
       );
     }
 
-    const paymentAdapter = new MockPaymentGatewayAdapter();
-    const invoice = await paymentAdapter.createInvoice({
-      bookingId: result.data!.bookingId,
-      learnerUserId,
-      amount: 0,
-      description: `Inquiry booking for educator ${data.educatorId}`,
-    });
-
     return NextResponse.json(
       {
         success: true,
@@ -70,8 +68,9 @@ export async function POST(request: Request) {
           learningMethod: data.learningMethod,
           preferredSchedule: data.preferredSchedule,
           ledgerPointsEarned: result.data!.ledgerPointsEarned,
-          invoiceStatus: invoice.status,
-          paymentMode: invoice.mode,
+          paymentAmount: 0,
+          invoiceStatus: null,
+          paymentMode: null,
         },
       },
       { status: 201 }
