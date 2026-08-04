@@ -92,6 +92,20 @@ export async function submitVerificationRequest(
       },
     });
 
+    await createNotification(
+      {
+        userId: educator.userId,
+        type: 'VERIFICATION_SUBMITTED',
+        title: 'Verifikasi Diajukan',
+        body: 'Pengajuan verifikasi Anda telah masuk ke antrean Lajnah untuk ditelaah.',
+        metadata: {
+          verificationRequestId: created.id,
+          newStatus: 'SUBMITTED',
+        },
+      },
+      tx
+    );
+
     return created;
   });
 
@@ -167,13 +181,26 @@ export async function reviewVerificationRequest(
       data: { verifiedStatus: input.targetStatus },
     });
 
-    // Issued badges (only on VERIFIED): Lajnah + Sanad verification.
+    // Badge lifecycle. Canonical contract (docs/10_ACCEPTANCE_CRITERIA.md §2.3):
+    // a single Lajnah badge is issued when the Lajnah approves the application.
+    // SANAD_VERIFIED is NOT auto-issued here — it only ever follows explicit,
+    // per-record sanad verification (see verifySanadRecord). Each badge must
+    // correspond to a defensible, revocable claim.
     if (isVerified) {
-      await tx.credentialBadge.createMany({
-        data: [
-          { educatorId: request.educatorId, badgeType: 'LAJNAH_VERIFIED' },
-          { educatorId: request.educatorId, badgeType: 'SANAD_VERIFIED' },
-        ],
+      await tx.credentialBadge.deleteMany({ where: { educatorId: request.educatorId } });
+      await tx.credentialBadge.create({
+        data: { educatorId: request.educatorId, badgeType: 'LAJNAH_VERIFIED' },
+      });
+    }
+
+    // Revocation removes every verification badge and demotes the educator's
+    // verified knowledge claims: a revoked educator must no longer emit
+    // verified public projections (profiles, topic edges, structured data).
+    if (input.targetStatus === 'REVOKED') {
+      await tx.credentialBadge.deleteMany({ where: { educatorId: request.educatorId } });
+      await tx.knowledgeClaim.updateMany({
+        where: { educatorId: request.educatorId, status: 'VERIFIED' },
+        data: { status: 'UNVERIFIED', verifiedById: null, verifiedAt: null },
       });
     }
 
@@ -228,6 +255,104 @@ export async function reviewVerificationRequest(
       previousStatus: input.currentStatus,
       newStatus: input.targetStatus,
     },
+  };
+}
+
+export interface SanadVerificationInput {
+  sanadRecordId: string;
+  verifierUserId: string;
+  verifierRoles: UserRole[];
+  verified: boolean;
+  note?: string;
+}
+
+/**
+ * Per-record sanad verification (Lajnah/Founder only). This is the write path
+ * for the canonical SanadRecord.verifiedByLajnah field and the ONLY way the
+ * SANAD_VERIFIED badge may be issued. The badge reflects defensible evidence:
+ * at least one sanad record explicitly verified by Lajnah.
+ */
+export async function verifySanadRecord(
+  input: SanadVerificationInput
+): Promise<ServiceResult<{ sanadRecordId: string; verifiedByLajnah: boolean; sanadVerifiedBadge: boolean }>> {
+  if (!isAuthorizedVerifierRole(input.verifierRoles)) {
+    return {
+      success: false,
+      statusCode: 403,
+      message: 'Forbidden: Only LAJNAH_VERIFIER or FOUNDER_ADMIN can verify sanad records.',
+    };
+  }
+
+  const sanad = await prisma.sanadRecord.findUnique({
+    where: { id: input.sanadRecordId },
+    include: { educator: { select: { id: true, userId: true } } },
+  });
+
+  if (!sanad) {
+    return { success: false, statusCode: 404, message: 'Sanad record not found' };
+  }
+
+  const result = await prisma.$transaction(async (tx) => {
+    await tx.sanadRecord.update({
+      where: { id: input.sanadRecordId },
+      data: { verifiedByLajnah: input.verified },
+    });
+
+    // Recompute the SANAD_VERIFIED badge from evidence: present iff the
+    // educator holds at least one Lajnah-verified sanad record.
+    const verifiedCount = await tx.sanadRecord.count({
+      where: { educatorId: sanad.educatorId, verifiedByLajnah: true },
+    });
+    const shouldHaveBadge = verifiedCount > 0;
+
+    await tx.credentialBadge.deleteMany({
+      where: { educatorId: sanad.educatorId, badgeType: 'SANAD_VERIFIED' },
+    });
+    if (shouldHaveBadge) {
+      await tx.credentialBadge.create({
+        data: { educatorId: sanad.educatorId, badgeType: 'SANAD_VERIFIED' },
+      });
+    }
+
+    await tx.auditLog.create({
+      data: {
+        actorUserId: input.verifierUserId,
+        actionType: input.verified ? 'SANAD_VERIFIED' : 'SANAD_REVIEW_REVERTED',
+        entityAffected: 'sanad_records',
+        metadata: {
+          entityId: input.sanadRecordId,
+          educatorId: sanad.educatorId,
+          verifiedByLajnah: input.verified,
+          note: input.note ?? null,
+        },
+      },
+    });
+
+    await createNotification(
+      {
+        userId: sanad.educator.userId,
+        type: input.verified ? 'VERIFICATION_REVIEWED' : 'VERIFICATION_REVIEWED',
+        title: input.verified ? 'Sanad Diverifikasi Lajnah' : 'Verifikasi Sanad Dicabut',
+        body: input.verified
+          ? 'Salah satu sanad keilmuan Anda telah diverifikasi Lajnah dan badge SANAD_VERIFIED aktif.'
+          : 'Verifikasi sanad keilmuan Anda dicabut oleh Lajnah.',
+        metadata: {
+          sanadRecordId: input.sanadRecordId,
+          verifiedByLajnah: input.verified,
+          note: input.note ?? null,
+        },
+      },
+      tx
+    );
+
+    return { verifiedByLajnah: input.verified, sanadVerifiedBadge: shouldHaveBadge };
+  });
+
+  return {
+    success: true,
+    statusCode: 200,
+    message: `Sanad record ${input.sanadRecordId} verification updated to ${input.verified}`,
+    data: { sanadRecordId: input.sanadRecordId, ...result },
   };
 }
 

@@ -207,6 +207,34 @@ describe('idempotency', () => {
     expect(mocks.ledgers.length).toBe(1);
   });
 
+  it('same key + materially different payload → deterministic conflict: original wins, no new effect', async () => {
+    await executeEconomicEffect({
+      type: 'EARN' as const,
+      actorUserId: ACTOR,
+      accountOwnerId: OWNER,
+      amount: 50,
+      idempotencyKey: 'earn:dupe',
+      source: 'BOOKING_INQUIRY',
+    });
+
+    const replayed = await executeEconomicEffect({
+      type: 'EARN' as const,
+      actorUserId: ACTOR,
+      accountOwnerId: OWNER,
+      amount: 5000, // materially different amount
+      idempotencyKey: 'earn:dupe',
+      source: 'BOOKING_INQUIRY',
+    });
+
+    // The original command is authoritative; the replayed payload must be ignored.
+    expect(replayed.duplicate).toBe(true);
+    expect(replayed.transaction.amount).toBe(50);
+    expect(replayed.entry).toBeUndefined();
+    expect(mocks.transactions).toHaveLength(1);
+    expect(mocks.ledgers).toHaveLength(1);
+    expect(mocks.ledgers[0].amount).toBe(50);
+  });
+
   it('completed-first retry does not duplicate the balance effect', async () => {
     const input = {
       type: 'EARN' as const,

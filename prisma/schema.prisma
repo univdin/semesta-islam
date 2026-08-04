@@ -373,6 +373,7 @@ model CredentialBadge {
 
   educator EducatorProfile @relation(fields: [educatorId], references: [id], onDelete: Cascade)
 
+  @@unique([educatorId, badgeType])
   @@map("credential_badges")
 }
 

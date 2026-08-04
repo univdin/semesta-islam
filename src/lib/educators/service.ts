@@ -6,6 +6,7 @@
 import { prisma } from '@/lib/db';
 import type { Prisma } from '@prisma/client';
 import { EducatorSummary, LearningMethod, VerificationStatus } from '@/types';
+import { productionTrustEducatorFilter, productionTrustUserFilter, isTrustedEducator } from '@/lib/auth/production';
 import {
   computeRelatedEducators,
   type RelatedEducator,
@@ -46,7 +47,7 @@ function toEducatorSummary(educator: EducatorWithProfile): EducatorSummary {
     name: profile?.fullName ?? educator.user.email,
     title: educator.titleSuffix ?? '',
     location: profile?.locationCity ?? '',
-    rating: educator.ratingAverage,
+    rating: educator.reviewsCount > 0 ? educator.ratingAverage : 0,
     reviewsCount: educator.reviewsCount,
     expertise: categories,
     avatar: profile?.avatarUrl ?? '',
@@ -61,8 +62,12 @@ export async function listEducatorSummaries(options: {
   take?: number;
   verifiedOnly?: boolean;
 } = {}): Promise<EducatorSummary[]> {
+  const trust = productionTrustEducatorFilter();
   const educators = await prisma.educatorProfile.findMany({
-    where: options.verifiedOnly ? { verifiedStatus: 'VERIFIED' } : undefined,
+    where: {
+      ...trust,
+      ...(options.verifiedOnly ? { verifiedStatus: 'VERIFIED' } : {}),
+    },
     include: educatorInclude,
     orderBy: [{ ratingAverage: 'desc' }, { reviewsCount: 'desc' }],
     take: options.take,
@@ -78,7 +83,9 @@ export async function getEducatorSummary(id: string): Promise<EducatorSummary | 
     include: educatorInclude,
   });
 
-  return educator ? toEducatorSummary(educator) : null;
+  if (!educator) return null;
+  if (!isTrustedEducator(educator)) return null;
+  return toEducatorSummary(educator);
 }
 
 /**
@@ -91,16 +98,20 @@ export async function getEducatorBySlug(slug: string): Promise<EducatorDetail | 
 }
 
 export async function countEducators(): Promise<number> {
-  return prisma.educatorProfile.count();
+  return prisma.educatorProfile.count({ where: productionTrustEducatorFilter() });
 }
 
 export async function countVerifiedEducators(): Promise<number> {
-  return prisma.educatorProfile.count({ where: { verifiedStatus: 'VERIFIED' } });
+  return prisma.educatorProfile.count({
+    where: { ...productionTrustEducatorFilter(), verifiedStatus: 'VERIFIED' },
+  });
 }
 
 export async function countEducatorCities(): Promise<number> {
   const profiles = await prisma.userProfile.findMany({
-    where: { user: { educator: { isNot: null } } },
+    where: {
+      user: { ...(productionTrustUserFilter() ?? {}), educator: { isNot: null } },
+    },
     select: { locationCity: true },
     distinct: ['locationCity'],
   });
@@ -118,13 +129,14 @@ export interface DirectoryFilterOptions {
  * cities. Deterministic alphabetical ordering.
  */
 export async function listDirectoryFilterOptions(): Promise<DirectoryFilterOptions> {
+  const userTrust = productionTrustUserFilter() ?? {};
   const [categories, profiles] = await Promise.all([
     prisma.courseCatalog.findMany({
       select: { category: true },
       distinct: ['category'],
     }),
     prisma.userProfile.findMany({
-      where: { user: { educator: { isNot: null } } },
+      where: { user: { ...userTrust, educator: { isNot: null } } },
       select: { locationCity: true },
       distinct: ['locationCity'],
     }),
@@ -183,7 +195,9 @@ export async function searchEducators(
   const limit = Math.min(50, Math.max(1, filters.limit ?? 9));
   const skip = (page - 1) * limit;
 
-  const where: Prisma.EducatorProfileWhereInput = {};
+  const where: Prisma.EducatorProfileWhereInput = {
+    ...productionTrustEducatorFilter(),
+  };
 
   if (filters.verifiedOnly) {
     where.verifiedStatus = 'VERIFIED';
@@ -366,6 +380,7 @@ async function getEducatorDetailByLookup(
   });
 
   if (!educator) return null;
+  if (!isTrustedEducator(educator)) return null;
 
   const profile = educator.user.profile;
   const categories = Array.from(new Set(educator.courses.map((c) => c.category)));
@@ -377,7 +392,7 @@ async function getEducatorDetailByLookup(
     name: profile?.fullName ?? educator.user.email,
     title: educator.titleSuffix ?? '',
     location: profile?.locationCity ?? '',
-    rating: educator.ratingAverage,
+    rating: educator.reviewsCount > 0 ? educator.ratingAverage : 0,
     reviewsCount: educator.reviewsCount,
     expertise: categories,
     avatar: profile?.avatarUrl ?? '',

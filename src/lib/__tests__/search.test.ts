@@ -22,6 +22,7 @@ vi.mock('@/lib/db', () => ({ prisma: mocks.prisma }));
 
 import { searchEducators } from '@/lib/educators/service';
 import { DirectoryFilterSchema } from '@/lib/validations';
+import { productionTrustEducatorFilter } from '@/lib/auth/production';
 
 function row(id: string, overrides: Record<string, unknown> = {}) {
   return {
@@ -59,7 +60,7 @@ describe('searchEducators — filter construction', () => {
     expect(result.educators).toEqual([]);
     expect(result.hasMore).toBe(false);
     expect(mocks.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ where: {}, take: 9, skip: 0 })
+      expect.objectContaining({ where: productionTrustEducatorFilter(), take: 9, skip: 0 })
     );
   });
 

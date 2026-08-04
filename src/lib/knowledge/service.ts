@@ -247,6 +247,114 @@ export interface CreateClaimInput {
  * Create a knowledge claim. The owning educator may self-declare (status stays
  * UNVERIFIED). Lajnah / founder (VERIFICATION_MANAGE) may set status directly.
  */
+export interface CreateSourceInput {
+  title: string;
+  url?: string;
+  publisher?: string;
+  publishedAt?: string;
+}
+
+/**
+ * Source provenance creation. VERIFICATION_MANAGE (Lajnah/Founder) only:
+ * sources are attestations, not user-generated content. Audit logged.
+ */
+export async function createSource(
+  actor: AuthIdentity,
+  input: CreateSourceInput
+): Promise<ServiceResult<{ sourceId: string }>> {
+  const allowed = await can({ actor, capability: CAPABILITIES.VERIFICATION_MANAGE });
+  if (!allowed) {
+    return {
+      success: false,
+      statusCode: 403,
+      message: 'Forbidden: only holders of verification.manage can create knowledge sources.',
+    };
+  }
+
+  const source = await prisma.$transaction(async (tx) => {
+    const created = await tx.source.create({
+      data: {
+        title: input.title,
+        url: input.url ?? null,
+        publisher: input.publisher ?? null,
+        publishedAt: input.publishedAt ? new Date(input.publishedAt) : null,
+      },
+    });
+
+    await tx.auditLog.create({
+      data: {
+        actorUserId: actor.userId,
+        actionType: 'SOURCE_CREATED',
+        entityAffected: 'sources',
+        metadata: { entityId: created.id, title: created.title },
+      },
+    });
+
+    return created;
+  });
+
+  return {
+    success: true,
+    statusCode: 201,
+    message: 'Knowledge source created',
+    data: { sourceId: source.id },
+  };
+}
+
+export interface CreateEvidenceInput {
+  sourceId?: string;
+  url: string;
+  sha256?: string;
+  description?: string;
+}
+
+/**
+ * Evidence provenance creation. VERIFICATION_MANAGE only: evidence backs
+ * verified claims and must be governed. Audit logged.
+ */
+export async function createEvidence(
+  actor: AuthIdentity,
+  input: CreateEvidenceInput
+): Promise<ServiceResult<{ evidenceId: string }>> {
+  const allowed = await can({ actor, capability: CAPABILITIES.VERIFICATION_MANAGE });
+  if (!allowed) {
+    return {
+      success: false,
+      statusCode: 403,
+      message: 'Forbidden: only holders of verification.manage can create evidence.',
+    };
+  }
+
+  const evidence = await prisma.$transaction(async (tx) => {
+    const created = await tx.evidence.create({
+      data: {
+        sourceId: input.sourceId ?? null,
+        url: input.url,
+        sha256: input.sha256 ?? null,
+        description: input.description ?? null,
+      },
+    });
+
+    await tx.auditLog.create({
+      data: {
+        actorUserId: actor.userId,
+        actionType: 'EVIDENCE_CREATED',
+        entityAffected: 'evidences',
+        metadata: { entityId: created.id, url: created.url },
+      },
+    });
+
+    return created;
+  });
+
+  return {
+    success: true,
+    statusCode: 201,
+    message: 'Knowledge evidence created',
+    data: { evidenceId: evidence.id },
+  };
+}
+
 export async function createClaim(
   actor: AuthIdentity,
   input: CreateClaimInput

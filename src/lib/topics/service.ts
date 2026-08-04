@@ -13,10 +13,11 @@
 
 import { prisma } from '@/lib/db';
 import { slugify } from '@/lib/slugs';
-import { authorize, requirePermission } from '@/lib/auth/authorization';
+import { requirePermission } from '@/lib/auth/authorization';
 import type { AuthorizationResult } from '@/lib/auth/authorization';
 import { CAPABILITIES } from '@/lib/auth/permissions';
 import type { AuthIdentity } from '@/lib/auth/session';
+import { productionTrustEducatorFilter } from '@/lib/auth/production';
 import { TopicStatus } from '@prisma/client';
 import type { Prisma } from '@prisma/client';
 
@@ -156,13 +157,17 @@ export async function getTopicBySlug(
   };
 }
 
-/** Count educators with a VERIFIED SPECIALIZES_IN claim linked to this topic. */
+/** Count educators with a VERIFIED SPECIALIZES_IN claim linked to this topic.
+ *  Only counts educators whose own verification is currently VERIFIED and who
+ *  are trusted production identities (non-demo) — a revoked educator must not
+ *  keep contributing verified topic edges. */
 export async function countVerifiedEducatorsForTopic(topicId: string): Promise<number> {
   return prisma.knowledgeClaim.count({
     where: {
       topicId,
       predicate: 'SPECIALIZES_IN',
       status: 'VERIFIED',
+      educator: { ...productionTrustEducatorFilter(), verifiedStatus: 'VERIFIED' },
     },
   });
 }
@@ -180,6 +185,7 @@ export async function listVerifiedEducatorsForTopic(
       topicId,
       predicate: 'SPECIALIZES_IN',
       status: 'VERIFIED',
+      educator: { ...productionTrustEducatorFilter(), verifiedStatus: 'VERIFIED' },
     },
     orderBy: { verifiedAt: 'desc' },
     take,
@@ -208,8 +214,9 @@ export async function listVerifiedEducatorsForTopic(
  * educator, ranked by number of shared educators. Bounded indexed query.
  */
 export async function listRelatedTopics(topicId: string, limit = 6): Promise<RelatedTopic[]> {
+  const trustedVerified = { ...productionTrustEducatorFilter(), verifiedStatus: 'VERIFIED' as const };
   const sharedEducatorIds = await prisma.knowledgeClaim.findMany({
-    where: { topicId, predicate: 'SPECIALIZES_IN', status: 'VERIFIED' },
+    where: { topicId, predicate: 'SPECIALIZES_IN', status: 'VERIFIED', educator: trustedVerified },
     select: { educatorId: true },
   });
   if (sharedEducatorIds.length === 0) return [];
@@ -223,6 +230,7 @@ export async function listRelatedTopics(topicId: string, limit = 6): Promise<Rel
       educatorId: { in: educatorIds },
       predicate: 'SPECIALIZES_IN',
       status: 'VERIFIED',
+      educator: trustedVerified,
     },
     _count: { _all: true },
   });
@@ -409,7 +417,7 @@ export async function linkClaimToTopic(
   claimId: string,
   topicId: string
 ): Promise<void> {
-  await authorize({ actor, capability: CAPABILITIES.VERIFICATION_MANAGE });
+  await requirePermission({ actor, capability: CAPABILITIES.VERIFICATION_MANAGE });
 
   const claim = await prisma.knowledgeClaim.findUnique({
     where: { id: claimId },

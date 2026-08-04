@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { isTrustedEducator } from '@/lib/auth/production';
 import {
   getKnowledgeOverview,
   listClaimsForEducator,
@@ -23,10 +24,19 @@ export async function GET(request: Request, { params }: RouteContext) {
 
     const educator = await prisma.educatorProfile.findUnique({
       where: { id },
-      select: { id: true },
+      select: { id: true, user: { select: { email: true } } },
     });
 
     if (!educator) {
+      return NextResponse.json(
+        { success: false, statusCode: 404, message: 'Educator not found' },
+        { status: 404 }
+      );
+    }
+
+    // Public trust boundary: demo identities must not surface as real
+    // knowledge entities in production.
+    if (!isTrustedEducator(educator)) {
       return NextResponse.json(
         { success: false, statusCode: 404, message: 'Educator not found' },
         { status: 404 }
