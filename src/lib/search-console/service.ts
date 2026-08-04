@@ -19,6 +19,8 @@
  */
 
 import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const GSC_SCOPE = 'https://www.googleapis.com/auth/webmasters.readonly';
 const TOKEN_URI = 'https://oauth2.googleapis.com/token';
@@ -116,9 +118,24 @@ async function fetchAccessToken(email: string, privateKey: string): Promise<stri
   tokenCache.set(email, { token: body.access_token, expiresAt: Date.now() + (body.expires_in ?? 3600) * 1000 });
   return body.access_token;
 }
-
 /** Load service-account credentials from server-only env. Returns null when absent. */
 export function loadServiceAccountFromEnv(): { email: string; privateKey: string } | null {
+  const keyPath = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY_PATH;
+  if (keyPath) {
+    try {
+      const fullPath = path.isAbsolute(keyPath) ? keyPath : path.resolve(process.cwd(), keyPath);
+      if (fs.existsSync(fullPath)) {
+        const fileContent = fs.readFileSync(fullPath, 'utf8');
+        const parsed = JSON.parse(fileContent) as { client_email?: string; private_key?: string };
+        if (parsed.client_email && parsed.private_key) {
+          return { email: parsed.client_email, privateKey: parsed.private_key };
+        }
+      }
+    } catch {
+      /* fall through */
+    }
+  }
+
   const json = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
   if (json) {
     try {
@@ -130,6 +147,7 @@ export function loadServiceAccountFromEnv(): { email: string; privateKey: string
       /* malformed JSON: fall through to explicit env vars */
     }
   }
+
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
   const privateKey = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
   if (email && privateKey) return { email, privateKey };

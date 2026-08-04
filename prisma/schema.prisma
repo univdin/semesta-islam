@@ -440,6 +440,10 @@ model BookingRequest {
   commissions CommissionLedger[]
   payments    Payment[]
 
+  @@index([learnerUserId])
+  @@index([educatorId])
+  @@index([courseId])
+  @@index([scheduleId])
   @@map("booking_requests")
 }
 

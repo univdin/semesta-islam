@@ -73,14 +73,14 @@ export function DirectoryClient({
   }
 
   const selectClass =
-    'bg-transparent border-none outline-none text-sm cursor-pointer text-gray-700 font-medium';
+    'bg-transparent border-none outline-none text-sm cursor-pointer text-gray-700 dark:text-slate-200 font-medium p-1 rounded-lg dark:hover:bg-slate-800/50 transition-colors';
 
   return (
     <main className="main-content pt-20">
       <div className="container py-8">
         <div className="directory-header mb-8">
-          <h1 className="text-3xl font-bold text-[#0F3D2E] mb-2">Direktori Pendidik Islam</h1>
-          <p className="text-secondary">
+          <h1 className="text-3xl font-bold text-[#0F3D2E] dark:text-[#F3E5AB] mb-2">Direktori Pendidik Islam</h1>
+          <p className="text-secondary dark:text-slate-300">
             Cari dan hubungkan keluarga Anda dengan ustaz, ustazah, dan pakar studi Islam. Status
             verifikasi ditampilkan apa adanya pada setiap kartu.
           </p>
@@ -97,13 +97,13 @@ export function DirectoryClient({
               apply({ page: '1' });
             }}
           >
-            <Search className="search-icon w-5 h-5 text-gray-400" />
+            <Search className="search-icon w-5 h-5 text-gray-400 dark:text-slate-400" />
             <input
               type="search"
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Cari nama pendidik, topik, atau lembaga..."
-              className="w-full bg-transparent border-none outline-none text-sm px-2"
+              className="w-full bg-transparent border-none outline-none text-sm px-2 text-slate-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500"
               aria-label="Kata kunci pencarian"
             />
           </form>
@@ -115,9 +115,9 @@ export function DirectoryClient({
               className={selectClass}
               aria-label="Filter keahlian"
             >
-              <option value="">Semua Keahlian</option>
+              <option value="" className="dark:bg-slate-900 dark:text-slate-100">Semua Keahlian</option>
               {expertiseOptions.map((opt) => (
-                <option key={opt} value={opt}>
+                <option key={opt} value={opt} className="dark:bg-slate-900 dark:text-slate-100">
                   {opt}
                 </option>
               ))}
@@ -129,9 +129,9 @@ export function DirectoryClient({
               className={selectClass}
               aria-label="Filter lokasi"
             >
-              <option value="">Semua Kota</option>
+              <option value="" className="dark:bg-slate-900 dark:text-slate-100">Semua Kota</option>
               {locationOptions.map((opt) => (
-                <option key={opt} value={opt}>
+                <option key={opt} value={opt} className="dark:bg-slate-900 dark:text-slate-100">
                   {opt}
                 </option>
               ))}
@@ -144,7 +144,7 @@ export function DirectoryClient({
               aria-label="Filter metode belajar"
             >
               {Object.entries(METHOD_LABELS).map(([val, label]) => (
-                <option key={val} value={val}>
+                <option key={val} value={val} className="dark:bg-slate-900 dark:text-slate-100">
                   {label}
                 </option>
               ))}
@@ -157,7 +157,7 @@ export function DirectoryClient({
               aria-label="Urutkan"
             >
               {Object.entries(SORT_LABELS).map(([val, label]) => (
-                <option key={val} value={val}>
+                <option key={val} value={val} className="dark:bg-slate-900 dark:text-slate-100">
                   {label}
                 </option>
               ))}

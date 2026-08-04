@@ -15,12 +15,12 @@ interface BookingClientProps {
 }
 
 const VERIFICATION_STATUS: Record<VerificationStatus, { label: string; cls: string }> = {
-  VERIFIED: { label: 'Terverifikasi Lajnah', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  SUBMITTED: { label: 'Menunggu Verifikasi Lajnah', cls: 'bg-amber-50 text-amber-800 border-amber-200' },
-  UNDER_REVIEW_LAJNAH: { label: 'Sedang Ditelaah Lajnah', cls: 'bg-blue-50 text-blue-800 border-blue-200' },
-  REJECTED: { label: 'Verifikasi Ditolak', cls: 'bg-red-50 text-red-700 border-red-200' },
-  DRAFT: { label: 'Belum Diverifikasi', cls: 'bg-gray-100 text-gray-600 border-gray-200' },
-  REVOKED: { label: 'Verifikasi Dicabut', cls: 'bg-gray-100 text-gray-600 border-gray-200' },
+  VERIFIED: { label: 'Terverifikasi Lajnah', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800' },
+  SUBMITTED: { label: 'Menunggu Verifikasi Lajnah', cls: 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800' },
+  UNDER_REVIEW_LAJNAH: { label: 'Sedang Ditelaah Lajnah', cls: 'bg-blue-50 text-blue-800 border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800' },
+  REJECTED: { label: 'Verifikasi Ditolak', cls: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/60 dark:text-red-300 dark:border-red-800' },
+  DRAFT: { label: 'Belum Diverifikasi', cls: 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-800' },
+  REVOKED: { label: 'Verifikasi Dicabut', cls: 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-800' },
 };
 
 export function BookingClient({ educator, courseId }: BookingClientProps) {
@@ -119,26 +119,28 @@ export function BookingClient({ educator, courseId }: BookingClientProps) {
 
   return (
     <div className="glass-panel p-6 md:p-8 rounded-2xl">
-      <h1 className="text-2xl font-bold text-[#0F3D2E] mb-2">Ajukan Sesi Belajar</h1>
-      <p className="text-sm text-gray-600 mb-6">
+      <h1 className="text-2xl font-bold text-[#0F3D2E] dark:text-[#F3E5AB] mb-2">Ajukan Sesi Belajar</h1>
+      <p className="text-sm text-gray-600 dark:text-slate-300 mb-6">
         Ajukan permintaan sesi belajar atau bimbingan dengan pendidik pilihan Anda.
       </p>
 
       {/* Selected Educator Context */}
-      <div className="bg-white/60 p-4 rounded-xl border border-emerald-900/10 mb-6">
-        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+      <div className="bg-white/60 dark:bg-slate-900/60 p-4 rounded-xl border border-emerald-900/10 dark:border-emerald-100/10 mb-6">
+        <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide mb-3">
           Anda sedang mengajukan sesi dengan
         </p>
         <div className="flex flex-col md:flex-row gap-4 items-center md:items-start">
           <img
             src={educator.avatar}
             alt={educator.name}
-            className="w-16 h-16 rounded-full object-cover border-2 border-[#0F3D2E] shrink-0"
+            width={64}
+            height={64}
+            className="w-16 h-16 rounded-full object-cover border-2 border-[#0F3D2E] dark:border-[#D4AF37] shrink-0"
           />
           <div className="flex-1 text-center md:text-left">
-            <h2 className="text-lg font-bold text-[#0F3D2E]">{educator.name}</h2>
-            <p className="text-sm text-gray-600 font-medium mb-1">{educator.title}</p>
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs text-gray-500 mt-2">
+            <h2 className="text-lg font-bold text-[#0F3D2E] dark:text-slate-100">{educator.name}</h2>
+            <p className="text-sm text-gray-600 dark:text-slate-300 font-medium mb-1">{educator.title}</p>
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs text-gray-500 dark:text-slate-400 mt-2">
               <span className="flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5" /> {educator.location}
               </span>
@@ -158,10 +160,10 @@ export function BookingClient({ educator, courseId }: BookingClientProps) {
         </div>
       </div>
 
-      <div className="bg-[#E6F4ED] p-3 rounded-xl mb-6 text-xs text-emerald-800 flex items-start gap-2 border border-[#C2E3D0]">
-        <Info className="w-4 h-4 shrink-0 mt-0.5 text-emerald-700" />
+      <div className="bg-[#E6F4ED] dark:bg-emerald-950/60 p-3 rounded-xl mb-6 text-xs text-emerald-800 dark:text-emerald-200 flex items-start gap-2 border border-[#C2E3D0] dark:border-emerald-800">
+        <Info className="w-4 h-4 shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400" />
         <div>
-          <strong className="block mb-0.5 text-emerald-900">Ini Pengajuan Permintaan — Bukan Pembayaran</strong>
+          <strong className="block mb-0.5 text-emerald-900 dark:text-emerald-100">Ini Pengajuan Permintaan — Bukan Pembayaran</strong>
           Permintaan jadwal ini akan dicatat dan pendidik akan meninjau jadwal Anda. Anda menerima 50 Poin
           Internal sebagai apresiasi. Poin bersifat non-tunai dan tidak dapat ditarik.
         </div>
@@ -169,45 +171,45 @@ export function BookingClient({ educator, courseId }: BookingClientProps) {
 
       {status === 'success' ? (
         <div className="text-center py-4">
-          <CheckCircle className="w-16 h-16 text-emerald-600 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-[#0F3D2E]">Pengajuan Berhasil Dibuat</h2>
-          <p className="text-sm text-gray-600 mt-2 max-w-md mx-auto">
+          <CheckCircle className="w-16 h-16 text-emerald-600 dark:text-emerald-400 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-[#0F3D2E] dark:text-slate-100">Pengajuan Berhasil Dibuat</h2>
+          <p className="text-sm text-gray-600 dark:text-slate-300 mt-2 max-w-md mx-auto">
             Sesi Anda dengan <strong>{educator.name}</strong> telah diajukan. Status saat ini:{' '}
             <strong>Menunggu Konfirmasi</strong>.
           </p>
 
           {result?.bookingId && (
-            <div className="mt-4 bg-white/70 border border-emerald-900/10 rounded-xl p-3 text-left max-w-md mx-auto">
-              <p className="text-xs text-gray-500 flex items-center gap-2">
-                <ClipboardList className="w-4 h-4 text-[#0F3D2E] shrink-0" />
+            <div className="mt-4 bg-white/70 dark:bg-slate-900/70 border border-emerald-900/10 dark:border-emerald-100/10 rounded-xl p-3 text-left max-w-md mx-auto">
+              <p className="text-xs text-gray-500 dark:text-slate-400 flex items-center gap-2">
+                <ClipboardList className="w-4 h-4 text-[#0F3D2E] dark:text-emerald-400 shrink-0" />
                 Nomor Pengajuan:{' '}
-                <span className="font-mono text-[11px] text-gray-700 break-all">{result.bookingId}</span>
+                <span className="font-mono text-[11px] text-gray-700 dark:text-slate-300 break-all">{result.bookingId}</span>
               </p>
             </div>
           )}
 
           {result?.ledgerPointsEarned != null && (
-            <div className="mt-3 bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-left max-w-md mx-auto space-y-1">
-              <p className="text-sm font-bold text-[#0F3D2E] flex items-center gap-2">
+            <div className="mt-3 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4 text-left max-w-md mx-auto space-y-1">
+              <p className="text-sm font-bold text-[#0F3D2E] dark:text-emerald-300 flex items-center gap-2">
                 <Award className="w-4 h-4 text-[#D4AF37]" />
                 Poin Internal Diterima: {result.ledgerPointsEarned} poin
               </p>
-              <p className="text-xs text-gray-600">
+              <p className="text-xs text-gray-600 dark:text-slate-300">
                 Poin internal platform — <strong>non-tunai</strong> dan <strong>tidak dapat ditarik</strong>.
               </p>
             </div>
           )}
 
-          <div className="mt-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-left max-w-md mx-auto space-y-1">
-            <p className="text-xs font-semibold text-amber-900 flex items-center gap-2">
+          <div className="mt-3 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 rounded-xl p-4 text-left max-w-md mx-auto space-y-1">
+            <p className="text-xs font-semibold text-amber-900 dark:text-amber-200 flex items-center gap-2">
               <Info className="w-4 h-4 shrink-0" />
               Belum ada pembayaran — tagihan hanya dibuat setelah sesi dikonfirmasi pendidik.
             </p>
           </div>
 
-          <div className="mt-5 bg-white/70 border border-emerald-900/10 rounded-xl p-4 text-left max-w-md mx-auto">
-            <p className="text-xs font-semibold text-[#0F3D2E] mb-2">Langkah Selanjutnya</p>
-            <ol className="space-y-1.5 text-xs text-gray-600">
+          <div className="mt-5 bg-white/70 dark:bg-slate-900/70 border border-emerald-900/10 dark:border-emerald-100/10 rounded-xl p-4 text-left max-w-md mx-auto">
+            <p className="text-xs font-semibold text-[#0F3D2E] dark:text-slate-100 mb-2">Langkah Selanjutnya</p>
+            <ol className="space-y-1.5 text-xs text-gray-600 dark:text-slate-300">
               <li className="flex items-start gap-2">
                 <ArrowRight className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[#D4AF37]" />
                 Pendidik akan meninjau permintaan jadwal Anda.
@@ -241,7 +243,7 @@ export function BookingClient({ educator, courseId }: BookingClientProps) {
       ) : (
         <form onSubmit={handleSubmit} className="space-y-5">
           {status === 'error' && (
-            <div className="p-3 bg-red-50 text-red-700 border border-red-200 rounded-xl text-sm flex items-center gap-2">
+            <div className="p-3 bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800 rounded-xl text-sm flex items-center gap-2">
               <AlertCircle className="w-5 h-5 shrink-0" />
               <span>{errorMessage}</span>
             </div>
@@ -249,15 +251,15 @@ export function BookingClient({ educator, courseId }: BookingClientProps) {
 
           {educator.courses.length > 0 && (
             <div>
-              <label className="block text-xs font-semibold text-gray-700 uppercase mb-2">Program Belajar (Opsional)</label>
+              <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 uppercase mb-2">Program Belajar (Opsional)</label>
               <select
                 value={selectedCourseId}
                 onChange={(e) => setSelectedCourseId(e.target.value)}
-                className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0F3D2E]"
+                className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-[#0F3D2E] text-slate-800 dark:text-slate-200"
               >
-                <option value="">Pilih Program Belajar</option>
+                <option value="" className="dark:bg-slate-900">Pilih Program Belajar</option>
                 {educator.courses.map(course => (
-                  <option key={course.id} value={course.id}>{course.title} — {course.category}</option>
+                  <option key={course.id} value={course.id} className="dark:bg-slate-900">{course.title} — {course.category}</option>
                 ))}
               </select>
             </div>
@@ -265,73 +267,73 @@ export function BookingClient({ educator, courseId }: BookingClientProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-xs font-semibold text-gray-700 uppercase mb-2">Nama Pembelajar</label>
+              <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 uppercase mb-2">Nama Pembelajar</label>
               <div className="relative">
-                <User className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                <User className="absolute left-3 top-3 w-4 h-4 text-gray-400 dark:text-slate-500" />
                 <input
                   type="text"
                   required
                   value={learnerName}
                   onChange={(e) => setLearnerName(e.target.value)}
                   placeholder="Nama lengkap..."
-                  className="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0F3D2E]"
+                  className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-[#0F3D2E] text-slate-800 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 uppercase mb-2">Nomor WhatsApp / HP</label>
+              <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 uppercase mb-2">Nomor WhatsApp / HP</label>
               <div className="relative">
-                <Phone className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                <Phone className="absolute left-3 top-3 w-4 h-4 text-gray-400 dark:text-slate-500" />
                 <input
                   type="text"
                   required
                   value={contactPhone}
                   onChange={(e) => setContactPhone(e.target.value)}
                   placeholder="Contoh: 081234567890"
-                  className="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0F3D2E]"
+                  className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-[#0F3D2E] text-slate-800 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500"
                 />
               </div>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 uppercase mb-2">Metode Belajar</label>
+            <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 uppercase mb-2">Metode Belajar</label>
             <select
               value={learningMethod}
               onChange={(e) => setLearningMethod(e.target.value as any)}
-              className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0F3D2E]"
+              className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-[#0F3D2E] text-slate-800 dark:text-slate-200"
             >
-              <option value="ONLINE_ZOOM">Online Via Zoom / Google Meet</option>
-              <option value="PRIVATE_HOME">Privat Tatap Muka di Rumah</option>
-              <option value="GROUP_MAJELIS">Majelis / Kelompok Belajar</option>
+              <option value="ONLINE_ZOOM" className="dark:bg-slate-900">Online Via Zoom / Google Meet</option>
+              <option value="PRIVATE_HOME" className="dark:bg-slate-900">Privat Tatap Muka di Rumah</option>
+              <option value="GROUP_MAJELIS" className="dark:bg-slate-900">Majelis / Kelompok Belajar</option>
             </select>
-            <p className="text-xs text-gray-500 mt-1">Pendidik ini mengutamakan metode: {educator.method}</p>
+            <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Pendidik ini mengutamakan metode: {educator.method}</p>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 uppercase mb-2">Preferensi Jadwal</label>
+            <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 uppercase mb-2">Preferensi Jadwal</label>
             <div className="relative">
-              <Calendar className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+              <Calendar className="absolute left-3 top-3 w-4 h-4 text-gray-400 dark:text-slate-500" />
               <input
                 type="text"
                 required
                 value={preferredSchedule}
                 onChange={(e) => setPreferredSchedule(e.target.value)}
                 placeholder="Contoh: Setiap Sabtu, Jam 16.00 WIB"
-                className="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0F3D2E]"
+                className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-[#0F3D2E] text-slate-800 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 uppercase mb-2">Catatan Khusus (Opsional)</label>
+            <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 uppercase mb-2">Catatan Khusus (Opsional)</label>
             <textarea
               rows={3}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Sampaikan level bacaan / hafalan saat ini..."
-              className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0F3D2E]"
+              className="w-full p-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-[#0F3D2E] text-slate-800 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500"
             />
           </div>
 

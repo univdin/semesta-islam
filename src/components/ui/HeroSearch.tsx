@@ -47,11 +47,11 @@ export function HeroSearch() {
             className="w-full bg-transparent border-none outline-none text-sm appearance-none cursor-pointer text-gray-700 dark:text-gray-300 font-medium"
             aria-label="Filter keahlian"
           >
-            <option value="">Semua Keahlian</option>
-            <option value="Tahsin">Tahsin & Tajwid</option>
-            <option value="Fiqh">Fiqh Ibadah</option>
-            <option value="Aqidah">Aqidah</option>
-            <option value="Bahasa Arab">Bahasa Arab</option>
+            <option value="" className="dark:bg-slate-900 dark:text-slate-100">Semua Keahlian</option>
+            <option value="Tahsin" className="dark:bg-slate-900 dark:text-slate-100">Tahsin & Tajwid</option>
+            <option value="Fiqh" className="dark:bg-slate-900 dark:text-slate-100">Fiqh Ibadah</option>
+            <option value="Aqidah" className="dark:bg-slate-900 dark:text-slate-100">Aqidah</option>
+            <option value="Bahasa Arab" className="dark:bg-slate-900 dark:text-slate-100">Bahasa Arab</option>
           </select>
           <ChevronDown className="w-3 h-3 text-gray-400 absolute right-3 pointer-events-none" />
         </div>
@@ -65,18 +65,23 @@ export function HeroSearch() {
             className="w-full bg-transparent border-none outline-none text-sm appearance-none cursor-pointer text-gray-700 dark:text-gray-300 font-medium"
             aria-label="Filter lokasi"
           >
-            <option value="">Semua Kota</option>
-            <option value="Jakarta">Jakarta</option>
-            <option value="Bandung">Bandung</option>
-            <option value="Surabaya">Surabaya</option>
-            <option value="Online">Online / Daring</option>
+            <option value="" className="dark:bg-slate-900 dark:text-slate-100">Semua Kota</option>
+            <option value="Jakarta" className="dark:bg-slate-900 dark:text-slate-100">Jakarta</option>
+            <option value="Bandung" className="dark:bg-slate-900 dark:text-slate-100">Bandung</option>
+            <option value="Surabaya" className="dark:bg-slate-900 dark:text-slate-100">Surabaya</option>
+            <option value="Online" className="dark:bg-slate-900 dark:text-slate-100">Online / Daring</option>
           </select>
           <ChevronDown className="w-3 h-3 text-gray-400 absolute right-3 pointer-events-none" />
         </div>
 
         {/* Submit Button */}
         <div className="p-1 border-t md:border-t-0 border-emerald-900/10 dark:border-emerald-100/10 flex">
-          <button type="submit" className="filter-trigger-btn flex-1 md:flex-none justify-center rounded-full hover:scale-105 transition-transform" style={{ padding: '0.6rem 1.5rem', margin: '2px' }}>
+          <button
+            type="submit"
+            aria-label="Cari pendidik terverifikasi"
+            className="filter-trigger-btn flex-1 md:flex-none justify-center rounded-full hover:scale-105 transition-transform"
+            style={{ padding: '0.6rem 1.5rem', margin: '2px' }}
+          >
             <Search className="w-4 h-4" />
             <span className="font-semibold tracking-wide">Cari</span>
           </button>

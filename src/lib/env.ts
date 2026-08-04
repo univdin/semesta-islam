@@ -35,6 +35,13 @@ const EnvSchema = z.object({
   RESEND_API_KEY: z.string().optional(),
   RESEND_EMAIL_DOMAIN: z.string().min(3).optional(),
 
+  // Google Cloud & Integration Credentials (Server-only)
+  GOOGLE_API_KEY: z.string().optional(),
+  GOOGLE_SERVICE_ACCOUNT_EMAIL: z.string().optional(),
+  GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: z.string().optional(),
+  GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY_PATH: z.string().optional(),
+  GOOGLE_SERVICE_ACCOUNT_JSON: z.string().optional(),
+
   // Business fallback (DECISION-01): integer percent 0..100
   PLATFORM_COMMISSION_PERCENTAGE: z.coerce.number().int().min(0).max(100).default(0),
 
