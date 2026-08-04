@@ -12,6 +12,7 @@ import {
   Activity,
   Coins,
   ArrowRight,
+  GraduationCap,
 } from 'lucide-react';
 import { getServerIdentity } from '@/lib/auth/session';
 import { prisma } from '@/lib/db';
@@ -41,6 +42,12 @@ export default async function ManagementIndexPage() {
       icon: Users,
       title: 'Orang & Pengguna',
       desc: 'Kelola pengguna platform',
+    },
+    {
+      href: '/management/educators',
+      icon: GraduationCap,
+      title: 'Pendidik',
+      desc: 'Tambah & kelola profil pendidik',
     },
     {
       href: '/management/organizations',

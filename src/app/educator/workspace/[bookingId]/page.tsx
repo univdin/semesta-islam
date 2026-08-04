@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, BookOpen, Info, LayoutDashboard, ShieldCheck, User } from 'lucide-react';
+import { ArrowLeft, BookOpen, Info, LayoutDashboard, ShieldCheck, User, Coins } from 'lucide-react';
 import { getServerIdentity, isDemoMode } from '@/lib/auth/session';
 import { getEducatorIdForUser } from '@/lib/educators/service';
 import { getBookingDetail, BOOKING_METHOD_LABELS } from '@/lib/bookings/service';
@@ -128,8 +128,7 @@ export default async function EducatorRequestDetailPage({ params }: PageProps) {
           <section className="glass-panel p-6 rounded-2xl">
             <h2 className="text-base font-bold text-[#0F3D2E] mb-4 flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-[#D4AF37]" /> Informasi Pengajuan
-            </h2>
-            <div className="space-y-3 text-sm text-gray-700">
+            </h2>            <div className="space-y-3 text-sm text-gray-700">
               <p className="flex items-start gap-2">
                 <BookOpen className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
                 <span>
@@ -157,6 +156,28 @@ export default async function EducatorRequestDetailPage({ params }: PageProps) {
                   <span>{booking.notes}</span>
                 </p>
               )}
+            </div>
+          </section>
+
+          {/* Economy state (internal, non-cash) */}
+          <section className="glass-panel p-6 rounded-2xl">
+            <h2 className="text-base font-bold text-[#0F3D2E] mb-4 flex items-center gap-2">
+              <Coins className="w-5 h-5 text-[#D4AF37]" /> Status Ekonomi Internal
+            </h2>
+            <div className="space-y-3 text-sm text-gray-700">
+              <p className="flex items-start gap-2">
+                <Coins className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
+                <span>
+                  Poin pembelajar tercatat pada pengajuan: <strong>{booking.pointsEarned}</strong> poin
+                </span>
+              </p>
+              <p className="flex items-start gap-2">
+                <Info className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
+                <span>
+                  Poin internal platform — <strong>non-tunai dan tidak dapat ditarik</strong>. Pembayaran
+                  eksternal belum diaktifkan; tidak ada tagihan/invoice riil pada pengajuan ini.
+                </span>
+              </p>
             </div>
           </section>
         </div>

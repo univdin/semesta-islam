@@ -371,7 +371,7 @@ export function AuthPanel({
             </div>
             <button
               type="submit"
-              disabled={loading}
+              disabled={!supabaseConfigured || loading}
               className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-[#0F3D2E] hover:bg-[#16533F] transition-all disabled:opacity-50"
             >
               {loading ? (
@@ -379,10 +379,16 @@ export function AuthPanel({
               ) : (
                 <>
                   Daftar Akun Baru
-                  <ArrowRight className="ml-2 w-4 h-4" />
+                  <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
+            {!supabaseConfigured && (
+              <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-xl p-3">
+                Pendaftaran sedang dinonaktifkan karena autentikasi belum dikonfigurasi. Silakan
+                hubungi tim ILMIFY.
+              </p>
+            )}
             <p className="text-xs text-gray-500 text-center">
               Dengan mendaftar Anda menyetujui{' '}
               <a href="/terms-of-service" className="text-emerald-700 hover:underline">

@@ -10,6 +10,7 @@ import {
   isAuthorizedVerifierRole,
 } from '@/lib/verification/stateMachine';
 import { VerificationStatus, UserRole } from '@/types';
+import { createNotification } from '@/lib/notifications/service';
 
 export interface ServiceResult<T = unknown> {
   success: boolean;
@@ -166,6 +167,16 @@ export async function reviewVerificationRequest(
       data: { verifiedStatus: input.targetStatus },
     });
 
+    // Issued badges (only on VERIFIED): Lajnah + Sanad verification.
+    if (isVerified) {
+      await tx.credentialBadge.createMany({
+        data: [
+          { educatorId: request.educatorId, badgeType: 'LAJNAH_VERIFIED' },
+          { educatorId: request.educatorId, badgeType: 'SANAD_VERIFIED' },
+        ],
+      });
+    }
+
     await tx.auditLog.create({
       data: {
         actorUserId: input.verifierUserId,
@@ -181,6 +192,31 @@ export async function reviewVerificationRequest(
         },
       },
     });
+
+    // Persistent in-app notification to the owning educator.
+    const isRejected = input.targetStatus === 'REJECTED';
+    await createNotification(
+      {
+        userId: request.educator.userId,
+        type: isRejected ? 'VERIFICATION_REJECTED' : 'VERIFICATION_REVIEWED',
+        title: isVerified
+          ? 'Verifikasi Disetujui'
+          : isRejected
+            ? 'Verifikasi Ditolak'
+            : 'Status Verifikasi Diperbarui',
+        body: isVerified
+          ? 'Selamat, profil Anda telah diverifikasi Lajnah dan kini tampil di direktori publik.'
+          : isRejected
+            ? 'Verifikasi Anda ditolak. Tinjau catatan Lajnah dan ajukan ulang saat siap.'
+            : `Status verifikasi Anda kini ${input.targetStatus}.`,
+        metadata: {
+          verificationRequestId: input.verificationRequestId,
+          newStatus: input.targetStatus,
+          reviewNotes: input.reviewNotes ?? null,
+        },
+      },
+      tx
+    );
   });
 
   return {

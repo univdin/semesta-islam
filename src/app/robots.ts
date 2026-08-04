@@ -10,13 +10,13 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/management/', '/member/', '/educator/workspace', '/learner/'],
+        disallow: ['/api/', '/management/', '/member/', '/educator/workspace', '/learner/', '/discovery', '/contributions', '/affiliate', '/ambassador'],
       },
       // Explicit rules for AI Search & Answer Engine crawlers (GEO/AEO Optimization)
       {
         userAgent: ['GPTBot', 'ChatGPT-User', 'ClaudeBot', 'PerplexityBot', 'GoogleOther', 'Bingbot'],
         allow: ['/', '/directory', '/topics', '/educator/*', '/about', '/faq', '/changelog', '/developer', '/llms.txt'],
-        disallow: ['/api/', '/management/', '/member/', '/educator/workspace', '/learner/'],
+        disallow: ['/api/', '/management/', '/member/', '/educator/workspace', '/learner/', '/discovery', '/contributions', '/affiliate', '/ambassador'],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

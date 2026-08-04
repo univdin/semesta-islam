@@ -318,7 +318,7 @@ describe('reversal & adjustment', () => {
 
   it('adjustment appends an ADJUSTMENT entry and requires a reason', async () => {
     await expect(
-      adjustAccountBalance({ accountOwnerId: OWNER, actorUserId: ACTOR, amount: 25, reason: '' })
+      adjustAccountBalance({ accountOwnerId: OWNER, actorUserId: ACTOR, amount: 25, reason: '', idempotencyKey: 'adjustment:test:reason' })
     ).rejects.toThrow(/reason/);
 
     const adj = await adjustAccountBalance({

@@ -3,6 +3,8 @@ import { LayoutDashboard, ShieldCheck, Info } from 'lucide-react';
 import { getServerIdentity, isDemoMode } from '@/lib/auth/session';
 import { getEducatorIdForUser } from '@/lib/educators/service';
 import { listBookingsForEducator, EducatorBookingItem } from '@/lib/bookings/service';
+import { getAccountLedger } from '@/lib/ledger/service';
+import { EducatorEconomySummary } from '@/components/educator/EducatorEconomySummary';
 import { WorkspaceClient } from './WorkspaceClient';
 
 export const dynamic = 'force-dynamic';
@@ -60,6 +62,12 @@ export default async function EducatorWorkspacePage() {
   }
 
   const bookings = await listBookingsForEducator(educatorId);
+  const ledger = await getAccountLedger(identity.userId);
 
-  return <WorkspaceClient identityEmail={identity.email} initialBookings={bookings} />;
+  return (
+    <>
+      <EducatorEconomySummary ledger={ledger} educatorId={educatorId} />
+      <WorkspaceClient identityEmail={identity.email} initialBookings={bookings} />
+    </>
+  );
 }

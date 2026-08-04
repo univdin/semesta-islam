@@ -58,7 +58,7 @@ export interface AdjustBalanceInput {
   actorUserId: string;
   amount: number; // signed; positive credits, negative debits the account
   reason: string;
-  idempotencyKey?: string;
+  idempotencyKey: string; // REQUIRED — deterministic, never random (audit §17)
   organizationId?: string;
 }
 
@@ -515,13 +515,19 @@ export async function adjustAccountBalance(
   assertInteger(input.amount);
   requireReason(input.reason);
 
+  // Idempotency key is REQUIRED for mutative adjustments — a random fallback
+  // would silently mask double-submission (audit §17 / §16).
+  if (!input.idempotencyKey || input.idempotencyKey.trim().length === 0) {
+    throw new Error('ECONOMY_VIOLATION: idempotencyKey is required for economic adjustment.');
+  }
+
   const created = await createEconomicTransaction(
     {
       type: 'ADJUSTMENT',
       actorUserId: input.actorUserId,
       accountOwnerId: input.accountOwnerId,
       amount: input.amount,
-      idempotencyKey: input.idempotencyKey ?? `adjustment:${input.accountOwnerId}:${Date.now()}:${Math.random()}`,
+      idempotencyKey: input.idempotencyKey,
       source: 'FOUNDER_ADJUSTMENT',
       reason: input.reason,
       organizationId: input.organizationId,
@@ -577,6 +583,83 @@ export async function executeEconomicEffect(
   );
 
   return { transaction: completed.transaction, entry: completed.entry, duplicate: false };
+}
+
+export interface SpendPointsInput {
+  accountOwnerId: string;
+  actorUserId: string;
+  amount: number; // positive integer to spend (debits the account)
+  reason: string;
+  idempotencyKey: string; // REQUIRED — deterministic, never random
+  source: string;
+  reference?: string;
+  organizationId?: string;
+}
+
+/**
+ * Spend (debit) points from an account with database-level concurrency
+ * protection. Runs the balance check + ledger effect inside a SERIALIZABLE
+ * transaction so two concurrent spends can never overdraw the account
+ * (audit §16 — the check-then-post race is closed by serializable isolation).
+ *
+ * Returns the completed SPEND transaction + ledger entry, or throws
+ * INSUFFICIENT_FUNDS (no ledger effect) when the balance is insufficient.
+ * Idempotent: a repeated call with the same key returns the original
+ * transaction and no new economic effect.
+ */
+export async function spendPointsSafely(
+  input: SpendPointsInput
+): Promise<{ transaction: any; entry?: any; duplicate: boolean }> {
+  assertInteger(input.amount);
+  requireReason(input.reason);
+  if (!input.idempotencyKey || input.idempotencyKey.trim().length === 0) {
+    throw new Error('ECONOMY_VIOLATION: idempotencyKey is required for spending points.');
+  }
+  const spendAmount = Math.abs(input.amount);
+
+  return prisma.$transaction(
+    async (tx) => {
+      // Idempotency short-circuit inside the same tx: a prior identical spend
+      // returns the existing completed transaction without new ledger effect.
+      const existing = await tx.economicTransaction.findUnique({
+        where: { idempotencyKey: input.idempotencyKey },
+      });
+      if (existing) {
+        return { transaction: existing, duplicate: true };
+      }
+
+      // Balance is ALWAYS a projection of the append-only ledger. Serializing
+      // this aggregation inside the transaction makes the check-then-post
+      // atomic against concurrent writers.
+      const aggregate = await tx.economicLedger.aggregate({
+        where: { accountOwnerId: input.accountOwnerId },
+        _sum: { amount: true },
+      });
+      const currentBalance = aggregate._sum.amount ?? 0;
+
+      if (currentBalance < spendAmount) {
+        throw new Error(
+          `INSUFFICIENT_FUNDS: Saldo poin tidak mencukupi (${currentBalance} < ${spendAmount}).`
+        );
+      }
+
+      return executeEconomicEffect(
+        {
+          type: 'SPEND',
+          actorUserId: input.actorUserId,
+          accountOwnerId: input.accountOwnerId,
+          amount: -spendAmount,
+          idempotencyKey: input.idempotencyKey,
+          source: input.source,
+          reference: input.reference,
+          reason: input.reason,
+          organizationId: input.organizationId,
+        },
+        tx
+      );
+    },
+    { isolationLevel: 'Serializable' }
+  );
 }
 
 // ── READ / RECONCILIATION ──────────────────────────────────────────────────

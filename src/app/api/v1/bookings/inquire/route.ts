@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { BookingInquirySchema } from '@/lib/validations';
 import { createBookingInquiry } from '@/lib/bookings/service';
 import { getServerIdentity, unauthorizedIdentity } from '@/lib/auth/session';
+import { rateLimitAnonymous } from '@/lib/rate-limit';
 
 /**
  * Booking inquiry entry point. SEC-08: the learner is ALWAYS resolved
@@ -24,6 +25,19 @@ export async function POST(request: Request) {
       return NextResponse.json(unauthorizedIdentity(), { status: 401 });
     }
     const learnerUserId = identity.userId;
+
+    // Rate-limit per authenticated user (mitigates scripted point-farming).
+    const rl = await rateLimitAnonymous(`booking-inquire:${learnerUserId}`);
+    if (rl && !rl.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          statusCode: 429,
+          message: 'Terlalu banyak pengajuan sesi. Silakan coba lagi nanti.',
+        },
+        { status: 429 }
+      );
+    }
 
     const body = await request.json();
     const validationResult = BookingInquirySchema.safeParse(body);

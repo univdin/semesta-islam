@@ -343,12 +343,18 @@ export default async function EducatorProfilePage({ params }: PageProps) {
               )}
 
               <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-                <Link
-                  href={`/booking?educatorId=${educator.id}`}
-                  className="btn btn-primary text-sm py-3 px-6 inline-flex items-center justify-center"
-                >
-                  <Calendar className="w-4 h-4 mr-2" /> Ajukan Sesi Belajar
-                </Link>
+                {educator.verifiedStatus === 'VERIFIED' ? (
+                  <Link
+                    href={`/booking?educatorId=${educator.id}`}
+                    className="btn btn-primary text-sm py-3 px-6 inline-flex items-center justify-center"
+                  >
+                    <Calendar className="w-4 h-4 mr-2" /> Ajukan Sesi Belajar
+                  </Link>
+                ) : (
+                  <span className="inline-flex items-center gap-2 text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+                    Belum dapat menerima pengajuan sesi — menunggu verifikasi Lajnah.
+                  </span>
+                )}
                 <Link
                   href="/directory"
                   className="btn btn-secondary text-sm py-3 px-6 inline-flex items-center justify-center"

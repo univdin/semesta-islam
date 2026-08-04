@@ -42,7 +42,9 @@ export default function ContactPage() {
               </div>
               <h3 className="font-bold text-[#0F3D2E] text-sm">Surel Resmi</h3>
               <p className="text-xs text-gray-600 font-mono">support@ilmify.id</p>
-              <p className="text-xs text-gray-400">Respons dalam 1x24 jam kerja.</p>
+              <p className="text-xs text-gray-400">
+                Tim ILMIFY menindaklanjuti pesan sesuai kapasitas operasional.
+              </p>
             </div>
 
             <div className="glass-panel p-5 rounded-2xl space-y-2">

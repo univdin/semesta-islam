@@ -10,6 +10,20 @@
 import { prisma } from '@/lib/db';
 import type { NotificationType } from '@prisma/client';
 
+export type NotificationTxClient = {
+  notification: {
+    create: (args: {
+      data: {
+        userId: string;
+        type: NotificationType;
+        title: string;
+        body: string | null;
+        metadata: object;
+      };
+    }) => Promise<unknown>;
+  };
+};
+
 export interface CreateNotificationInput {
   userId: string;
   type: NotificationType;
@@ -18,8 +32,9 @@ export interface CreateNotificationInput {
   metadata?: Record<string, unknown>;
 }
 
-export async function createNotification(input: CreateNotificationInput) {
-  return prisma.notification.create({
+export async function createNotification(input: CreateNotificationInput, tx?: NotificationTxClient) {
+  const client = tx ?? prisma;
+  return client.notification.create({
     data: {
       userId: input.userId,
       type: input.type,

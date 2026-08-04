@@ -8,6 +8,7 @@ import { UserRole, BookingStatus, LearningMethod } from '@/types';
 import type { BookingInquiryPayload } from '@/types';
 import { getPlatformCommissionPercentage } from '@/lib/ledger/service';
 import { executeEconomicEffect } from '@/lib/economy/service';
+import { createNotification } from '@/lib/notifications/service';
 
 export interface ServiceResult<T = unknown> {
   success: boolean;
@@ -36,6 +37,17 @@ export async function createBookingInquiry(
     };
   }
 
+  // Trust gate (SEC/PRODUCT): only Lajnah-verified educators are bookable.
+  // Unverified / rejected profiles must not enter the learner booking funnel.
+  if (educator.verifiedStatus !== 'VERIFIED') {
+    return {
+      success: false,
+      statusCode: 409,
+      message:
+        'Pendidik ini belum terverifikasi Lajnah dan belum dapat menerima pengajuan sesi. Silakan hubungi pendidik melalui jalur lain atau pilih pendidik terverifikasi.',
+    };
+  }
+
   if (input.courseId && educator.courses.length === 0) {
     return {
       success: false,
@@ -44,27 +56,39 @@ export async function createBookingInquiry(
     };
   }
 
-  const notes = [
-    `Nama pembelajar: ${input.learnerName}`,
-    `Kontak WhatsApp/HP: ${input.contactPhone}`,
-    `Preferensi jadwal: ${input.preferredSchedule}`,
-    input.notes ? `Catatan: ${input.notes}` : null,
-  ]
-    .filter(Boolean)
-    .join('\n');
+    const notes = [
+      `Nama pembelajar: ${input.learnerName}`,
+      `Kontak WhatsApp/HP: ${input.contactPhone}`,
+      `Preferensi jadwal: ${input.preferredSchedule}`,
+      input.notes ? `Catatan: ${input.notes}` : null,
+    ]
+      .filter(Boolean)
+      .join('\n');
 
-  const result = await prisma.$transaction(async (tx) => {
-    const booking = await tx.bookingRequest.create({
-      data: {
-        learnerUserId: input.learnerUserId,
-        educatorId: input.educatorId,
-        courseId: input.courseId ?? null,
-        scheduleId: input.scheduleId ?? null,
-        learningMethod: input.learningMethod,
-        status: 'PENDING',
-        notes,
-      },
-    });
+    const result = await prisma.$transaction(async (tx) => {
+      const booking = await tx.bookingRequest.create({
+        data: {
+          learnerUserId: input.learnerUserId,
+          educatorId: input.educatorId,
+          courseId: input.courseId ?? null,
+          scheduleId: input.scheduleId ?? null,
+          learningMethod: input.learningMethod,
+          status: 'PENDING',
+          notes,
+        },
+      });
+
+      // Notify the owning educator of the new inquiry (persistent, in-app).
+      await createNotification(
+        {
+          userId: educator.userId,
+          type: 'BOOKING_INQUIRED',
+          title: 'Pengajuan Sesi Baru',
+          body: `${input.learnerName} mengajukan sesi ${input.learningMethod}. Periksa Ruang Pendidik untuk detail.`,
+          metadata: { bookingId: booking.id, educatorId: input.educatorId },
+        },
+        tx
+      );
 
     // Economy goes through the canonical transaction service — the booking code
     // never writes the ledger directly. Idempotent per booking.
@@ -369,6 +393,18 @@ export async function confirmBooking(
         metadata: { entityId: input.bookingId, previousStatus: 'PENDING', newStatus: 'CONFIRMED' },
       },
     });
+
+    // Notify the learner that their session was confirmed (persistent, in-app).
+    await createNotification(
+      {
+        userId: booking.learnerUserId,
+        type: 'BOOKING_CONFIRMED',
+        title: 'Sesi Dikonfirmasi',
+        body: `Jadwal sesi Anda telah dikonfirmasi oleh pendidik. Detail: ${booking.learningMethod}.`,
+        metadata: { bookingId: input.bookingId },
+      },
+      tx
+    );
 
     // Platform commission accrues through the canonical economy service
     // (idempotent per booking). Zero commission = no economic effect.

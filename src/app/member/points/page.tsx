@@ -4,6 +4,7 @@ import { ArrowLeft, Coins, TrendingUp, History } from 'lucide-react';
 import { getServerIdentity } from '@/lib/auth/session';
 import { getAccountLedger } from '@/lib/ledger/service';
 import { listAccountTransactions } from '@/lib/economy/service';
+import { PointsSpendCard } from './PointsSpendCard';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,6 +59,9 @@ export default async function MemberPointsPage() {
             </div>
           </div>
         </section>
+
+        {/* Spend points (internal, non-cash) */}
+        <PointsSpendCard balance={account.balance.totalPoints} />
 
         {/* Transaksi / Aktivitas Poin */}
         <section className="space-y-3">

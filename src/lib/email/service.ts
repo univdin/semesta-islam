@@ -74,6 +74,13 @@ export class ResendEmailProvider implements EmailProvider {
 
   async send(message: EmailMessage): Promise<{ ok: boolean; ref?: string }> {
     if (!this.client) {
+      // Fail-closed in production: a missing Resend key must never silently
+      // fake a successful delivery. Dev/test keeps the simulation fallback.
+      if (process.env.NODE_ENV === 'production') {
+        throw new Error(
+          '[email] RESEND_API_KEY is not configured — refusing to fake a successful delivery in production.'
+        );
+      }
       console.warn(
         '[email] RESEND_API_KEY is not configured — falling back to simulation provider. ' +
           'Set a real Resend key to enable transactional email from ' + this.from

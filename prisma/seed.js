@@ -213,7 +213,7 @@ async function main() {
       { id: ID.P_EDU2, userId: ID.U_EDU2, fullName: "Ustadzah Fatimah Azzahra, S.Ag.", avatarUrl: AVATARS.edu2, locationCity: 'Bandung', bio: "Pembimbing Al-Qur'an anak & keluarga, lulusan S1 Pendidikan Agama Islam." },
       { id: ID.P_EDU3, userId: ID.U_EDU3, fullName: 'Ustadz Muhammad Syarif, Lc.', avatarUrl: AVATARS.edu3, locationCity: 'Surabaya', bio: 'Pengajar Bahasa Arab & Nahwu Sharaf, lulusan LIPIA Jakarta dan Universitas Islam Madinah.' },
       { id: ID.P_EDU4, userId: ID.U_EDU4, fullName: 'Ustadz Abdullah Hasibuan, M.Pd.', avatarUrl: AVATARS.edu4, locationCity: 'Medan', bio: 'Pengajar Tajwid & Hafalan Juz Amma, lulusan UIN Sumatera Utara.' },
-      { id: ID.P_LAJNAH, userId: ID.U_LAJNAH, fullName: "KH. Ma'ruf Amin", avatarUrl: AVATARS.lajnah, locationCity: 'Jakarta' },
+      { id: ID.P_LAJNAH, userId: ID.U_LAJNAH, fullName: 'KH. Ahmad Fauzi (Anggota Lajnah Demo)', avatarUrl: AVATARS.lajnah, locationCity: 'Jakarta' },
       { id: ID.P_FOUNDER, userId: ID.U_FOUNDER, fullName: 'Founder Admin SEMESTA ISLAM', avatarUrl: AVATARS.founder, locationCity: 'Jakarta' },
       { id: ID.P_ORGADMIN, userId: ID.U_ORGADMIN, fullName: 'Hasan Org Admin', avatarUrl: AVATARS.edu3, locationCity: 'Jakarta' },
       { id: ID.P_ORGSTAFF, userId: ID.U_ORGSTAFF, fullName: 'Aisyah Org Staff', avatarUrl: AVATARS.edu2, locationCity: 'Depok' },

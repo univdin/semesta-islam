@@ -113,7 +113,7 @@ const STEPS = [
 
 export default async function HomePage() {
   const [sampleEducators, totalEducators, verifiedEducators, educatorCities] = await Promise.all([
-    listEducatorSummaries({ take: 3 }),
+    listEducatorSummaries({ take: 3, verifiedOnly: true }),
     countEducators(),
     countVerifiedEducators(),
     countEducatorCities(),
@@ -195,9 +195,16 @@ export default async function HomePage() {
           </div>
 
           <div className="directory-grid">
-            {sampleEducators.map((edu) => (
-              <EducatorCard key={edu.id} educator={edu} />
-            ))}
+            {sampleEducators.length === 0 ? (
+              <div className="col-span-full glass-panel p-8 rounded-2xl text-center text-sm text-gray-500">
+                Belum ada pendidik terverifikasi yang dipublikasikan. Direktori akan menampilkan
+                pendidik setelah melalui verifikasi Lajnah.
+              </div>
+            ) : (
+              sampleEducators.map((edu) => (
+                <EducatorCard key={edu.id} educator={edu} />
+              ))
+            )}
           </div>
 
           <div className="text-center mt-8">

@@ -51,7 +51,10 @@ export async function POST(request: Request) {
       actorUserId: identity.userId,
       amount,
       reason,
-      idempotencyKey: `adjustment:${accountOwnerId}:${crypto.randomUUID()}`,
+      // Deterministic idempotency key: identical retries of the same founder
+      // adjustment dedupe (unique DB constraint), while distinct adjustments
+      // (different amount/reason) always apply.
+      idempotencyKey: `adjustment:${accountOwnerId}:${amount}:${reason.trim().toLowerCase()}`,
     });
 
     return NextResponse.json({
