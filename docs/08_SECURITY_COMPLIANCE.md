@@ -22,6 +22,17 @@ Seluruh tabel relasional di Supabase PostgreSQL wajib mengaktifkan **Row Level S
 > Akses `anon` + `authenticated` (PostgREST) dicabut total — aplikasi membaca/menulis
 > hanya via Prisma server-side. Verifikasi: publishable key kini mendapat `42501
 > permission denied` pada `/rest/v1/*`; auth (GoTrue) dan Prisma tetap berfungsi.
+>
+> **LINTER SUPPABASE (2026-08-04) — DISPOSISI:**
+> - `rls_enabled_no_policy` INFO (47/47 tabel) = **BY DESIGN, diterima.** RLS aktif
+>   tanpa policy apa pun = deny-all bagi `anon`/`authenticated`; akses satu-satunya
+>   via Prisma (service role). Penambahan policy justru membuka jalur yang sengaja ditutup.
+> - `unindexed_foreign_keys` INFO (PERFORMANCE) = **DITERIMA/DI-DEFER.** Tabel belum
+>   berisi data produksi; pembuatan ~40 index FK kini premature (beban maintenance tanpa
+>   manfaat kueri). Evaluasi ulang saat volume data aktual tumbuh.
+> - `unused_index` INFO = **DITERIMA.** Index belum terpakai karena tabel kosong;
+>   penghapusan salah (akan dibutuhkan saat data masuk).
+> Semua temuan linter adalah level INFO; tidak ada temuan ERROR/WARN.
 
 ### 1.1 Protected Tables & Policy Rules
 
